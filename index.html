@@ -1,0 +1,1038 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101d34">
+  <title>Portal Comercial | Via Bebidas</title>
+
+  <style>
+    :root {
+      --bg: #f3f6fb;
+      --navy: #101d34;
+      --navy2: #192c4b;
+      --blue: #2363d1;
+      --text: #19283e;
+      --muted: #718096;
+      --border: #e2e8f0;
+      --white: #fff;
+      --red: #d83442;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    button, input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* LOGIN */
+
+    #loginScreen {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      background: linear-gradient(
+        135deg,
+        #101d34 0%,
+        #19345e 100%
+      );
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 410px;
+      background: white;
+      border-radius: 18px;
+      padding: 38px 32px;
+      box-shadow: 0 20px 65px #0003;
+    }
+
+    .logo {
+      width: 65px;
+      height: 65px;
+      background: var(--navy);
+      color: white;
+      border-radius: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto 18px;
+      font-size: 29px;
+      font-weight: bold;
+    }
+
+    .login-card h1 {
+      text-align: center;
+      font-size: 25px;
+      margin: 0 0 8px;
+    }
+
+    .login-subtitle {
+      text-align: center;
+      color: var(--muted);
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+
+    .field {
+      margin-bottom: 19px;
+    }
+
+    .field label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .field input {
+      width: 100%;
+      height: 46px;
+      border: 1px solid #cbd5e1;
+      border-radius: 9px;
+      padding: 0 13px;
+      outline: none;
+    }
+
+    .field input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px #2363d11a;
+    }
+
+    .password-wrap {
+      display: flex;
+      position: relative;
+    }
+
+    .password-wrap input {
+      padding-right: 75px;
+    }
+
+    .show-password {
+      position: absolute;
+      right: 9px;
+      top: 7px;
+      height: 32px;
+      background: transparent;
+      border: 0;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .primary-btn {
+      border: none;
+      border-radius: 9px;
+      background: var(--blue);
+      color: white;
+      padding: 13px 20px;
+      font-weight: bold;
+      transition: background .2s;
+    }
+
+    .primary-btn:hover {
+      background: #174ca9;
+    }
+
+    .primary-btn:disabled {
+      opacity: .65;
+      cursor: wait;
+    }
+
+    .login-btn {
+      width: 100%;
+      margin-top: 5px;
+    }
+
+    .error {
+      color: #b42318;
+      background: #fff0f0;
+      border: 1px solid #ffd0d0;
+      padding: 11px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 17px;
+    }
+
+    .login-footer {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 25px;
+    }
+
+    /* SISTEMA */
+
+    .app {
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 255px;
+      background: var(--navy);
+      color: white;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      padding: 25px 15px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-brand {
+      padding: 5px 12px 28px;
+      border-bottom: 1px solid #ffffff20;
+      margin-bottom: 22px;
+    }
+
+    .sidebar-brand strong {
+      display: block;
+      font-size: 20px;
+      margin-bottom: 5px;
+    }
+
+    .sidebar-brand small {
+      color: #a8b8cf;
+    }
+
+    .nav-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 14px;
+      margin-bottom: 7px;
+      border: 0;
+      border-radius: 9px;
+      background: transparent;
+      color: #cbd5e1;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      background: #ffffff18;
+      color: white;
+    }
+
+    .nav-item:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      border-top: 1px solid #ffffff20;
+      padding-top: 17px;
+    }
+
+    .logout-btn {
+      color: #ffb5b5;
+    }
+
+    .main {
+      margin-left: 255px;
+      min-height: 100vh;
+    }
+
+    .topbar {
+      min-height: 76px;
+      background: white;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 32px;
+      gap: 15px;
+    }
+
+    .topbar h2 {
+      font-size: 19px;
+      margin: 0;
+    }
+
+    .user-info {
+      text-align: right;
+    }
+
+    .user-info strong {
+      display: block;
+      font-size: 13px;
+    }
+
+    .user-info span {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .content {
+      max-width: 1300px;
+      padding: 34px 32px;
+      margin: 0 auto;
+    }
+
+    .welcome {
+      margin-bottom: 28px;
+    }
+
+    .welcome h1 {
+      margin: 0 0 9px;
+      font-size: 27px;
+    }
+
+    .welcome p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(
+        auto-fit,
+        minmax(240px, 1fr)
+      );
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 25px;
+      box-shadow: 0 4px 14px #101d3408;
+    }
+
+    .card-icon {
+      font-size: 30px;
+      margin-bottom: 18px;
+    }
+
+    .card h3 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+
+    .card p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      min-height: 60px;
+    }
+
+    .card button {
+      width: 100%;
+      margin-top: 12px;
+    }
+
+    .status {
+      display: inline-block;
+      background: #eef2f7;
+      color: #526175;
+      border-radius: 20px;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .notice {
+      margin-top: 25px;
+      padding: 17px;
+      border-radius: 10px;
+      background: #eaf1ff;
+      color: #254d88;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .mobile-header {
+      display: none;
+    }
+
+    @media (max-width: 800px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+        padding: 15px;
+      }
+
+      .sidebar-brand {
+        padding-bottom: 12px;
+        margin-bottom: 10px;
+      }
+
+      .sidebar nav {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+      }
+
+      .nav-item {
+        white-space: nowrap;
+        font-size: 12px;
+        margin-bottom: 0;
+        padding: 11px;
+      }
+
+      .sidebar-bottom {
+        margin-top: 10px;
+        padding-top: 10px;
+      }
+
+      .main {
+        margin-left: 0;
+      }
+
+      .topbar {
+        padding: 15px 18px;
+      }
+
+      .content {
+        padding: 25px 18px;
+      }
+
+      .welcome h1 {
+        font-size: 23px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .card p {
+        min-height: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- TELA DE LOGIN -->
+
+  <section id="loginScreen">
+    <div class="login-card">
+
+      <div class="logo">PC</div>
+
+      <h1>Portal Comercial</h1>
+
+      <div class="login-subtitle">
+        Via Bebidas · Acesso ao sistema
+      </div>
+
+      <form id="loginForm">
+
+        <div
+          id="loginError"
+          class="error hidden"
+          role="alert"
+        ></div>
+
+        <div class="field">
+          <label for="login">
+            Código ou login
+          </label>
+
+          <input
+            id="login"
+            type="text"
+            placeholder="Digite seu login"
+            autocomplete="username"
+            maxlength="40"
+            required
+          >
+        </div>
+
+        <div class="field">
+          <label for="senha">
+            Senha
+          </label>
+
+          <div class="password-wrap">
+            <input
+              id="senha"
+              type="password"
+              placeholder="Digite sua senha"
+              autocomplete="current-password"
+              required
+            >
+
+            <button
+              type="button"
+              class="show-password"
+              id="togglePassword"
+            >
+              Mostrar
+            </button>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="primary-btn login-btn"
+          id="loginButton"
+        >
+          Entrar
+        </button>
+
+      </form>
+
+      <div class="login-footer">
+        Portal Comercial · Via Bebidas
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PORTAL -->
+
+  <div id="appScreen" class="app hidden">
+
+    <aside class="sidebar">
+
+      <div class="sidebar-brand">
+        <strong>Portal Comercial</strong>
+        <small>Via Bebidas</small>
+      </div>
+
+      <nav aria-label="Menu principal">
+
+        <button
+          class="nav-item active"
+          id="navInicio"
+          type="button"
+        >
+          🏠 Início
+        </button>
+
+        <button
+          class="nav-item"
+          type="button"
+          disabled
+          title="Em desenvolvimento"
+        >
+          🛒 Compradores
+        </button>
+
+        <button
+          class="nav-item"
+          type="button"
+          disabled
+          title="Em desenvolvimento"
+        >
+          📊 Painel Remuneração
+        </button>
+
+        <button
+          class="nav-item hidden"
+          id="navAdmin"
+          type="button"
+          disabled
+          title="Em desenvolvimento"
+        >
+          ⚙️ Administração
+        </button>
+
+      </nav>
+
+      <div class="sidebar-bottom">
+        <button
+          class="nav-item logout-btn"
+          id="logoutButton"
+          type="button"
+        >
+          🚪 Sair da conta
+        </button>
+      </div>
+
+    </aside>
+
+    <main class="main">
+
+      <header class="topbar">
+
+        <h2>Central Comercial</h2>
+
+        <div class="user-info">
+          <strong id="topUserName">Usuário</strong>
+          <span id="topUserRole">Perfil</span>
+        </div>
+
+      </header>
+
+      <div class="content">
+
+        <div class="welcome">
+          <h1 id="welcomeTitle">
+            Bem-vindo ao Portal Comercial
+          </h1>
+
+          <p>
+            Consulte os indicadores e informações
+            comerciais da Via Bebidas.
+          </p>
+        </div>
+
+        <div class="cards">
+
+          <div class="card">
+
+            <div class="card-icon">🛒</div>
+
+            <h3>Compradores</h3>
+
+            <p>
+              Consulte os PDVs, compradores,
+              não compradores, inadimplentes
+              e dias de visita.
+            </p>
+
+            <span class="status">
+              EM DESENVOLVIMENTO
+            </span>
+
+            <button
+              class="primary-btn"
+              type="button"
+              disabled
+            >
+              Acessar Compradores
+            </button>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-icon">📊</div>
+
+            <h3>Painel Remuneração</h3>
+
+            <p>
+              Acompanhe metas, resultados,
+              indicadores e desempenho
+              comercial por RN.
+            </p>
+
+            <span class="status">
+              EM DESENVOLVIMENTO
+            </span>
+
+            <button
+              class="primary-btn"
+              type="button"
+              disabled
+            >
+              Acessar Remuneração
+            </button>
+
+          </div>
+
+          <div
+            class="card hidden"
+            id="adminCard"
+          >
+
+            <div class="card-icon">⚙️</div>
+
+            <h3>Administração</h3>
+
+            <p>
+              Gerencie funcionários,
+              permissões, setores e
+              importações de planilhas.
+            </p>
+
+            <span class="status">
+              EM DESENVOLVIMENTO
+            </span>
+
+            <button
+              class="primary-btn"
+              type="button"
+              disabled
+            >
+              Acessar Administração
+            </button>
+
+          </div>
+
+        </div>
+
+        <div class="notice">
+          <strong>Portal Comercial — Primeira versão</strong>
+          <div>
+            O login já está conectado ao Supabase.
+            Os módulos de Compradores, Remuneração
+            e Administração serão habilitados
+            nas próximas etapas.
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <script type="module">
+
+    import { createClient } from
+      "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+    // CONFIGURAÇÃO DO SUPABASE
+
+    const SUPABASE_URL =
+      "https://ciphbckjrsagcqcptytiq.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_loASQ1asuU-zeBGL5BCExA_Bo8R_RvW";
+
+    const supabase = createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY,
+      {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: false
+        }
+      }
+    );
+
+    const LOGIN_FUNCTION =
+      `${SUPABASE_URL}/functions/v1/portal-login`;
+
+    // ELEMENTOS DA PÁGINA
+
+    const loginScreen =
+      document.getElementById("loginScreen");
+
+    const appScreen =
+      document.getElementById("appScreen");
+
+    const loginForm =
+      document.getElementById("loginForm");
+
+    const loginError =
+      document.getElementById("loginError");
+
+    const loginButton =
+      document.getElementById("loginButton");
+
+    const loginInput =
+      document.getElementById("login");
+
+    const senhaInput =
+      document.getElementById("senha");
+
+    const togglePassword =
+      document.getElementById("togglePassword");
+
+    const logoutButton =
+      document.getElementById("logoutButton");
+
+    const topUserName =
+      document.getElementById("topUserName");
+
+    const topUserRole =
+      document.getElementById("topUserRole");
+
+    const welcomeTitle =
+      document.getElementById("welcomeTitle");
+
+    const adminCard =
+      document.getElementById("adminCard");
+
+    const navAdmin =
+      document.getElementById("navAdmin");
+
+    const perfis = {
+      rn: "RN",
+      gv: "GV",
+      gc: "GC",
+      admin: "Administrador"
+    };
+
+    function mostrarErro(mensagem) {
+      loginError.textContent = mensagem;
+      loginError.classList.remove("hidden");
+    }
+
+    function limparErro() {
+      loginError.textContent = "";
+      loginError.classList.add("hidden");
+    }
+
+    function mostrarLogin() {
+      appScreen.classList.add("hidden");
+      loginScreen.classList.remove("hidden");
+
+      adminCard.classList.add("hidden");
+      navAdmin.classList.add("hidden");
+    }
+
+    function mostrarPortal(usuario) {
+      loginScreen.classList.add("hidden");
+      appScreen.classList.remove("hidden");
+
+      topUserName.textContent = usuario.nome;
+
+      topUserRole.textContent =
+        `${perfis[usuario.perfil] || usuario.perfil} · ${usuario.login}`;
+
+      welcomeTitle.textContent =
+        `Bem-vindo, ${usuario.nome}!`;
+
+      const administrador =
+        usuario.perfil === "admin";
+
+      adminCard.classList.toggle(
+        "hidden",
+        !administrador
+      );
+
+      navAdmin.classList.toggle(
+        "hidden",
+        !administrador
+      );
+    }
+
+    // CONSULTAR PERFIL ATUAL
+    // O RLS permite ler apenas o cadastro autorizado.
+
+    async function consultarPerfil() {
+
+      const { data: authData, error: authError } =
+        await supabase.auth.getUser();
+
+      if (authError || !authData.user) {
+        return null;
+      }
+
+      const { data, error } = await supabase
+        .from("portal_usuarios")
+        .select("id, nome, login, perfil, ativo")
+        .eq("id", authData.user.id)
+        .single();
+
+      if (error || !data || data.ativo !== true) {
+        return null;
+      }
+
+      return data;
+    }
+
+    // LOGIN POR CÓDIGO E SENHA
+
+    loginForm.addEventListener(
+      "submit",
+      async (event) => {
+
+        event.preventDefault();
+        limparErro();
+
+        const login =
+          loginInput.value.trim().toLowerCase();
+
+        const senha = senhaInput.value;
+
+        if (!login || !senha) {
+          mostrarErro(
+            "Informe seu login e sua senha."
+          );
+          return;
+        }
+
+        loginButton.disabled = true;
+        loginButton.textContent = "Entrando...";
+
+        try {
+
+          const response = await fetch(
+            LOGIN_FUNCTION,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "apikey": SUPABASE_KEY
+              },
+              body: JSON.stringify({
+                login,
+                senha
+              })
+            }
+          );
+
+          const result = await response.json();
+
+          if (
+            !response.ok ||
+            !result.success ||
+            !result.session
+          ) {
+            throw new Error(
+              result.error ||
+              "Não foi possível entrar."
+            );
+          }
+
+          const { error: sessionError } =
+            await supabase.auth.setSession({
+              access_token:
+                result.session.access_token,
+              refresh_token:
+                result.session.refresh_token
+            });
+
+          if (sessionError) {
+            throw sessionError;
+          }
+
+          const usuario =
+            await consultarPerfil();
+
+          if (!usuario) {
+            await supabase.auth.signOut();
+
+            throw new Error(
+              "Sua conta não possui acesso autorizado."
+            );
+          }
+
+          senhaInput.value = "";
+
+          mostrarPortal(usuario);
+
+        } catch (error) {
+
+          console.error(
+            "Falha de autenticação:",
+            error instanceof Error
+              ? error.name
+              : "Erro"
+          );
+
+          mostrarErro(
+            error instanceof Error
+              ? error.message
+              : "Erro ao realizar login."
+          );
+
+        } finally {
+
+          loginButton.disabled = false;
+          loginButton.textContent = "Entrar";
+
+        }
+
+      }
+    );
+
+    // MOSTRAR / OCULTAR SENHA
+
+    togglePassword.addEventListener(
+      "click",
+      () => {
+
+        const visivel =
+          senhaInput.type === "text";
+
+        senhaInput.type =
+          visivel ? "password" : "text";
+
+        togglePassword.textContent =
+          visivel ? "Mostrar" : "Ocultar";
+
+      }
+    );
+
+    // SAIR DA CONTA
+
+    logoutButton.addEventListener(
+      "click",
+      async () => {
+
+        logoutButton.disabled = true;
+
+        try {
+          await supabase.auth.signOut();
+        } finally {
+          mostrarLogin();
+          senhaInput.value = "";
+          limparErro();
+          logoutButton.disabled = false;
+        }
+
+      }
+    );
+
+    // RESTAURAR SESSÃO AO ABRIR O SITE
+
+    async function iniciar() {
+
+      mostrarLogin();
+
+      try {
+
+        const {
+          data: { session },
+          error
+        } = await supabase.auth.getSession();
+
+        if (error || !session) {
+          return;
+        }
+
+        const usuario =
+          await consultarPerfil();
+
+        if (!usuario) {
+          await supabase.auth.signOut();
+          return;
+        }
+
+        mostrarPortal(usuario);
+
+      } catch (error) {
+
+        console.error(
+          "Falha ao restaurar sessão."
+        );
+
+        mostrarLogin();
+
+      }
+
+    }
+
+    iniciar();
+
+  </script>
+
+</body>
+</html>
