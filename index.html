@@ -1,202 +1,1067 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#101d34"><title>Portal Comercial | Via Bebidas</title>
-<style>
-:root{--navy:#101d34;--blue:#2363d1;--bg:#f3f6fb;--border:#e2e8f0;--muted:#64748b;--text:#19283e}*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}button,input,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.55;cursor:not-allowed}.hidden{display:none!important}.primary{background:var(--blue);color:#fff;border:0;border-radius:8px;padding:12px 17px;font-weight:700}.secondary{background:#fff;color:var(--text);border:1px solid #cbd5e1;border-radius:8px;padding:10px 14px;font-weight:600}.danger{background:#fff;color:#b42318;border:1px solid #fecaca;border-radius:8px;padding:10px 14px;font-weight:600}.small{padding:7px 10px;font-size:12px}.message{padding:12px;border-radius:8px;margin:12px 0;font-size:13px}.message.error{background:#fff1f2;color:#b42318;border:1px solid #fecdd3}.message.success{background:#effaf4;color:#166534;border:1px solid #bbf7d0}.field{margin-bottom:16px}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:7px}.field input,.field select{width:100%;border:1px solid #cbd5e1;border-radius:8px;padding:11px;background:#fff;min-height:43px}.field input:focus,.field select:focus{outline:2px solid #bfdbfe;border-color:var(--blue)}.hint{color:var(--muted);font-size:12px;line-height:1.5}.login-screen{min-height:100vh;display:grid;place-items:center;background:linear-gradient(135deg,#101d34,#19345e);padding:20px}.login-card{width:100%;max-width:410px;background:white;border-radius:17px;padding:36px 30px;box-shadow:0 20px 65px #0003}.logo{width:64px;height:64px;display:grid;place-items:center;margin:0 auto 18px;background:var(--navy);border-radius:15px;color:white;font-size:26px;font-weight:700}.login-card h1{text-align:center;font-size:25px;margin:0 0 8px}.login-card p{text-align:center;color:var(--muted);font-size:13px;margin:0 0 27px}.password-line{display:flex;gap:8px}.password-line input{min-width:0;flex:1}.app{min-height:100vh}.sidebar{position:fixed;inset:0 auto 0 0;width:250px;background:var(--navy);color:#fff;padding:24px 14px;display:flex;flex-direction:column}.brand{padding:5px 8px 26px;border-bottom:1px solid #ffffff25;margin-bottom:20px}.brand strong{display:block;font-size:20px;margin-bottom:5px}.brand small{color:#b5c4d8}.nav-item{display:block;width:100%;border:0;border-radius:8px;background:transparent;color:#cbd5e1;text-align:left;padding:13px;margin-bottom:7px;font-weight:700}.nav-item.active,.nav-item:not(:disabled):hover{background:#ffffff20;color:#fff}.sidebar-bottom{margin-top:auto;border-top:1px solid #ffffff25;padding-top:14px}.logout{color:#ffb8b8}.main{margin-left:250px}.topbar{background:#fff;min-height:75px;padding:16px 30px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:15px}.topbar h2{font-size:19px;margin:0}.top-user{text-align:right;font-size:13px}.top-user span{display:block;color:var(--muted);font-size:12px;margin-top:4px}.content{max-width:1350px;margin:auto;padding:30px}.page-title{font-size:27px;margin:0 0 10px}.lead{color:var(--muted);font-size:14px;margin:0 0 26px}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}.card,.panel{background:#fff;border:1px solid var(--border);border-radius:13px;padding:24px;box-shadow:0 3px 12px #101d3408}.card .emoji{font-size:30px}.card h3{margin:16px 0 8px}.card p{font-size:13px;color:var(--muted);line-height:1.6;min-height:65px}.card button{width:100%;margin-top:12px}.status{display:inline-block;background:#eef2f7;color:#526175;border-radius:20px;padding:6px 10px;font-size:11px;font-weight:700}.notice{margin-top:24px;background:#eaf1ff;color:#254d88;padding:16px;border-radius:10px;font-size:13px;line-height:1.6}.toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px}.toolbar-actions{display:flex;gap:8px;flex-wrap:wrap}.search{border:1px solid #cbd5e1;border-radius:8px;padding:11px;width:100%;max-width:360px}.table-wrap{overflow-x:auto}.users-table{width:100%;border-collapse:collapse;font-size:13px}.users-table th,.users-table td{padding:13px 10px;border-bottom:1px solid var(--border);text-align:left;vertical-align:middle}.users-table th{color:#475569;background:#f8fafc;white-space:nowrap}.users-table td:last-child{white-space:nowrap}.pill{border-radius:20px;padding:5px 9px;font-size:11px;font-weight:700;display:inline-block}.pill.on{background:#dcfce7;color:#166534}.pill.off{background:#fee2e2;color:#991b1b}.empty{padding:25px;color:var(--muted);text-align:center}.dialog-backdrop{position:fixed;inset:0;background:#0f172acc;display:grid;place-items:center;padding:16px;z-index:20}.dialog{background:white;border-radius:14px;width:100%;max-width:530px;max-height:94vh;overflow-y:auto;padding:25px;box-shadow:0 20px 60px #0004}.dialog h3{margin:0 0 19px}.dialog-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px}.dialog-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.check-line{display:flex;align-items:center;gap:9px;font-size:13px}.check-line input{width:auto}.user-actions{display:flex;gap:6px}.admin-summary{color:var(--muted);font-size:13px;margin-bottom:16px}@media(max-width:800px){.sidebar{position:static;width:100%;padding:15px}.brand{padding-bottom:12px;margin-bottom:10px}.sidebar nav{display:flex;overflow-x:auto;gap:6px}.nav-item{white-space:nowrap;margin:0;padding:11px;font-size:12px}.sidebar-bottom{margin-top:10px;padding-top:10px}.main{margin:0}.topbar{padding:15px 18px}.content{padding:23px 16px}.page-title{font-size:23px}.cards{grid-template-columns:1fr}.card p{min-height:0}.dialog-grid{grid-template-columns:1fr}.user-actions{flex-wrap:wrap}}
-.import-panel{margin-top:22px}.import-input{display:block;width:100%;max-width:520px;padding:12px;border:1px dashed #94a3b8;border-radius:9px;background:#f8fafc}.import-progress{margin-top:12px}.import-progress progress{width:100%;max-width:480px;height:14px;display:block;margin:10px 0}.import-history{font-size:12px;color:var(--muted);margin-top:10px}</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101d34">
+  <title>Portal Comercial | Via Bebidas</title>
+  <style>
+    :root {
+      --navy: #101d34;
+      --blue: #2363d1;
+      --bg: #f3f6fb;
+      --border: #e2e8f0;
+      --muted: #64748b;
+      --text: #19283e;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: var(--bg); color: var(--text); }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    button:disabled { opacity: .55; cursor: not-allowed; }
+    .hidden { display: none !important; }
+    .primary { background: var(--blue); color: #fff; border: 0; border-radius: 8px; padding: 12px 17px; font-weight: 700; }
+    .secondary { background: #fff; color: var(--text); border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 14px; font-weight: 600; }
+    .danger { background: #fff; color: #b42318; border: 1px solid #fecaca; border-radius: 8px; padding: 10px 14px; font-weight: 600; }
+    .small { padding: 7px 10px; font-size: 12px; }
+    .message { padding: 12px; border-radius: 8px; margin: 12px 0; font-size: 13px; }
+    .message.error { background: #fff1f2; color: #b42318; border: 1px solid #fecdd3; }
+    .message.success { background: #effaf4; color: #166534; border: 1px solid #bbf7d0; }
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 7px; }
+    .field input, .field select { width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 11px; background: #fff; min-height: 43px; }
+    .hint { color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .login-screen { min-height: 100vh; display: grid; place-items: center; background: linear-gradient(135deg,#101d34,#19345e); padding: 20px; }
+    .login-card { width: 100%; max-width: 410px; background: #fff; border-radius: 17px; padding: 36px 30px; box-shadow: 0 20px 65px #0003; }
+    .logo { width: 64px; height: 64px; display: grid; place-items: center; margin: 0 auto 18px; background: var(--navy); border-radius: 15px; color: #fff; font-size: 26px; font-weight: 700; }
+    .login-card h1 { text-align: center; font-size: 25px; margin: 0 0 8px; }
+    .login-card p { text-align: center; color: var(--muted); font-size: 13px; margin: 0 0 27px; }
+    .password-line { display: flex; gap: 8px; }
+    .password-line input { min-width: 0; flex: 1; }
+    .app { min-height: 100vh; }
+    .sidebar { position: fixed; inset: 0 auto 0 0; width: 250px; background: var(--navy); color: #fff; padding: 24px 14px; display: flex; flex-direction: column; }
+    .brand { padding: 5px 8px 26px; border-bottom: 1px solid #ffffff25; margin-bottom: 20px; }
+    .brand strong { display: block; font-size: 20px; margin-bottom: 5px; }
+    .brand small { color: #b5c4d8; }
+    .nav-item { display: block; width: 100%; border: 0; border-radius: 8px; background: transparent; color: #cbd5e1; text-align: left; padding: 13px; margin-bottom: 7px; font-weight: 700; }
+    .nav-item.active, .nav-item:not(:disabled):hover { background: #ffffff20; color: #fff; }
+    .sidebar-bottom { margin-top: auto; border-top: 1px solid #ffffff25; padding-top: 14px; }
+    .logout { color: #ffb8b8; }
+    .main { margin-left: 250px; }
+    .topbar { background: #fff; min-height: 75px; padding: 16px 30px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 15px; }
+    .topbar h2 { font-size: 19px; margin: 0; }
+    .top-user { text-align: right; font-size: 13px; }
+    .top-user span { display: block; color: var(--muted); font-size: 12px; margin-top: 4px; }
+    .content { max-width: 1450px; margin: auto; padding: 30px; }
+    .page-title { font-size: 27px; margin: 0 0 10px; }
+    .lead { color: var(--muted); font-size: 14px; margin: 0 0 26px; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 20px; }
+    .card, .panel { background: #fff; border: 1px solid var(--border); border-radius: 13px; padding: 24px; box-shadow: 0 3px 12px #101d3408; }
+    .card .emoji { font-size: 30px; }
+    .card h3 { margin: 16px 0 8px; }
+    .card p { font-size: 13px; color: var(--muted); line-height: 1.6; min-height: 65px; }
+    .card button { width: 100%; margin-top: 12px; }
+    .status { display: inline-block; background: #eef2f7; color: #526175; border-radius: 20px; padding: 6px 10px; font-size: 11px; font-weight: 700; }
+    .notice { margin-top: 24px; background: #eaf1ff; color: #254d88; padding: 16px; border-radius: 10px; font-size: 13px; line-height: 1.6; }
+    .toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; }
+    .toolbar-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .search { border: 1px solid #cbd5e1; border-radius: 8px; padding: 11px; width: 100%; max-width: 360px; }
+    .table-wrap { overflow-x: auto; }
+    .users-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .users-table th, .users-table td { padding: 13px 10px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: middle; }
+    .users-table th { color: #475569; background: #f8fafc; white-space: nowrap; }
+    .users-table td:last-child { white-space: nowrap; }
+    .pill { border-radius: 20px; padding: 5px 9px; font-size: 11px; font-weight: 700; display: inline-block; }
+    .pill.on { background: #dcfce7; color: #166534; }
+    .pill.off { background: #fee2e2; color: #991b1b; }
+    .empty { padding: 25px; color: var(--muted); text-align: center; }
+    .dialog-backdrop { position: fixed; inset: 0; background: #0f172acc; display: grid; place-items: center; padding: 16px; z-index: 20; }
+    .dialog { background: #fff; border-radius: 14px; width: 100%; max-width: 530px; max-height: 94vh; overflow-y: auto; padding: 25px; box-shadow: 0 20px 60px #0004; }
+    .dialog h3 { margin: 0 0 19px; }
+    .dialog-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }
+    .dialog-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .check-line { display: flex; align-items: center; gap: 9px; font-size: 13px; }
+    .check-line input { width: auto; }
+    .user-actions { display: flex; gap: 6px; }
+    .admin-summary { color: var(--muted); font-size: 13px; margin-bottom: 16px; }
+    .import-panel { margin-top: 22px; }
+    .import-input { display: block; width: 100%; max-width: 520px; padding: 12px; border: 1px dashed #94a3b8; border-radius: 9px; background: #f8fafc; }
+    .import-progress { margin-top: 12px; }
+    .import-progress progress { width: 100%; max-width: 480px; height: 14px; display: block; margin: 10px 0; }
+    .import-history { font-size: 12px; color: var(--muted); margin-top: 10px; }
+
+    /* Planificador: mantém o padrão de grupos do localhost. */
+    .buyer-filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .buyer-filters select, .buyer-filters input[type="search"] { border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px; min-height: 42px; background: #fff; }
+    .buyer-filters input[type="search"] { flex: 1; min-width: 180px; }
+    .buyer-filters label { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; }
+    .buyer-summary { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; margin: 16px 0; }
+    .buyer-summary .item { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 17px; }
+    .buyer-summary .name { font-size: 13px; color: var(--muted); font-weight: 600; }
+    .buyer-summary .value { font-size: 29px; font-weight: 700; margin: 10px 0 5px; }
+    .buyer-summary .sub { font-size: 12px; color: var(--muted); }
+    .buyer-table-wrap { overflow: auto; max-height: 70vh; }
+    .buyer-table { border-collapse: collapse; width: 100%; font-size: 12px; }
+    .buyer-table th, .buyer-table td { border: 1px solid #dce4ec; padding: 9px; text-align: left; white-space: nowrap; }
+    .buyer-table th { background: #edf3fa; position: sticky; top: 0; z-index: 1; }
+    .buyer-table .group-buyer { background: #24447c; color: #fff; text-align: center; }
+    .buyer-table .group-debt { background: #d95761; color: #fff; text-align: center; }
+    .buyer-table .buyer { background: #e6f1fa; text-align: center; }
+    .buyer-table .debt { background: #fbe0e1; }
+    .buyer-table .money { text-align: right; font-variant-numeric: tabular-nums; }
+    .pagination { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
+    @media (max-width: 800px) {
+      .sidebar { position: static; width: 100%; padding: 15px; }
+      .brand { padding-bottom: 12px; margin-bottom: 10px; }
+      .sidebar nav { display: flex; overflow-x: auto; gap: 6px; }
+      .nav-item { white-space: nowrap; margin: 0; padding: 11px; font-size: 12px; }
+      .sidebar-bottom { margin-top: 10px; padding-top: 10px; }
+      .main { margin: 0; }
+      .topbar { padding: 15px 18px; }
+      .content { padding: 23px 16px; }
+      .page-title { font-size: 23px; }
+      .cards { grid-template-columns: 1fr; }
+      .card p { min-height: 0; }
+      .dialog-grid { grid-template-columns: 1fr; }
+      .user-actions { flex-wrap: wrap; }
+      .buyer-summary { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    }
+    @media (max-width: 420px) {
+      .buyer-summary { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-<section id="loginScreen" class="login-screen"><div class="login-card"><div class="logo">PC</div><h1>Portal Comercial</h1><p>Via Bebidas · Acesso ao sistema</p><form id="loginForm"><div id="loginError" class="message error hidden" role="alert"></div><div class="field"><label for="login">Código ou login</label><input id="login" autocomplete="username" maxlength="40" required placeholder="Digite seu login"></div><div class="field"><label for="senha">Senha</label><div class="password-line"><input id="senha" type="password" autocomplete="current-password" required placeholder="Digite sua senha"><button type="button" id="togglePassword" class="secondary small">Mostrar</button></div></div><button id="loginButton" type="submit" class="primary" style="width:100%">Entrar</button></form><p style="margin:25px 0 0">Portal Comercial · Via Bebidas</p></div></section>
-<div id="appScreen" class="app hidden"><aside class="sidebar"><div class="brand"><strong>Portal Comercial</strong><small>Via Bebidas</small></div><nav aria-label="Menu principal"><button class="nav-item active" id="navInicio" type="button">🏠 Início</button><button class="nav-item" disabled type="button">🛒 Compradores</button><button class="nav-item" disabled type="button">📊 Painel Remuneração</button><button class="nav-item hidden" id="navAdmin" type="button">⚙️ Administração</button></nav><div class="sidebar-bottom"><button class="nav-item logout" id="logoutButton" type="button">🚪 Sair da conta</button></div></aside><main class="main"><header class="topbar"><h2>Central Comercial</h2><div class="top-user"><strong id="topUserName"></strong><span id="topUserRole"></span></div></header><div class="content"><section id="homePage"><h1 class="page-title" id="welcomeTitle">Bem-vindo ao Portal Comercial!</h1><p class="lead">Consulte os indicadores e informações comerciais da Via Bebidas.</p><div class="cards"><article class="card"><div class="emoji">🛒</div><h3>Compradores</h3><p>Consulte os PDVs, compradores, não compradores, inadimplentes e dias de visita.</p><span class="status">EM DESENVOLVIMENTO</span><button class="primary" disabled>Acessar Compradores</button></article><article class="card"><div class="emoji">📊</div><h3>Painel Remuneração</h3><p>Acompanhe metas, resultados, indicadores e desempenho comercial por RN.</p><span class="status">EM DESENVOLVIMENTO</span><button class="primary" disabled>Acessar Remuneração</button></article><article id="adminCard" class="card hidden"><div class="emoji">⚙️</div><h3>Administração</h3><p>Cadastre funcionários, defina perfis e setores, redefina senhas e controle acessos.</p><span class="status">DISPONÍVEL</span><button id="openAdminCard" class="primary">Acessar Administração</button></article></div><div class="notice">O login está conectado ao Supabase. O gerenciamento de usuários está disponível para administradores; os módulos de Compradores e Remuneração serão implementados nas próximas etapas.</div></section><section id="adminPage" class="hidden"><h1 class="page-title">Administração de usuários</h1><p class="lead">Gerencie o acesso dos funcionários ao Portal Comercial.</p><div class="panel"><div class="toolbar"><input id="userSearch" class="search" placeholder="Buscar nome, login ou setor" aria-label="Buscar usuários"><div class="toolbar-actions"><button id="refreshUsers" class="secondary">Atualizar</button><button id="newUser" class="primary">+ Novo funcionário</button></div></div><div id="adminMessage" class="message hidden" role="status"></div><div id="userSummary" class="admin-summary"></div><div class="table-wrap"><table class="users-table"><thead><tr><th>Nome</th><th>Login</th><th>Perfil</th><th>Setores</th><th>Situação</th><th>Ações</th></tr></thead><tbody id="usersBody"><tr><td colspan="6" class="empty">Carregando...</td></tr></tbody></table></div></div><div class="panel import-panel"><h2 style="margin-top:0;font-size:20px">Importar Compradores</h2><p class="hint">Selecione o arquivo Excel (.xlsm ou .xlsx). A aba <b>Planificador</b> será lida automaticamente e, após a validação, substituirá toda a base atual. Não há botão adicional de confirmação. Nenhuma macro será executada e o arquivo não será armazenado.</p><label for="compradoresFile" style="display:block;font-weight:700;margin:15px 0 8px">Selecionar planilha</label><input class="import-input" id="compradoresFile" type="file" accept=".xlsm,.xlsx"><div id="importStatus" class="message hidden" role="status" aria-live="polite"></div><div id="importProgress" class="import-progress hidden"><progress id="importBar" max="100" value="0"></progress><span class="hint" id="importStep">Preparando...</span></div><p class="import-history">A base anterior só é substituída se a importação for concluída com sucesso.</p></div></section></div></main></div>
-<div id="dialogBackdrop" class="dialog-backdrop hidden" role="presentation"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialogTitle"><h3 id="dialogTitle">Funcionário</h3><form id="userForm"><div id="dialogMessage" class="message error hidden" role="alert"></div><div class="field"><label for="userName">Nome completo</label><input id="userName" maxlength="150" required></div><div class="dialog-grid"><div class="field"><label for="userLogin">Login ou código</label><input id="userLogin" maxlength="40" pattern="[A-Za-z0-9._-]{2,40}" required></div><div class="field"><label for="userRole">Perfil</label><select id="userRole" required><option value="rn">RN</option><option value="gv">GV</option><option value="gc">GC</option><option value="admin">Administrador</option></select></div></div><div id="newPasswordField" class="field"><label for="userPassword">Senha inicial (mínimo 8 caracteres)</label><input id="userPassword" type="password" minlength="8" maxlength="128" autocomplete="new-password"></div><div class="field"><label for="userSectors">Setores vinculados</label><input id="userSectors" placeholder="Ex.: 611, 612, 613"><div class="hint">Separe os códigos por vírgula. RN e GV precisam de pelo menos um setor. GC e Admin podem visualizar todos os setores.</div></div><label id="activeLine" class="check-line hidden"><input id="userActive" type="checkbox" checked> Usuário ativo</label><div class="dialog-actions"><button id="cancelUser" type="button" class="secondary">Cancelar</button><button id="saveUser" type="submit" class="primary">Salvar</button></div></form></div></div>
-<script type="module">
-import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-const SUPABASE_URL='https://ciphbckjrsagcqcpytiq.supabase.co';
-const SUPABASE_KEY='sb_publishable_loASQ1asuU-zeBGL5BCExA_Bo8R_RvW';
-const supabase=createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
-const loginFunction=`${SUPABASE_URL}/functions/v1/portal-login`;
-const adminFunction=`${SUPABASE_URL}/functions/v1/portal-gerenciar-usuarios`;
-const importFunction=`${SUPABASE_URL}/functions/v1/portal-importar-pdvs`;
+  <section id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <div class="logo">PC</div>
+      <h1>Portal Comercial</h1>
+      <p>Via Bebidas · Acesso ao sistema</p>
+      <form id="loginForm">
+        <div id="loginError" class="message error hidden" role="alert"></div>
+        <div class="field">
+          <label for="login">Código ou login</label>
+          <input id="login" autocomplete="username" maxlength="40" required placeholder="Digite seu login">
+        </div>
+        <div class="field">
+          <label for="senha">Senha</label>
+          <div class="password-line">
+            <input id="senha" type="password" autocomplete="current-password" required placeholder="Digite sua senha">
+            <button type="button" id="togglePassword" class="secondary small">Mostrar</button>
+          </div>
+        </div>
+        <button id="loginButton" type="submit" class="primary" style="width:100%">Entrar</button>
+      </form>
+      <p style="margin:25px 0 0">Portal Comercial · Via Bebidas</p>
+    </div>
+  </section>
 
-const $=id=>document.getElementById(id);
-const roles={rn:'RN',gv:'GV',gc:'GC',admin:'Administrador'};
-let currentUser=null,users=[],editingId=null,loadingUsers=false;
-function message(id,text,type='error'){const el=$(id);el.textContent=text||'';el.className=text?`message ${type}`:'message hidden';}
-function showLogin(){currentUser=null;users=[];$('appScreen').classList.add('hidden');$('loginScreen').classList.remove('hidden');$('adminPage').classList.add('hidden');$('homePage').classList.remove('hidden');$('senha').value='';}
-function showPortal(user){currentUser=user;$('loginScreen').classList.add('hidden');$('appScreen').classList.remove('hidden');$('topUserName').textContent=user.nome;$('topUserRole').textContent=`${roles[user.perfil]||user.perfil} · ${user.login}`;$('welcomeTitle').textContent=`Bem-vindo, ${user.nome}!`;const isAdmin=user.perfil==='admin';$('navAdmin').classList.toggle('hidden',!isAdmin);$('adminCard').classList.toggle('hidden',!isAdmin);showHome();}
-function showHome(){$('homePage').classList.remove('hidden');$('adminPage').classList.add('hidden');$('navInicio').classList.add('active');$('navAdmin').classList.remove('active');}
-async function getProfile(){const {data:auth,error:authError}=await supabase.auth.getUser();if(authError||!auth.user)return null;const {data,error}=await supabase.from('portal_usuarios').select('id,nome,login,perfil,ativo').eq('id',auth.user.id).single();if(error||!data||data.ativo!==true)return null;return data;}
-$('togglePassword').onclick=()=>{const input=$('senha');input.type=input.type==='password'?'text':'password';$('togglePassword').textContent=input.type==='password'?'Mostrar':'Ocultar';};
-$('loginForm').onsubmit=async e=>{e.preventDefault();message('loginError','');const login=$('login').value.trim().toLowerCase(),senha=$('senha').value;const btn=$('loginButton');btn.disabled=true;btn.textContent='Entrando...';try{const response=await fetch(loginFunction,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY},body:JSON.stringify({login,senha})});const result=await response.json();if(!response.ok||!result.success||!result.session)throw new Error(result.error||'Não foi possível entrar.');const {error}=await supabase.auth.setSession({access_token:result.session.access_token,refresh_token:result.session.refresh_token});if(error)throw error;const user=await getProfile();if(!user){await supabase.auth.signOut();throw new Error('Sua conta não possui acesso autorizado.');}showPortal(user);}catch(err){message('loginError',err instanceof Error?err.message:'Falha ao realizar login.');}finally{btn.disabled=false;btn.textContent='Entrar';}};
-$('logoutButton').onclick=async()=>{const btn=$('logoutButton');btn.disabled=true;try{await supabase.auth.signOut();}finally{showLogin();btn.disabled=false;}};
-$('navInicio').onclick=showHome;
-$('navAdmin').onclick=()=>openAdmin();
-$('openAdminCard').onclick=()=>openAdmin();
-async function adminRequest(body){const {data:{session},error}=await supabase.auth.getSession();if(error||!session)throw new Error('Sua sessão expirou. Saia e entre novamente.');const response=await fetch(adminFunction,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':`Bearer ${session.access_token}`},body:JSON.stringify(body)});let result;try{result=await response.json();}catch{throw new Error(`Falha na resposta do servidor (HTTP ${response.status}).`);}if(!response.ok||result.error)throw new Error(result.error||`Erro HTTP ${response.status}.`);return result;}
-async function openAdmin(){if(currentUser?.perfil!=='admin')return;$('homePage').classList.add('hidden');$('adminPage').classList.remove('hidden');$('navInicio').classList.remove('active');$('navAdmin').classList.add('active');await loadUsers();}
-async function loadUsers(){if(loadingUsers)return;loadingUsers=true;message('adminMessage','');$('usersBody').replaceChildren();const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=6;td.className='empty';td.textContent='Carregando usuários...';tr.append(td);$('usersBody').append(tr);$('refreshUsers').disabled=true;try{const data=await adminRequest({acao:'listar'});if(!Array.isArray(data.usuarios))throw new Error('Formato inesperado da lista de usuários.');users=data.usuarios;renderUsers();}catch(err){users=[];renderUsers();message('adminMessage',err instanceof Error?err.message:'Não foi possível carregar usuários.');}finally{loadingUsers=false;$('refreshUsers').disabled=false;}}
-function cell(tr,value){const td=document.createElement('td');td.textContent=String(value??'');tr.append(td);return td;}
-function renderUsers(){const filter=$('userSearch').value.trim().toLocaleLowerCase('pt-BR');const filtered=users.filter(u=>[u.nome,u.login,u.perfil,...(u.setores||[])].join(' ').toLocaleLowerCase('pt-BR').includes(filter));$('userSummary').textContent=`${filtered.length} funcionário(s) exibido(s) · ${users.filter(u=>u.ativo).length} ativo(s) no total`;$('usersBody').replaceChildren();if(!filtered.length){const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=6;td.className='empty';td.textContent='Nenhum funcionário encontrado.';tr.append(td);$('usersBody').append(tr);return;}for(const u of filtered){const tr=document.createElement('tr');cell(tr,u.nome);cell(tr,u.login);cell(tr,roles[u.perfil]||u.perfil);cell(tr,(u.setores||[]).join(', ')||'Todos / não atribuído');const status=cell(tr,'');const pill=document.createElement('span');pill.className=`pill ${u.ativo?'on':'off'}`;pill.textContent=u.ativo?'Ativo':'Inativo';status.append(pill);const actions=cell(tr,'');actions.className='user-actions';const edit=document.createElement('button');edit.className='secondary small';edit.textContent='Editar';edit.onclick=()=>openUserDialog(u);const pass=document.createElement('button');pass.className='secondary small';pass.textContent='Senha';pass.onclick=()=>changePassword(u);actions.append(edit,pass);if(u.ativo&&u.id!==currentUser.id){const off=document.createElement('button');off.className='danger small';off.textContent='Desativar';off.onclick=()=>deactivateUser(u);actions.append(off);}if(u.id!==currentUser.id){const del=document.createElement('button');del.className='danger small';del.textContent='Excluir';del.title='Excluir usuário definitivamente';del.onclick=()=>deleteUser(u);actions.append(del);} $('usersBody').append(tr);}}
-$('userSearch').oninput=renderUsers;
-$('refreshUsers').onclick=loadUsers;
-function parseSectors(raw){const values=raw.split(/[,;\s]+/).map(s=>s.trim()).filter(Boolean);if(values.some(s=>!/^[0-9]{1,10}$/.test(s)))throw new Error('Informe apenas códigos numéricos de setor, separados por vírgula.');return [...new Set(values)];}
-function openUserDialog(user=null){editingId=user?.id||null;$('userForm').reset();message('dialogMessage','');$('dialogTitle').textContent=user?'Editar funcionário':'Cadastrar funcionário';$('userName').value=user?.nome||'';$('userLogin').value=user?.login||'';$('userLogin').readOnly=!!user;$('userRole').value=user?.perfil||'rn';$('userSectors').value=(user?.setores||[]).join(', ');$('userActive').checked=user?.ativo??true;$('activeLine').classList.toggle('hidden',!user);$('newPasswordField').classList.toggle('hidden',!!user);$('userPassword').required=!user;$('userPassword').value='';$('saveUser').textContent=user?'Salvar alterações':'Cadastrar';$('dialogBackdrop').classList.remove('hidden');$('userName').focus();}
-$('newUser').onclick=()=>openUserDialog();
-function closeDialog(){$('dialogBackdrop').classList.add('hidden');editingId=null;}
-$('cancelUser').onclick=closeDialog;
-$('userForm').onsubmit=async e=>{e.preventDefault();message('dialogMessage','');const btn=$('saveUser');btn.disabled=true;try{const nome=$('userName').value.trim(),login=$('userLogin').value.trim().toLowerCase(),perfil=$('userRole').value,setores=parseSectors($('userSectors').value);if(!nome||nome.length>150)throw new Error('Informe um nome válido.');if(['rn','gv'].includes(perfil)&&setores.length===0)throw new Error('Vincule pelo menos um setor para RN ou GV.');let payload;if(editingId){payload={acao:'editar',id:editingId,nome,login,perfil,setores,ativo:$('userActive').checked};}else{const senha=$('userPassword').value;if(senha.length<8||senha.length>128)throw new Error('A senha deve ter entre 8 e 128 caracteres.');payload={acao:'criar',nome,login,senha,perfil,setores};}const result=await adminRequest(payload);closeDialog();await loadUsers();message('adminMessage',result.message||'Operação concluída.','success');}catch(err){message('dialogMessage',err instanceof Error?err.message:'Não foi possível salvar.');}finally{btn.disabled=false;}};
-async function changePassword(u){const senha=prompt(`Nova senha para ${u.nome} (mínimo 8 caracteres):`);if(senha===null)return;if(senha.length<8||senha.length>128){message('adminMessage','A senha deve ter entre 8 e 128 caracteres.');return;}if(!confirm(`Confirmar alteração de senha de ${u.nome}?`))return;try{const result=await adminRequest({acao:'alterar_senha',id:u.id,senha});message('adminMessage',result.message||'Senha alterada.','success');}catch(err){message('adminMessage',err instanceof Error?err.message:'Erro ao alterar senha.');}}
-async function deactivateUser(u){if(!confirm(`Desativar o acesso de ${u.nome}?`))return;try{const result=await adminRequest({acao:'desativar',id:u.id});await loadUsers();message('adminMessage',result.message||'Funcionário desativado.','success');}catch(err){message('adminMessage',err instanceof Error?err.message:'Erro ao desativar.');}}
-async function deleteUser(u){
-  if(!currentUser||currentUser.perfil!=='admin'||u.id===currentUser.id){message('adminMessage','Não é permitido excluir sua própria conta.');return;}
-  const confirmacao=prompt(`EXCLUSÃO DEFINITIVA\n\nFuncionário: ${u.nome}\nLogin: ${u.login}\n\nA conta e seus setores vinculados serão removidos e não poderão ser recuperados.\n\nPara confirmar, digite exatamente o login do funcionário:`);
-  if(confirmacao===null)return;
-  if(confirmacao.trim()!==u.login){message('adminMessage','Exclusão cancelada: o login informado não corresponde ao funcionário.');return;}
-  if(!confirm(`Última confirmação: excluir DEFINITIVAMENTE ${u.nome} (${u.login})?`))return;
-  message('adminMessage','Excluindo funcionário...','success');
-  try{
-    const result=await adminRequest({acao:'excluir',id:u.id});
-    await loadUsers();
-    message('adminMessage',result.message||'Funcionário excluído definitivamente.','success');
-  }catch(err){
-    message('adminMessage',err instanceof Error?err.message:'Erro ao excluir funcionário.');
-  }
-}
-// Importação automática: Excel processado fora da thread principal.
-let importingPDVs=false;
-function importProgress(step,percent){
-  $('importProgress').classList.remove('hidden');
-  $('importBar').value=percent;
-  $('importStep').textContent=step;
-}
-function makeExcelWorker(){
-  // O worker lê somente a aba Planificador e devolve os registros validados.
-  const workerSource=String.raw`
-    const CDN='https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js';
-    function excelText(v){return v===null||v===undefined?'':String(v).trim();}
-    function excelMoney(cell,row){
-      if(!cell||cell.v===null||cell.v===undefined||cell.v==='')return null;
-      if(cell.t==='e')throw new Error('Erro de fórmula em Valor Inad, linha '+row+'.');
-      let value;
-      if(typeof cell.v==='number'){
-        if(!Number.isFinite(cell.v))throw new Error('Valor Inad inválido na linha '+row+'.');
-        value=cell.v.toFixed(2);
-      }else{
-        const raw=String(cell.v).trim().replace(/^R\$\s*/,'').replace(/\s/g,'');
-        if(!raw)return null;
-        if(/^-?\d+(?:\.\d{1,2})?$/.test(raw)&&!raw.includes(','))value=raw;
-        else if(/^-?(?:\d{1,3}(?:\.\d{3})+|\d+)(?:,\d{1,2})?$/.test(raw))value=raw.replace(/\./g,'').replace(',','.');
-        else throw new Error('Valor Inad inválido na linha '+row+': '+raw.slice(0,30)+'.');
-      }
-      const parts=value.split('.');
-      return parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.')+','+((parts[1]||'')+'00').slice(0,2);
-    }
-    function extractPDVs(sheet){
-      if(!sheet||!sheet['!ref'])throw new Error('A aba Planificador está vazia.');
-      const range=XLSX.utils.decode_range(sheet['!ref']);
-      if(range.e.r<4)throw new Error('Não foram encontrados PDVs a partir da linha 5.');
-      const records=[],seen=new Set();
-      const keys=['pdv','fantasia','cidade','setor','visita','ambev_total','mktp','nab','match','inad','valor_inad'];
-      for(let r=4;r<=range.e.r;r++){
-        const row=r+1;
-        const get=c=>sheet[XLSX.utils.encode_cell({r,c})];
-        const pdv=excelText(get(1)?.v),setor=excelText(get(4)?.v);
-        if(!pdv&&!setor)continue;
-        if(!pdv||!setor)throw new Error('PDV ou setor ausente na linha '+row+'.');
-        if(!/^\d{1,10}$/.test(setor))throw new Error('Setor inválido na linha '+row+': '+setor+'.');
-        const key=JSON.stringify([pdv,setor]);
-        if(seen.has(key))throw new Error('PDV duplicado: '+pdv+', setor '+setor+' (linha '+row+').');
-        seen.add(key);
-        const record={};
-        for(let i=0;i<keys.length;i++){
-          const c=get(i+1);
-          if(c?.t==='e')throw new Error('Erro na planilha, linha '+row+', coluna '+(i+2)+'.');
-          record[keys[i]]=i===10?excelMoney(c,row):(excelText(c?.v)||null);
-          if(typeof record[keys[i]]==='string'&&record[keys[i]].length>500)
-            throw new Error('Texto muito longo na linha '+row+'.');
-        }
-        records.push(record);
-        if(records.length>15000)throw new Error('Limite de 15.000 PDVs por importação excedido.');
-      }
-      if(!records.length)throw new Error('Nenhum PDV encontrado na aba Planificador.');
-      return records;
-    }
-    self.onmessage=async e=>{
-      try{
-        self.postMessage({type:'progress',text:'Carregando leitor de Excel...',percent:10});
-        importScripts(CDN);
-        self.postMessage({type:'progress',text:'Lendo aba Planificador em segundo plano...',percent:25});
-        const workbook=XLSX.read(e.data.buffer,{
-          type:'array',sheets:['Planificador'],cellDates:false,cellFormula:false,
-          cellStyles:false,bookVBA:false,cellHTML:false,cellNF:false,cellText:false
-        });
-        const sheet=workbook.Sheets['Planificador'];
-        if(!sheet)throw new Error('A aba Planificador não foi encontrada.');
-        self.postMessage({type:'progress',text:'Validando PDVs e valores...',percent:45});
-        const records=extractPDVs(sheet);
-        self.postMessage({type:'done',records});
-      }catch(err){self.postMessage({type:'error',message:err?.message||'Erro ao ler o Excel.'});}
-    };
-  `;
-  const url=URL.createObjectURL(new Blob([workerSource],{type:'text/javascript'}));
-  const worker=new Worker(url);
-  URL.revokeObjectURL(url);
-  return worker;
-}
-function parseExcelInWorker(buffer){
-  return new Promise((resolve,reject)=>{
-    let worker;
-    try{worker=makeExcelWorker();}catch(err){reject(new Error('Não foi possível iniciar a leitura em segundo plano: '+err.message));return;}
-    worker.onmessage=e=>{
-      const m=e.data;
-      if(m.type==='progress'){importProgress(m.text,m.percent);return;}
-      worker.terminate();
-      if(m.type==='done')resolve(m.records);
-      else reject(new Error(m.message||'Erro ao processar a planilha.'));
-    };
-    worker.onerror=e=>{worker.terminate();reject(new Error('Falha no leitor de Excel. Verifique a conexão e a memória disponível.'));};
-    // Transfere o ArrayBuffer sem duplicá-lo na memória.
-    worker.postMessage({buffer},[buffer]);
-  });
-}
-$('compradoresFile').addEventListener('change',async e=>{
-  const input=e.currentTarget,file=input.files?.[0];
-  if(!file||importingPDVs)return;
-  if(currentUser?.perfil!=='admin'){
-    message('importStatus','Somente administradores podem importar.');input.value='';return;
-  }
-  if(!/\.xls(?:m|x)$/i.test(file.name)){
-    message('importStatus','Selecione um arquivo .xlsm ou .xlsx.');input.value='';return;
-  }
-  importingPDVs=true;input.disabled=true;message('importStatus','');
-  try{
-    importProgress('Preparando leitura em segundo plano...',5);
-    const buffer=await file.arrayBuffer();
-    const registros=await parseExcelInWorker(buffer);
-    importProgress(registros.length.toLocaleString('pt-BR')+' PDVs validados. Enviando ao Supabase...',65);
-    const {data:{session},error:sessionError}=await supabase.auth.getSession();
-    if(sessionError||!session)throw new Error('Sua sessão expirou. Entre novamente.');
-    const response=await fetch(importFunction,{
-      method:'POST',
-      headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,
-        'Authorization':'Bearer '+session.access_token},
-      body:JSON.stringify({nome_arquivo:file.name,registros})
+  <div id="appScreen" class="app hidden">
+    <aside class="sidebar">
+      <div class="brand"><strong>Portal Comercial</strong><small>Via Bebidas</small></div>
+      <nav aria-label="Menu principal">
+        <button class="nav-item active" id="navInicio" type="button">🏠 Início</button>
+        <button class="nav-item" id="navCompradores" type="button">🛒 Compradores</button>
+        <button class="nav-item" disabled type="button">📊 Painel Remuneração</button>
+        <button class="nav-item hidden" id="navAdmin" type="button">⚙️ Administração</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <button class="nav-item logout" id="logoutButton" type="button">🚪 Sair da conta</button>
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <h2>Central Comercial</h2>
+        <div class="top-user"><strong id="topUserName"></strong><span id="topUserRole"></span></div>
+      </header>
+      <div class="content">
+        <section id="homePage">
+          <h1 class="page-title" id="welcomeTitle">Bem-vindo ao Portal Comercial!</h1>
+          <p class="lead">Consulte os indicadores e informações comerciais da Via Bebidas.</p>
+          <div class="cards">
+            <article class="card">
+              <div class="emoji">🛒</div>
+              <h3>Compradores</h3>
+              <p>Consulte os PDVs, compradores, não compradores, inadimplentes e dias de visita.</p>
+              <span class="status">DISPONÍVEL</span>
+              <button id="openCompradoresCard" class="primary">Acessar Compradores</button>
+            </article>
+            <article class="card">
+              <div class="emoji">📊</div>
+              <h3>Painel Remuneração</h3>
+              <p>Acompanhe metas, resultados, indicadores e desempenho comercial por RN.</p>
+              <span class="status">EM DESENVOLVIMENTO</span>
+              <button class="primary" disabled>Acessar Remuneração</button>
+            </article>
+            <article id="adminCard" class="card hidden">
+              <div class="emoji">⚙️</div>
+              <h3>Administração</h3>
+              <p>Cadastre funcionários, defina perfis e setores, redefina senhas e controle acessos.</p>
+              <span class="status">DISPONÍVEL</span>
+              <button id="openAdminCard" class="primary">Acessar Administração</button>
+            </article>
+          </div>
+        </section>
+
+        <section id="compradoresPage" class="hidden">
+          <h1 class="page-title">Planificador de Compradores</h1>
+          <p class="lead">PDVs e indicadores comerciais dos setores autorizados.</p>
+          <div class="panel">
+            <form id="buyerFilterForm" class="buyer-filters">
+              <select id="buyerSector" aria-label="Setor"></select>
+              <input id="buyerSearch" type="search" placeholder="Buscar por PDV ou nome do cliente" aria-label="Buscar PDV ou fantasia">
+              <select id="buyerVisit" aria-label="Dia de visita"><option value="">Todas as visitas</option></select>
+              <label><input id="buyerNComp" type="checkbox"> N Comp</label>
+              <button id="buyerFilterButton" class="primary" type="submit">Filtrar</button>
+              <button id="buyerClear" class="secondary" type="button">Limpar</button>
+            </form>
+            <div id="buyerError" class="message hidden" role="alert"></div>
+          </div>
+          <div class="buyer-summary">
+            <div class="item"><div class="name">Total de PDVs</div><div id="buyerTotal" class="value">—</div><div id="buyerTotalSub" class="sub">Base filtrada</div></div>
+            <div class="item"><div class="name">Compradores</div><div id="buyerOK" class="value" style="color:#23834b">—</div><div id="buyerOKSub" class="sub"></div></div>
+            <div class="item"><div class="name">Não compradores</div><div id="buyerNotOK" class="value" style="color:#b57912">—</div><div id="buyerNotOKSub" class="sub"></div></div>
+            <div class="item"><div class="name">Inadimplentes</div><div id="buyerDebt" class="value" style="color:#bf3645">—</div><div id="buyerDebtSub" class="sub"></div></div>
+          </div>
+          <div class="panel">
+            <strong>Planificador de Compradores</strong>
+            <div class="buyer-table-wrap" style="margin-top:15px">
+              <table class="buyer-table">
+                <thead>
+                  <tr>
+                    <th colspan="5" style="text-align:center">Identificação do PDV</th>
+                    <th colspan="4" class="group-buyer">Compradores</th>
+                    <th colspan="2" class="group-debt">Inadimplência</th>
+                  </tr>
+                  <tr>
+                    <th>PDV</th><th>Fantasia</th><th>Cidade</th><th>Setor</th><th>Visita</th>
+                    <th class="buyer">Ambev Total</th><th class="buyer">MKTP</th><th class="buyer">NAB</th><th class="buyer">Match</th>
+                    <th class="debt">Inad?</th><th class="debt">Valor Inad.</th>
+                  </tr>
+                </thead>
+                <tbody id="buyerBody"><tr><td colspan="11" class="empty">Carregando...</td></tr></tbody>
+              </table>
+            </div>
+            <div class="pagination">
+              <button id="buyerPrevious" type="button" class="secondary small">← Anterior</button>
+              <span id="buyerPageLabel" class="hint">Página 1 de 1</span>
+              <button id="buyerNext" type="button" class="secondary small">Próxima →</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="adminPage" class="hidden">
+          <h1 class="page-title">Administração de usuários</h1>
+          <p class="lead">Gerencie o acesso dos funcionários ao Portal Comercial.</p>
+          <div class="panel">
+            <div class="toolbar">
+              <input id="userSearch" class="search" placeholder="Buscar nome, login ou setor" aria-label="Buscar usuários">
+              <div class="toolbar-actions">
+                <button id="refreshUsers" class="secondary">Atualizar</button>
+                <button id="newUser" class="primary">+ Novo funcionário</button>
+              </div>
+            </div>
+            <div id="adminMessage" class="message hidden" role="status"></div>
+            <div id="userSummary" class="admin-summary"></div>
+            <div class="table-wrap">
+              <table class="users-table">
+                <thead><tr><th>Nome</th><th>Login</th><th>Perfil</th><th>Setores</th><th>Situação</th><th>Ações</th></tr></thead>
+                <tbody id="usersBody"><tr><td colspan="6" class="empty">Carregando...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="panel import-panel">
+            <h2 style="margin-top:0;font-size:20px">Importar Compradores</h2>
+            <p class="hint">Selecione o arquivo Excel (.xlsm ou .xlsx). A aba <b>Planificador</b> será lida automaticamente e, após validação, substituirá toda a base atual. Nenhuma macro será executada e o arquivo não será armazenado.</p>
+            <label for="compradoresFile" style="display:block;font-weight:700;margin:15px 0 8px">Selecionar planilha</label>
+            <input class="import-input" id="compradoresFile" type="file" accept=".xlsm,.xlsx">
+            <div id="importStatus" class="message hidden" role="status" aria-live="polite"></div>
+            <div id="importProgress" class="import-progress hidden">
+              <progress id="importBar" max="100" value="0"></progress>
+              <span class="hint" id="importStep">Preparando...</span>
+            </div>
+            <p class="import-history">A base anterior só é substituída se a importação for concluída com sucesso.</p>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div id="dialogBackdrop" class="dialog-backdrop hidden" role="presentation">
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialogTitle">
+      <h3 id="dialogTitle">Funcionário</h3>
+      <form id="userForm">
+        <div id="dialogMessage" class="message error hidden" role="alert"></div>
+        <div class="field"><label for="userName">Nome completo</label><input id="userName" maxlength="150" required></div>
+        <div class="dialog-grid">
+          <div class="field"><label for="userLogin">Login ou código</label><input id="userLogin" maxlength="40" pattern="[A-Za-z0-9._-]{2,40}" required></div>
+          <div class="field">
+            <label for="userRole">Perfil</label>
+            <select id="userRole" required>
+              <option value="rn">RN</option><option value="gv">GV</option>
+              <option value="gc">GC</option><option value="admin">Administrador</option>
+            </select>
+          </div>
+        </div>
+        <div id="newPasswordField" class="field"><label for="userPassword">Senha inicial (mínimo 8 caracteres)</label><input id="userPassword" type="password" minlength="8" maxlength="128" autocomplete="new-password"></div>
+        <div class="field">
+          <label for="userSectors">Setores vinculados</label>
+          <input id="userSectors" placeholder="Ex.: 611, 612, 613">
+          <div class="hint">Separe os códigos por vírgula. RN e GV precisam de pelo menos um setor. GC e Admin podem visualizar todos os setores.</div>
+        </div>
+        <label id="activeLine" class="check-line hidden"><input id="userActive" type="checkbox" checked> Usuário ativo</label>
+        <div class="dialog-actions">
+          <button id="cancelUser" type="button" class="secondary">Cancelar</button>
+          <button id="saveUser" type="submit" class="primary">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+    const SUPABASE_URL = 'https://ciphbckjrsagcqcpytiq.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_loASQ1asuU-zeBGL5BCExA_Bo8R_RvW';
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
     });
-    let result;
-    try{result=await response.json();}catch{throw new Error('Resposta inválida do servidor (HTTP '+response.status+').');}
-    if(!response.ok||!result.success)throw new Error(result.error||'Erro HTTP '+response.status+'.');
-    importProgress('Importação concluída.',100);
-    message('importStatus','Importação concluída! '+Number(result.registros).toLocaleString('pt-BR')+' PDVs na base atual.','success');
-  }catch(err){
-    message('importStatus',err instanceof Error?err.message:'Erro ao importar a planilha.');
-    $('importProgress').classList.add('hidden');
-  }finally{importingPDVs=false;input.disabled=false;input.value='';}
-});
+    const loginFunction = `${SUPABASE_URL}/functions/v1/portal-login`;
+    const adminFunction = `${SUPABASE_URL}/functions/v1/portal-gerenciar-usuarios`;
+    const importFunction = `${SUPABASE_URL}/functions/v1/portal-importar-pdvs`;
+    const $ = id => document.getElementById(id);
+    const roles = { rn: 'RN', gv: 'GV', gc: 'GC', admin: 'Administrador' };
+    let currentUser = null;
+    let users = [];
+    let editingId = null;
+    let loadingUsers = false;
 
-async function init(){showLogin();try{const {data:{session}}=await supabase.auth.getSession();if(!session)return;const user=await getProfile();if(!user){await supabase.auth.signOut();return;}showPortal(user);}catch{showLogin();}}
-init();
-</script>
+    function message(id, text, type = 'error') {
+      const el = $(id);
+      el.textContent = text || '';
+      el.className = text ? `message ${type}` : 'message hidden';
+    }
+
+    function showPage(page) {
+      for (const id of ['homePage', 'compradoresPage', 'adminPage']) {
+        $(id).classList.toggle('hidden', id !== page);
+      }
+      $('navInicio').classList.toggle('active', page === 'homePage');
+      $('navCompradores').classList.toggle('active', page === 'compradoresPage');
+      $('navAdmin').classList.toggle('active', page === 'adminPage');
+    }
+
+    function showLogin() {
+      currentUser = null;
+      users = [];
+      $('appScreen').classList.add('hidden');
+      $('loginScreen').classList.remove('hidden');
+      $('senha').value = '';
+      showPage('homePage');
+    }
+
+    function showPortal(user) {
+      currentUser = user;
+      $('loginScreen').classList.add('hidden');
+      $('appScreen').classList.remove('hidden');
+      $('topUserName').textContent = user.nome;
+      $('topUserRole').textContent = `${roles[user.perfil] || user.perfil} · ${user.login}`;
+      $('welcomeTitle').textContent = `Bem-vindo, ${user.nome}!`;
+      const isAdmin = user.perfil === 'admin';
+      $('navAdmin').classList.toggle('hidden', !isAdmin);
+      $('adminCard').classList.toggle('hidden', !isAdmin);
+      showPage('homePage');
+    }
+
+    async function getProfile() {
+      const { data: auth, error: authError } = await supabase.auth.getUser();
+      if (authError || !auth.user) return null;
+      const { data, error } = await supabase.from('portal_usuarios')
+        .select('id,nome,login,perfil,ativo')
+        .eq('id', auth.user.id)
+        .single();
+      if (error || !data || data.ativo !== true) return null;
+      return data;
+    }
+
+    $('togglePassword').onclick = () => {
+      const input = $('senha');
+      input.type = input.type === 'password' ? 'text' : 'password';
+      $('togglePassword').textContent = input.type === 'password' ? 'Mostrar' : 'Ocultar';
+    };
+
+    $('loginForm').onsubmit = async e => {
+      e.preventDefault();
+      message('loginError', '');
+      const login = $('login').value.trim().toLowerCase();
+      const senha = $('senha').value;
+      const btn = $('loginButton');
+      btn.disabled = true;
+      btn.textContent = 'Entrando...';
+      try {
+        const response = await fetch(loginFunction, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', apikey: SUPABASE_KEY },
+          body: JSON.stringify({ login, senha })
+        });
+        const result = await response.json();
+        if (!response.ok || !result.success || !result.session) {
+          throw new Error(result.error || 'Não foi possível entrar.');
+        }
+        const { error } = await supabase.auth.setSession({
+          access_token: result.session.access_token,
+          refresh_token: result.session.refresh_token
+        });
+        if (error) throw error;
+        const user = await getProfile();
+        if (!user) {
+          await supabase.auth.signOut();
+          throw new Error('Sua conta não possui acesso autorizado.');
+        }
+        showPortal(user);
+      } catch (err) {
+        message('loginError', err instanceof Error ? err.message : 'Falha ao realizar login.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Entrar';
+      }
+    };
+
+    $('logoutButton').onclick = async () => {
+      const btn = $('logoutButton');
+      btn.disabled = true;
+      try { await supabase.auth.signOut(); }
+      finally { showLogin(); btn.disabled = false; }
+    };
+    $('navInicio').onclick = () => showPage('homePage');
+    $('navCompradores').onclick = openCompradores;
+    $('openCompradoresCard').onclick = openCompradores;
+    $('navAdmin').onclick = openAdmin;
+    $('openAdminCard').onclick = openAdmin;
+
+    // COMPRADORES: consultas paginadas com RLS no Supabase.
+    const BUYER_COLUMNS = 'pdv,fantasia,cidade,setor,visita,ambev_total,mktp,nab,match,inad,valor_inad';
+    const BUYER_PAGE_SIZE = 150;
+    let buyerPage = 1;
+    let buyerTotalPages = 1;
+    let buyerFilters = { setor: '', q: '', visita: '', ncomp: false };
+    let buyerRequestVersion = 0;
+
+    function isBuyerOK(value) {
+      return String(value ?? '').trim().toUpperCase() === 'OK';
+    }
+
+    function isBuyerDebt(value) {
+      return ['SIM', 'S', 'YES', '1', 'INADIMPLENTE'].includes(String(value ?? '').trim().toUpperCase());
+    }
+
+    function buyerQuery(base) {
+      let query = base;
+      if (buyerFilters.setor) query = query.eq('setor', buyerFilters.setor);
+      if (buyerFilters.visita) query = query.eq('visita', buyerFilters.visita);
+      if (buyerFilters.ncomp) query = query.or('ambev_total.is.null,ambev_total.not.ilike.OK');
+      if (buyerFilters.q) {
+        const q = buyerFilters.q.replace(/[%,()]/g, '').trim();
+        if (q) query = query.or(`pdv.ilike.%${q}%,fantasia.ilike.%${q}%`);
+      }
+      return query;
+    }
+
+    async function getAllowedSectors() {
+      // A RLS também filtra os dados; esta lista controla apenas as opções visíveis.
+      let query = supabase.from('portal_pdvs').select('setor');
+      // Até 15 mil registros: não presumir que uma única consulta devolve todos.
+      const sectors = new Set();
+      for (let offset = 0; offset < 15000; offset += 1000) {
+        const { data, error } = await query.range(offset, offset + 999);
+        if (error) throw error;
+        for (const row of data || []) sectors.add(String(row.setor));
+        if (!data || data.length < 1000) break;
+      }
+      return [...sectors].sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true }));
+    }
+
+    async function getAllowedVisits() {
+      const visits = new Set();
+      for (let offset = 0; offset < 15000; offset += 1000) {
+        const { data, error } = await supabase.from('portal_pdvs')
+          .select('visita')
+          .range(offset, offset + 999);
+        if (error) throw error;
+        for (const row of data || []) if (row.visita) visits.add(String(row.visita));
+        if (!data || data.length < 1000) break;
+      }
+      return [...visits].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    }
+
+    async function openCompradores() {
+      if (!currentUser) return;
+      showPage('compradoresPage');
+      message('buyerError', '');
+      $('buyerBody').innerHTML = '<tr><td colspan="11" class="empty">Carregando setores...</td></tr>';
+      try {
+        const [sectors, visits] = await Promise.all([getAllowedSectors(), getAllowedVisits()]);
+        $('buyerSector').replaceChildren();
+        if (!sectors.length) {
+          $('buyerBody').innerHTML = '<tr><td colspan="11" class="empty">Nenhum setor autorizado.</td></tr>';
+          for (const id of ['buyerTotal', 'buyerOK', 'buyerNotOK', 'buyerDebt']) $(id).textContent = '0';
+          return;
+        }
+        for (const setor of sectors) $('buyerSector').add(new Option(`Setor ${setor}`, setor));
+        $('buyerVisit').replaceChildren(new Option('Todas as visitas', ''));
+        for (const visita of visits) $('buyerVisit').add(new Option(visita, visita));
+        buyerFilters = { setor: sectors[0], q: '', visita: '', ncomp: false };
+        $('buyerSearch').value = '';
+        $('buyerNComp').checked = false;
+        buyerPage = 1;
+        await loadBuyers();
+      } catch (err) {
+        message('buyerError', err.message || 'Erro ao carregar os setores.');
+      }
+    }
+
+    function formatMoney(value) {
+      if (value === null || value === undefined || value === '') return '—';
+      const n = Number(value);
+      return Number.isFinite(n)
+        ? n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+        : String(value);
+    }
+
+    function buyerCell(tr, value, className = '') {
+      const td = document.createElement('td');
+      td.textContent = value == null ? '' : String(value);
+      td.className = className;
+      tr.appendChild(td);
+    }
+
+    function renderBuyerRows(rows) {
+      const body = $('buyerBody');
+      body.replaceChildren();
+      if (!rows.length) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 11;
+        td.className = 'empty';
+        td.textContent = 'Nenhum PDV encontrado.';
+        tr.appendChild(td);
+        body.appendChild(tr);
+        return;
+      }
+      for (const row of rows) {
+        const tr = document.createElement('tr');
+        for (const key of ['pdv', 'fantasia', 'cidade', 'setor', 'visita']) buyerCell(tr, row[key]);
+        for (const key of ['ambev_total', 'mktp', 'nab', 'match']) buyerCell(tr, row[key], 'buyer');
+        buyerCell(tr, row.inad, 'debt');
+        buyerCell(tr, formatMoney(row.valor_inad), 'debt money');
+        body.appendChild(tr);
+      }
+    }
+
+    function updateBuyerSummary(total, ok, notOk, debt) {
+      const fmt = n => Number(n).toLocaleString('pt-BR');
+      const pct = n => total ? (100 * n / total).toFixed(1).replace('.', ',') + '%' : '0,0%';
+      $('buyerTotal').textContent = fmt(total);
+      $('buyerOK').textContent = fmt(ok);
+      $('buyerNotOK').textContent = fmt(notOk);
+      $('buyerDebt').textContent = fmt(debt);
+      $('buyerTotalSub').textContent = 'Base filtrada';
+      $('buyerOKSub').textContent = `${pct(ok)} da base`;
+      $('buyerNotOKSub').textContent = `${pct(notOk)} da base`;
+      $('buyerDebtSub').textContent = `${pct(debt)} da base`;
+    }
+
+    async function loadBuyers() {
+      const version = ++buyerRequestVersion;
+      const button = $('buyerFilterButton');
+      button.disabled = true;
+      message('buyerError', '');
+      $('buyerBody').innerHTML = '<tr><td colspan="11" class="empty">Carregando PDVs...</td></tr>';
+      try {
+        // Resumo correto de toda a base filtrada, não apenas da página.
+        // A leitura em lotes respeita a RLS e evita o limite padrão de 1.000 linhas.
+        let total = 0, ok = 0, debt = 0;
+        for (let offset = 0; offset < 15000; offset += 1000) {
+          const { data, error } = await buyerQuery(
+            supabase.from('portal_pdvs').select('ambev_total,inad')
+          ).range(offset, offset + 999);
+          if (error) throw error;
+          if (version !== buyerRequestVersion) return;
+          for (const row of data || []) {
+            total++;
+            if (isBuyerOK(row.ambev_total)) ok++;
+            if (isBuyerDebt(row.inad)) debt++;
+          }
+          if (!data || data.length < 1000) break;
+        }
+
+        let query = buyerQuery(supabase.from('portal_pdvs').select(BUYER_COLUMNS));
+        if (buyerFilters.visita) {
+          // Ordenação numérica de PDV na página: os códigos numéricos devem ser
+          // classificados no servidor para ordenação global exata.
+          // Aqui buscamos a base filtrada (até 15 mil) e ordenamos no navegador.
+          const allRows = [];
+          for (let offset = 0; offset < 15000; offset += 1000) {
+            const { data, error } = await buyerQuery(
+              supabase.from('portal_pdvs').select(BUYER_COLUMNS)
+            ).range(offset, offset + 999);
+            if (error) throw error;
+            if (version !== buyerRequestVersion) return;
+            allRows.push(...(data || []));
+            if (!data || data.length < 1000) break;
+          }
+          allRows.sort((a, b) => {
+            const aNum = BigInt(/^\d+$/.test(String(a.pdv)) ? String(a.pdv) : '0');
+            const bNum = BigInt(/^\d+$/.test(String(b.pdv)) ? String(b.pdv) : '0');
+            return aNum < bNum ? -1 : aNum > bNum ? 1 : String(a.pdv).localeCompare(String(b.pdv), 'pt-BR');
+          });
+          renderBuyerRows(allRows.slice((buyerPage - 1) * BUYER_PAGE_SIZE, buyerPage * BUYER_PAGE_SIZE));
+        } else {
+          const { data, error } = await query
+            .order('setor', { ascending: true })
+            .order('visita', { ascending: true })
+            .order('fantasia', { ascending: true })
+            .range((buyerPage - 1) * BUYER_PAGE_SIZE, buyerPage * BUYER_PAGE_SIZE - 1);
+          if (error) throw error;
+          if (version !== buyerRequestVersion) return;
+          renderBuyerRows(data || []);
+        }
+        updateBuyerSummary(total, ok, total - ok, debt);
+        buyerTotalPages = Math.max(1, Math.ceil(total / BUYER_PAGE_SIZE));
+        $('buyerPageLabel').textContent = `Página ${buyerPage} de ${buyerTotalPages}`;
+        $('buyerPrevious').disabled = buyerPage <= 1;
+        $('buyerNext').disabled = buyerPage >= buyerTotalPages;
+      } catch (err) {
+        if (version === buyerRequestVersion) {
+          message('buyerError', err.message || 'Erro ao consultar os PDVs.');
+          renderBuyerRows([]);
+        }
+      } finally {
+        if (version === buyerRequestVersion) button.disabled = false;
+      }
+    }
+
+    $('buyerFilterForm').onsubmit = async e => {
+      e.preventDefault();
+      buyerFilters = {
+        setor: $('buyerSector').value,
+        q: $('buyerSearch').value.trim(),
+        visita: $('buyerVisit').value,
+        ncomp: $('buyerNComp').checked
+      };
+      buyerPage = 1;
+      await loadBuyers();
+    };
+    $('buyerClear').onclick = async () => {
+      $('buyerSearch').value = '';
+      $('buyerVisit').value = '';
+      $('buyerNComp').checked = false;
+      $('buyerFilterForm').requestSubmit();
+    };
+    $('buyerPrevious').onclick = async () => {
+      if (buyerPage > 1) { buyerPage--; await loadBuyers(); }
+    };
+    $('buyerNext').onclick = async () => {
+      if (buyerPage < buyerTotalPages) { buyerPage++; await loadBuyers(); }
+    };
+
+    // ADMINISTRAÇÃO: funcionalidades existentes preservadas.
+    async function adminRequest(body) {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (error || !session) throw new Error('Sua sessão expirou. Saia e entre novamente.');
+      const response = await fetch(adminFunction, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify(body)
+      });
+      let result;
+      try { result = await response.json(); }
+      catch { throw new Error(`Falha na resposta do servidor (HTTP ${response.status}).`); }
+      if (!response.ok || result.error) throw new Error(result.error || `Erro HTTP ${response.status}.`);
+      return result;
+    }
+
+    async function openAdmin() {
+      if (currentUser?.perfil !== 'admin') return;
+      showPage('adminPage');
+      await loadUsers();
+    }
+
+    async function loadUsers() {
+      if (loadingUsers) return;
+      loadingUsers = true;
+      message('adminMessage', '');
+      $('usersBody').innerHTML = '<tr><td colspan="6" class="empty">Carregando usuários...</td></tr>';
+      $('refreshUsers').disabled = true;
+      try {
+        const data = await adminRequest({ acao: 'listar' });
+        if (!Array.isArray(data.usuarios)) throw new Error('Formato inesperado da lista de usuários.');
+        users = data.usuarios;
+        renderUsers();
+      } catch (err) {
+        users = [];
+        renderUsers();
+        message('adminMessage', err.message || 'Não foi possível carregar usuários.');
+      } finally {
+        loadingUsers = false;
+        $('refreshUsers').disabled = false;
+      }
+    }
+
+    function cell(tr, value) {
+      const td = document.createElement('td');
+      td.textContent = String(value ?? '');
+      tr.appendChild(td);
+      return td;
+    }
+
+    function renderUsers() {
+      const filter = $('userSearch').value.trim().toLocaleLowerCase('pt-BR');
+      const filtered = users.filter(u =>
+        [u.nome, u.login, u.perfil, ...(u.setores || [])].join(' ').toLocaleLowerCase('pt-BR').includes(filter)
+      );
+      $('userSummary').textContent = `${filtered.length} funcionário(s) exibido(s) · ${users.filter(u => u.ativo).length} ativo(s) no total`;
+      $('usersBody').replaceChildren();
+      if (!filtered.length) {
+        $('usersBody').innerHTML = '<tr><td colspan="6" class="empty">Nenhum funcionário encontrado.</td></tr>';
+        return;
+      }
+      for (const u of filtered) {
+        const tr = document.createElement('tr');
+        cell(tr, u.nome);
+        cell(tr, u.login);
+        cell(tr, roles[u.perfil] || u.perfil);
+        cell(tr, (u.setores || []).join(', ') || 'Todos / não atribuído');
+        const status = cell(tr, '');
+        const pill = document.createElement('span');
+        pill.className = `pill ${u.ativo ? 'on' : 'off'}`;
+        pill.textContent = u.ativo ? 'Ativo' : 'Inativo';
+        status.append(pill);
+        const actions = cell(tr, '');
+        actions.className = 'user-actions';
+        const edit = document.createElement('button');
+        edit.className = 'secondary small';
+        edit.textContent = 'Editar';
+        edit.onclick = () => openUserDialog(u);
+        const pass = document.createElement('button');
+        pass.className = 'secondary small';
+        pass.textContent = 'Senha';
+        pass.onclick = () => changePassword(u);
+        actions.append(edit, pass);
+        if (u.ativo && u.id !== currentUser.id) {
+          const off = document.createElement('button');
+          off.className = 'danger small';
+          off.textContent = 'Desativar';
+          off.onclick = () => deactivateUser(u);
+          actions.append(off);
+        }
+        if (u.id !== currentUser.id) {
+          const del = document.createElement('button');
+          del.className = 'danger small';
+          del.textContent = 'Excluir';
+          del.title = 'Excluir usuário definitivamente';
+          del.onclick = () => deleteUser(u);
+          actions.append(del);
+        }
+        $('usersBody').append(tr);
+      }
+    }
+
+    $('userSearch').oninput = renderUsers;
+    $('refreshUsers').onclick = loadUsers;
+
+    function parseSectors(raw) {
+      const values = raw.split(/[,;\s]+/).map(s => s.trim()).filter(Boolean);
+      if (values.some(s => !/^[0-9]{1,10}$/.test(s))) {
+        throw new Error('Informe apenas códigos numéricos de setor, separados por vírgula.');
+      }
+      return [...new Set(values)];
+    }
+
+    function openUserDialog(user = null) {
+      editingId = user?.id || null;
+      $('userForm').reset();
+      message('dialogMessage', '');
+      $('dialogTitle').textContent = user ? 'Editar funcionário' : 'Cadastrar funcionário';
+      $('userName').value = user?.nome || '';
+      $('userLogin').value = user?.login || '';
+      $('userLogin').readOnly = !!user;
+      $('userRole').value = user?.perfil || 'rn';
+      $('userSectors').value = (user?.setores || []).join(', ');
+      $('userActive').checked = user?.ativo ?? true;
+      $('activeLine').classList.toggle('hidden', !user);
+      $('newPasswordField').classList.toggle('hidden', !!user);
+      $('userPassword').required = !user;
+      $('userPassword').value = '';
+      $('saveUser').textContent = user ? 'Salvar alterações' : 'Cadastrar';
+      $('dialogBackdrop').classList.remove('hidden');
+      $('userName').focus();
+    }
+
+    $('newUser').onclick = () => openUserDialog();
+    function closeDialog() { $('dialogBackdrop').classList.add('hidden'); editingId = null; }
+    $('cancelUser').onclick = closeDialog;
+
+    $('userForm').onsubmit = async e => {
+      e.preventDefault();
+      message('dialogMessage', '');
+      const btn = $('saveUser');
+      btn.disabled = true;
+      try {
+        const nome = $('userName').value.trim();
+        const login = $('userLogin').value.trim().toLowerCase();
+        const perfil = $('userRole').value;
+        const setores = parseSectors($('userSectors').value);
+        if (!nome || nome.length > 150) throw new Error('Informe um nome válido.');
+        if (['rn', 'gv'].includes(perfil) && setores.length === 0) {
+          throw new Error('Vincule pelo menos um setor para RN ou GV.');
+        }
+        let payload;
+        if (editingId) {
+          payload = { acao: 'editar', id: editingId, nome, login, perfil, setores, ativo: $('userActive').checked };
+        } else {
+          const senha = $('userPassword').value;
+          if (senha.length < 8 || senha.length > 128) throw new Error('A senha deve ter entre 8 e 128 caracteres.');
+          payload = { acao: 'criar', nome, login, senha, perfil, setores };
+        }
+        const result = await adminRequest(payload);
+        closeDialog();
+        await loadUsers();
+        message('adminMessage', result.message || 'Operação concluída.', 'success');
+      } catch (err) {
+        message('dialogMessage', err.message || 'Não foi possível salvar.');
+      } finally {
+        btn.disabled = false;
+      }
+    };
+
+    async function changePassword(u) {
+      const senha = prompt(`Nova senha para ${u.nome} (mínimo 8 caracteres):`);
+      if (senha === null) return;
+      if (senha.length < 8 || senha.length > 128) {
+        message('adminMessage', 'A senha deve ter entre 8 e 128 caracteres.');
+        return;
+      }
+      if (!confirm(`Confirmar alteração de senha de ${u.nome}?`)) return;
+      try {
+        const result = await adminRequest({ acao: 'alterar_senha', id: u.id, senha });
+        message('adminMessage', result.message || 'Senha alterada.', 'success');
+      } catch (err) {
+        message('adminMessage', err.message || 'Erro ao alterar senha.');
+      }
+    }
+
+    async function deactivateUser(u) {
+      if (!confirm(`Desativar o acesso de ${u.nome}?`)) return;
+      try {
+        const result = await adminRequest({ acao: 'desativar', id: u.id });
+        await loadUsers();
+        message('adminMessage', result.message || 'Funcionário desativado.', 'success');
+      } catch (err) {
+        message('adminMessage', err.message || 'Erro ao desativar.');
+      }
+    }
+
+    async function deleteUser(u) {
+      if (!currentUser || currentUser.perfil !== 'admin' || u.id === currentUser.id) {
+        message('adminMessage', 'Não é permitido excluir sua própria conta.');
+        return;
+      }
+      const confirmacao = prompt(
+        `EXCLUSÃO DEFINITIVA\n\nFuncionário: ${u.nome}\nLogin: ${u.login}\n\n` +
+        `A conta e seus setores vinculados serão removidos e não poderão ser recuperados.\n\n` +
+        `Para confirmar, digite exatamente o login do funcionário:`
+      );
+      if (confirmacao === null) return;
+      if (confirmacao.trim() !== u.login) {
+        message('adminMessage', 'Exclusão cancelada: o login informado não corresponde ao funcionário.');
+        return;
+      }
+      if (!confirm(`Última confirmação: excluir DEFINITIVAMENTE ${u.nome} (${u.login})?`)) return;
+      message('adminMessage', 'Excluindo funcionário...', 'success');
+      try {
+        const result = await adminRequest({ acao: 'excluir', id: u.id });
+        await loadUsers();
+        message('adminMessage', result.message || 'Funcionário excluído definitivamente.', 'success');
+      } catch (err) {
+        message('adminMessage', err.message || 'Erro ao excluir funcionário.');
+      }
+    }
+
+    // IMPORTAÇÃO AUTOMÁTICA: processamento em Web Worker, como na versão corrigida.
+    let importingPDVs = false;
+
+    function importProgress(step, percent) {
+      $('importProgress').classList.remove('hidden');
+      $('importBar').value = percent;
+      $('importStep').textContent = step;
+    }
+
+    function makeExcelWorker() {
+      const workerSource = String.raw`
+        const CDN = 'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js';
+        function excelText(v) { return v === null || v === undefined ? '' : String(v).trim(); }
+        function excelMoney(cell, row) {
+          if (!cell || cell.v === null || cell.v === undefined || cell.v === '') return null;
+          if (cell.t === 'e') throw new Error('Erro de fórmula em Valor Inad, linha ' + row + '.');
+          let value;
+          if (typeof cell.v === 'number') {
+            if (!Number.isFinite(cell.v)) throw new Error('Valor Inad inválido na linha ' + row + '.');
+            value = cell.v.toFixed(2);
+          } else {
+            const raw = String(cell.v).trim().replace(/^R\$\s*/, '').replace(/\s/g, '');
+            if (!raw) return null;
+            if (/^-?\d+(?:\.\d{1,2})?$/.test(raw) && !raw.includes(',')) value = raw;
+            else if (/^-?(?:\d{1,3}(?:\.\d{3})+|\d+)(?:,\d{1,2})?$/.test(raw)) {
+              value = raw.replace(/\./g, '').replace(',', '.');
+            } else throw new Error('Valor Inad inválido na linha ' + row + ': ' + raw.slice(0, 30) + '.');
+          }
+          const parts = value.split('.');
+          return parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ',' + ((parts[1] || '') + '00').slice(0, 2);
+        }
+        function extractPDVs(sheet) {
+          if (!sheet || !sheet['!ref']) throw new Error('A aba Planificador está vazia.');
+          const range = XLSX.utils.decode_range(sheet['!ref']);
+          if (range.e.r < 4) throw new Error('Não foram encontrados PDVs a partir da linha 5.');
+          const records = [], seen = new Set();
+          const keys = ['pdv','fantasia','cidade','setor','visita','ambev_total','mktp','nab','match','inad','valor_inad'];
+          for (let r = 4; r <= range.e.r; r++) {
+            const row = r + 1;
+            const get = c => sheet[XLSX.utils.encode_cell({ r, c })];
+            const pdv = excelText(get(1)?.v), setor = excelText(get(4)?.v);
+            if (!pdv && !setor) continue;
+            if (!pdv || !setor) throw new Error('PDV ou setor ausente na linha ' + row + '.');
+            if (!/^\d{1,10}$/.test(setor)) throw new Error('Setor inválido na linha ' + row + ': ' + setor + '.');
+            const key = JSON.stringify([pdv, setor]);
+            if (seen.has(key)) throw new Error('PDV duplicado: ' + pdv + ', setor ' + setor + ' (linha ' + row + ').');
+            seen.add(key);
+            const record = {};
+            for (let i = 0; i < keys.length; i++) {
+              const c = get(i + 1);
+              if (c?.t === 'e') throw new Error('Erro na planilha, linha ' + row + ', coluna ' + (i + 2) + '.');
+              record[keys[i]] = i === 10 ? excelMoney(c, row) : (excelText(c?.v) || null);
+              if (typeof record[keys[i]] === 'string' && record[keys[i]].length > 500) {
+                throw new Error('Texto muito longo na linha ' + row + '.');
+              }
+            }
+            records.push(record);
+            if (records.length > 15000) throw new Error('Limite de 15.000 PDVs por importação excedido.');
+          }
+          if (!records.length) throw new Error('Nenhum PDV encontrado na aba Planificador.');
+          return records;
+        }
+        self.onmessage = e => {
+          try {
+            self.postMessage({ type: 'progress', text: 'Carregando leitor de Excel...', percent: 10 });
+            importScripts(CDN);
+            self.postMessage({ type: 'progress', text: 'Lendo aba Planificador em segundo plano...', percent: 25 });
+            const workbook = XLSX.read(e.data.buffer, {
+              type: 'array', sheets: ['Planificador'], cellDates: false, cellFormula: false,
+              cellStyles: false, bookVBA: false, cellHTML: false, cellNF: false, cellText: false
+            });
+            const sheet = workbook.Sheets['Planificador'];
+            if (!sheet) throw new Error('A aba Planificador não foi encontrada.');
+            self.postMessage({ type: 'progress', text: 'Validando PDVs e valores...', percent: 45 });
+            self.postMessage({ type: 'done', records: extractPDVs(sheet) });
+          } catch (err) {
+            self.postMessage({ type: 'error', message: err?.message || 'Erro ao ler o Excel.' });
+          }
+        };
+      `;
+      const url = URL.createObjectURL(new Blob([workerSource], { type: 'text/javascript' }));
+      const worker = new Worker(url);
+      URL.revokeObjectURL(url);
+      return worker;
+    }
+
+    function parseExcelInWorker(buffer) {
+      return new Promise((resolve, reject) => {
+        let worker;
+        try { worker = makeExcelWorker(); }
+        catch (err) {
+          reject(new Error('Não foi possível iniciar a leitura em segundo plano: ' + err.message));
+          return;
+        }
+        worker.onmessage = e => {
+          const m = e.data;
+          if (m.type === 'progress') { importProgress(m.text, m.percent); return; }
+          worker.terminate();
+          if (m.type === 'done') resolve(m.records);
+          else reject(new Error(m.message || 'Erro ao processar a planilha.'));
+        };
+        worker.onerror = () => {
+          worker.terminate();
+          reject(new Error('Falha no leitor de Excel. Verifique a conexão e a memória disponível.'));
+        };
+        worker.postMessage({ buffer }, [buffer]);
+      });
+    }
+
+    $('compradoresFile').addEventListener('change', async e => {
+      const input = e.currentTarget, file = input.files?.[0];
+      if (!file || importingPDVs) return;
+      if (currentUser?.perfil !== 'admin') {
+        message('importStatus', 'Somente administradores podem importar.');
+        input.value = '';
+        return;
+      }
+      if (!/\.xls(?:m|x)$/i.test(file.name)) {
+        message('importStatus', 'Selecione um arquivo .xlsm ou .xlsx.');
+        input.value = '';
+        return;
+      }
+      importingPDVs = true;
+      input.disabled = true;
+      message('importStatus', '');
+      try {
+        importProgress('Preparando leitura em segundo plano...', 5);
+        const buffer = await file.arrayBuffer();
+        const registros = await parseExcelInWorker(buffer);
+        importProgress(`${registros.length.toLocaleString('pt-BR')} PDVs validados. Enviando ao Supabase...`, 65);
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError || !session) throw new Error('Sua sessão expirou. Entre novamente.');
+        const response = await fetch(importFunction, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            apikey: SUPABASE_KEY,
+            Authorization: `Bearer ${session.access_token}`
+          },
+          body: JSON.stringify({ nome_arquivo: file.name, registros })
+        });
+        let result;
+        try { result = await response.json(); }
+        catch { throw new Error(`Resposta inválida do servidor (HTTP ${response.status}).`); }
+        if (!response.ok || !result.success) throw new Error(result.error || `Erro HTTP ${response.status}.`);
+        importProgress('Importação concluída.', 100);
+        message('importStatus', `Importação concluída! ${Number(result.registros).toLocaleString('pt-BR')} PDVs na base atual.`, 'success');
+      } catch (err) {
+        message('importStatus', err.message || 'Erro ao importar a planilha.');
+        $('importProgress').classList.add('hidden');
+      } finally {
+        importingPDVs = false;
+        input.disabled = false;
+        input.value = '';
+      }
+    });
+
+    async function init() {
+      showLogin();
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) return;
+        const user = await getProfile();
+        if (!user) { await supabase.auth.signOut(); return; }
+        showPortal(user);
+      } catch {
+        showLogin();
+      }
+    }
+    init();
+  </script>
 </body>
 </html>
