@@ -633,7 +633,7 @@
     /* Painel Remuneração */
     .rem-toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
     .rem-toolbar select{min-width:230px;padding:11px;border:1px solid #cbd5e1;border-radius:8px;background:white}
-    .rem-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px;margin:16px 0 24px}
+    .rem-cards{display:grid;grid-template-columns:repeat(5,minmax(215px,1fr));gap:12px;margin:16px 0 24px;overflow-x:auto;padding-bottom:8px;scrollbar-width:thin}
     .rem-card{background:#fff;border:1px solid var(--border);border-radius:13px;padding:20px;box-shadow:0 3px 12px #101d3408}
     .rem-card h3{font-size:14px;margin:0 0 15px;color:#34435b}
     .rem-card .pct{font-size:29px;font-weight:800;color:#17335c}
@@ -648,6 +648,22 @@
     .rem-section{margin-top:20px}
     .rem-section h2{font-size:18px;margin:0 0 15px}
     .rem-click{cursor:pointer;color:#2363d1;font-weight:700;text-decoration:underline}
+    /* Painel: aproveita toda a largura e permite recolher o menu lateral. */
+    #remuneracaoPage .rem-card{padding:15px;min-width:0}
+    #remuneracaoPage .rem-card .pair{gap:5px;font-size:11px}
+    #remuneracaoPage .rem-card .pair strong{text-align:right;overflow-wrap:anywhere}
+    #remuneracaoPage .rem-card .pct{font-size:27px}
+    body.menu-collapsed .sidebar{width:66px;padding-left:7px;padding-right:7px}
+    body.menu-collapsed .sidebar .brand strong,
+    body.menu-collapsed .sidebar .brand small,
+    body.menu-collapsed .sidebar .nav-item{font-size:0}
+    body.menu-collapsed .sidebar .nav-item::first-letter{font-size:21px}
+    body.menu-collapsed .sidebar .nav-item{text-align:center;padding:13px 2px}
+    body.menu-collapsed .main{margin-left:66px}
+    .menu-toggle{border:1px solid #d6e0eb;border-radius:8px;background:white;padding:9px 12px;cursor:pointer;font-size:18px;color:#17335c}
+    .topbar-left{display:flex;align-items:center;gap:13px}
+    @media(max-width:800px){body.menu-collapsed .sidebar{position:static;width:100%;padding:15px}body.menu-collapsed .main{margin-left:0}body.menu-collapsed .sidebar .brand strong{font-size:20px}body.menu-collapsed .sidebar .brand small{font-size:12px}body.menu-collapsed .sidebar .nav-item{font-size:12px;text-align:left;padding:11px}body.menu-collapsed .sidebar .nav-item::first-letter{font-size:12px}}
+
     @media (max-width: 800px) {
       .sidebar {
         position: static;
@@ -723,7 +739,7 @@
   </style>
 </head>
 
-<body>
+<body class="menu-collapsed">
   <section id="loginScreen" class="login-screen">
     <div class="login-card">
       <div class="logo">PC</div>
@@ -763,7 +779,7 @@
     </aside>
     <main class="main">
       <header class="topbar">
-        <h2>Central Comercial</h2>
+        <div class="topbar-left"><button id="toggleSidebar" class="menu-toggle" type="button" aria-label="Expandir ou recolher menu" aria-expanded="false" title="Expandir ou recolher menu">☰</button><h2>Central Comercial</h2></div>
         <div class="top-user"><strong id="topUserName"></strong><span id="topUserRole"></span></div>
       </header>
       <div class="content">
@@ -1919,6 +1935,10 @@
         showLogin();
       }
     }
+    $('toggleSidebar').addEventListener('click', () => {
+      document.body.classList.toggle('menu-collapsed');
+      $('toggleSidebar').setAttribute('aria-expanded', String(!document.body.classList.contains('menu-collapsed')));
+    });
     init();
   </script>
 </body>
