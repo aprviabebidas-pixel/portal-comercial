@@ -1013,6 +1013,11 @@
     let users = [];
     let editingId = null;
     let loadingUsers = false;
+    // Estado dos filtros inicializado antes de qualquer navegação.
+    let buyerFilters = { setor: '', q: '', visita: '', ncomp: false };
+    let buyerPage = 1;
+    let buyerTotalPages = 1;
+    let buyerRequestVersion = 0;
 
     function message(id, text, type = 'error') {
       const el = $(id);
@@ -1123,10 +1128,6 @@
     // COMPRADORES: consultas paginadas com RLS no Supabase.
     const BUYER_COLUMNS = 'pdv,fantasia,cidade,setor,visita,ambev_total,mktp,nab,match,inad,valor_inad';
     const BUYER_PAGE_SIZE = 150;
-    let buyerPage = 1;
-    let buyerTotalPages = 1;
-    let buyerFilters = { setor: '', q: '', visita: '', ncomp: false };
-    let buyerRequestVersion = 0;
 
     function isBuyerOK(value) {
       return String(value ?? '').trim().toUpperCase() === 'OK';
@@ -1381,8 +1382,13 @@
 
     async function openAdmin() {
       if (currentUser?.perfil !== 'admin') return;
-      showPage('adminPage');
-      await loadUsers();
+      try {
+        showPage('adminPage');
+        await loadUsers();
+      } catch (err) {
+        console.error('Falha ao abrir Administração:', err);
+        message('adminMessage', err?.message || 'Não foi possível abrir a Administração.');
+      }
     }
 
     async function loadUsers() {
@@ -1756,7 +1762,7 @@
         const entries = rows.map(r=>r.indicadores?.[metric]).filter(Boolean);
         const sum = key => {const nums=entries.map(x=>remNum(x[key])).filter(x=>x!==null);return nums.length?nums.reduce((a,b)=>a+b,0):null;};
         const meta=sum('meta'),real=sum('real'),tend=sum('tend');
-        output[metric]={meta,real,percent:meta?real/meta:null,gap:meta!==null&&real!==null?meta-real:null,tend,tend_percent:meta&&tend!==null?tend/meta:null};
+        output[metric]={meta,real,percent:meta?real/meta:null,gap:meta!==null&&real!==null?real-meta:null,tend,tend_percent:meta&&tend!==null?tend/meta:null};
       }
       return output;
     }
