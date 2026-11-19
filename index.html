@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,123 +15,696 @@
       --muted: #64748b;
       --text: #19283e;
     }
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: var(--bg); color: var(--text); }
-    button, input, select { font: inherit; }
-    button { cursor: pointer; }
-    button:disabled { opacity: .55; cursor: not-allowed; }
-    .hidden { display: none !important; }
-    .primary { background: var(--blue); color: #fff; border: 0; border-radius: 8px; padding: 12px 17px; font-weight: 700; }
-    .secondary { background: #fff; color: var(--text); border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 14px; font-weight: 600; }
-    .danger { background: #fff; color: #b42318; border: 1px solid #fecaca; border-radius: 8px; padding: 10px 14px; font-weight: 600; }
-    .small { padding: 7px 10px; font-size: 12px; }
-    .message { padding: 12px; border-radius: 8px; margin: 12px 0; font-size: 13px; }
-    .message.error { background: #fff1f2; color: #b42318; border: 1px solid #fecdd3; }
-    .message.success { background: #effaf4; color: #166534; border: 1px solid #bbf7d0; }
-    .field { margin-bottom: 16px; }
-    .field label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 7px; }
-    .field input, .field select { width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 11px; background: #fff; min-height: 43px; }
-    .hint { color: var(--muted); font-size: 12px; line-height: 1.5; }
-    .login-screen { min-height: 100vh; display: grid; place-items: center; background: linear-gradient(135deg,#101d34,#19345e); padding: 20px; }
-    .login-card { width: 100%; max-width: 410px; background: #fff; border-radius: 17px; padding: 36px 30px; box-shadow: 0 20px 65px #0003; }
-    .logo { width: 64px; height: 64px; display: grid; place-items: center; margin: 0 auto 18px; background: var(--navy); border-radius: 15px; color: #fff; font-size: 26px; font-weight: 700; }
-    .login-card h1 { text-align: center; font-size: 25px; margin: 0 0 8px; }
-    .login-card p { text-align: center; color: var(--muted); font-size: 13px; margin: 0 0 27px; }
-    .password-line { display: flex; gap: 8px; }
-    .password-line input { min-width: 0; flex: 1; }
-    .app { min-height: 100vh; }
-    .sidebar { position: fixed; inset: 0 auto 0 0; width: 250px; background: var(--navy); color: #fff; padding: 24px 14px; display: flex; flex-direction: column; }
-    .brand { padding: 5px 8px 26px; border-bottom: 1px solid #ffffff25; margin-bottom: 20px; }
-    .brand strong { display: block; font-size: 20px; margin-bottom: 5px; }
-    .brand small { color: #b5c4d8; }
-    .nav-item { display: block; width: 100%; border: 0; border-radius: 8px; background: transparent; color: #cbd5e1; text-align: left; padding: 13px; margin-bottom: 7px; font-weight: 700; }
-    .nav-item.active, .nav-item:not(:disabled):hover { background: #ffffff20; color: #fff; }
-    .sidebar-bottom { margin-top: auto; border-top: 1px solid #ffffff25; padding-top: 14px; }
-    .logout { color: #ffb8b8; }
-    .main { margin-left: 250px; }
-    .topbar { background: #fff; min-height: 75px; padding: 16px 30px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 15px; }
-    .topbar h2 { font-size: 19px; margin: 0; }
-    .top-user { text-align: right; font-size: 13px; }
-    .top-user span { display: block; color: var(--muted); font-size: 12px; margin-top: 4px; }
-    .content { max-width: 1450px; margin: auto; padding: 30px; }
-    .page-title { font-size: 27px; margin: 0 0 10px; }
-    .lead { color: var(--muted); font-size: 14px; margin: 0 0 26px; }
-    .cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 20px; }
-    .card, .panel { background: #fff; border: 1px solid var(--border); border-radius: 13px; padding: 24px; box-shadow: 0 3px 12px #101d3408; }
-    .card .emoji { font-size: 30px; }
-    .card h3 { margin: 16px 0 8px; }
-    .card p { font-size: 13px; color: var(--muted); line-height: 1.6; min-height: 65px; }
-    .card button { width: 100%; margin-top: 12px; }
-    .status { display: inline-block; background: #eef2f7; color: #526175; border-radius: 20px; padding: 6px 10px; font-size: 11px; font-weight: 700; }
-    .notice { margin-top: 24px; background: #eaf1ff; color: #254d88; padding: 16px; border-radius: 10px; font-size: 13px; line-height: 1.6; }
-    .toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; }
-    .toolbar-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-    .search { border: 1px solid #cbd5e1; border-radius: 8px; padding: 11px; width: 100%; max-width: 360px; }
-    .table-wrap { overflow-x: auto; }
-    .users-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    .users-table th, .users-table td { padding: 13px 10px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: middle; }
-    .users-table th { color: #475569; background: #f8fafc; white-space: nowrap; }
-    .users-table td:last-child { white-space: nowrap; }
-    .pill { border-radius: 20px; padding: 5px 9px; font-size: 11px; font-weight: 700; display: inline-block; }
-    .pill.on { background: #dcfce7; color: #166534; }
-    .pill.off { background: #fee2e2; color: #991b1b; }
-    .empty { padding: 25px; color: var(--muted); text-align: center; }
-    .dialog-backdrop { position: fixed; inset: 0; background: #0f172acc; display: grid; place-items: center; padding: 16px; z-index: 20; }
-    .dialog { background: #fff; border-radius: 14px; width: 100%; max-width: 530px; max-height: 94vh; overflow-y: auto; padding: 25px; box-shadow: 0 20px 60px #0004; }
-    .dialog h3 { margin: 0 0 19px; }
-    .dialog-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }
-    .dialog-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .check-line { display: flex; align-items: center; gap: 9px; font-size: 13px; }
-    .check-line input { width: auto; }
-    .user-actions { display: flex; gap: 6px; }
-    .admin-summary { color: var(--muted); font-size: 13px; margin-bottom: 16px; }
-    .import-panel { margin-top: 22px; }
-    .import-input { display: block; width: 100%; max-width: 520px; padding: 12px; border: 1px dashed #94a3b8; border-radius: 9px; background: #f8fafc; }
-    .import-progress { margin-top: 12px; }
-    .import-progress progress { width: 100%; max-width: 480px; height: 14px; display: block; margin: 10px 0; }
-    .import-history { font-size: 12px; color: var(--muted); margin-top: 10px; }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .primary {
+      background: var(--blue);
+      color: #fff;
+      border: 0;
+      border-radius: 8px;
+      padding: 12px 17px;
+      font-weight: 700;
+    }
+
+    .secondary {
+      background: #fff;
+      color: var(--text);
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-weight: 600;
+    }
+
+    .danger {
+      background: #fff;
+      color: #b42318;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-weight: 600;
+    }
+
+    .small {
+      padding: 7px 10px;
+      font-size: 12px;
+    }
+
+    .message {
+      padding: 12px;
+      border-radius: 8px;
+      margin: 12px 0;
+      font-size: 13px;
+    }
+
+    .message.error {
+      background: #fff1f2;
+      color: #b42318;
+      border: 1px solid #fecdd3;
+    }
+
+    .message.success {
+      background: #effaf4;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 7px;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 11px;
+      background: #fff;
+      min-height: 43px;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .login-screen {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #101d34, #19345e);
+      padding: 20px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 410px;
+      background: #fff;
+      border-radius: 17px;
+      padding: 36px 30px;
+      box-shadow: 0 20px 65px #0003;
+    }
+
+    .logo {
+      width: 64px;
+      height: 64px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 18px;
+      background: var(--navy);
+      border-radius: 15px;
+      color: #fff;
+      font-size: 26px;
+      font-weight: 700;
+    }
+
+    .login-card h1 {
+      text-align: center;
+      font-size: 25px;
+      margin: 0 0 8px;
+    }
+
+    .login-card p {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      margin: 0 0 27px;
+    }
+
+    .password-line {
+      display: flex;
+      gap: 8px;
+    }
+
+    .password-line input {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .app {
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      width: 250px;
+      background: var(--navy);
+      color: #fff;
+      padding: 24px 14px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand {
+      padding: 5px 8px 26px;
+      border-bottom: 1px solid #ffffff25;
+      margin-bottom: 20px;
+    }
+
+    .brand strong {
+      display: block;
+      font-size: 20px;
+      margin-bottom: 5px;
+    }
+
+    .brand small {
+      color: #b5c4d8;
+    }
+
+    .nav-item {
+      display: block;
+      width: 100%;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: #cbd5e1;
+      text-align: left;
+      padding: 13px;
+      margin-bottom: 7px;
+      font-weight: 700;
+    }
+
+    .nav-item.active,
+    .nav-item:not(:disabled):hover {
+      background: #ffffff20;
+      color: #fff;
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      border-top: 1px solid #ffffff25;
+      padding-top: 14px;
+    }
+
+    .logout {
+      color: #ffb8b8;
+    }
+
+    .main {
+      margin-left: 250px;
+    }
+
+    .topbar {
+      background: #fff;
+      min-height: 75px;
+      padding: 16px 30px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .topbar h2 {
+      font-size: 19px;
+      margin: 0;
+    }
+
+    .top-user {
+      text-align: right;
+      font-size: 13px;
+    }
+
+    .top-user span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .content {
+      max-width: 1450px;
+      margin: auto;
+      padding: 30px;
+    }
+
+    .page-title {
+      font-size: 27px;
+      margin: 0 0 10px;
+    }
+
+    .lead {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 0 0 26px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .card,
+    .panel {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 24px;
+      box-shadow: 0 3px 12px #101d3408;
+    }
+
+    .card .emoji {
+      font-size: 30px;
+    }
+
+    .card h3 {
+      margin: 16px 0 8px;
+    }
+
+    .card p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      min-height: 65px;
+    }
+
+    .card button {
+      width: 100%;
+      margin-top: 12px;
+    }
+
+    .status {
+      display: inline-block;
+      background: #eef2f7;
+      color: #526175;
+      border-radius: 20px;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .notice {
+      margin-top: 24px;
+      background: #eaf1ff;
+      color: #254d88;
+      padding: 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .search {
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 11px;
+      width: 100%;
+      max-width: 360px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    .users-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .users-table th,
+    .users-table td {
+      padding: 13px 10px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    .users-table th {
+      color: #475569;
+      background: #f8fafc;
+      white-space: nowrap;
+    }
+
+    .users-table td:last-child {
+      white-space: nowrap;
+    }
+
+    .pill {
+      border-radius: 20px;
+      padding: 5px 9px;
+      font-size: 11px;
+      font-weight: 700;
+      display: inline-block;
+    }
+
+    .pill.on {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .pill.off {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .empty {
+      padding: 25px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .dialog-backdrop {
+      position: fixed;
+      inset: 0;
+      background: #0f172acc;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      z-index: 20;
+    }
+
+    .dialog {
+      background: #fff;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 530px;
+      max-height: 94vh;
+      overflow-y: auto;
+      padding: 25px;
+      box-shadow: 0 20px 60px #0004;
+    }
+
+    .dialog h3 {
+      margin: 0 0 19px;
+    }
+
+    .dialog-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .dialog-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .check-line {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 13px;
+    }
+
+    .check-line input {
+      width: auto;
+    }
+
+    .user-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .admin-summary {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+
+    .import-panel {
+      margin-top: 22px;
+    }
+
+    .import-input {
+      display: block;
+      width: 100%;
+      max-width: 520px;
+      padding: 12px;
+      border: 1px dashed #94a3b8;
+      border-radius: 9px;
+      background: #f8fafc;
+    }
+
+    .import-progress {
+      margin-top: 12px;
+    }
+
+    .import-progress progress {
+      width: 100%;
+      max-width: 480px;
+      height: 14px;
+      display: block;
+      margin: 10px 0;
+    }
+
+    .import-history {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 10px;
+    }
 
     /* Planificador: mantém o padrão de grupos do localhost. */
-    .buyer-filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-    .buyer-filters select, .buyer-filters input[type="search"] { border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px; min-height: 42px; background: #fff; }
-    .buyer-filters input[type="search"] { flex: 1; min-width: 180px; }
-    .buyer-filters label { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; }
-    .buyer-summary { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; margin: 16px 0; }
-    .buyer-summary .item { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 17px; }
-    .buyer-summary .name { font-size: 13px; color: var(--muted); font-weight: 600; }
-    .buyer-summary .value { font-size: 29px; font-weight: 700; margin: 10px 0 5px; }
-    .buyer-summary .sub { font-size: 12px; color: var(--muted); }
-    .buyer-table-wrap { overflow: auto; max-height: 70vh; }
-    .buyer-table { border-collapse: collapse; width: 100%; font-size: 12px; }
-    .buyer-table th, .buyer-table td { border: 1px solid #dce4ec; padding: 9px; text-align: left; white-space: nowrap; }
-    .buyer-table th { background: #edf3fa; position: sticky; top: 0; z-index: 1; }
-    .buyer-table .group-buyer { background: #24447c; color: #fff; text-align: center; }
-    .buyer-table .group-debt { background: #d95761; color: #fff; text-align: center; }
-    .buyer-table .buyer { background: #e6f1fa; text-align: center; }
-    .buyer-table .debt { background: #fbe0e1; }
-    .buyer-table .money { text-align: right; font-variant-numeric: tabular-nums; }
-    .pagination { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
-    @media (max-width: 800px) {
-      .sidebar { position: static; width: 100%; padding: 15px; }
-      .brand { padding-bottom: 12px; margin-bottom: 10px; }
-      .sidebar nav { display: flex; overflow-x: auto; gap: 6px; }
-      .nav-item { white-space: nowrap; margin: 0; padding: 11px; font-size: 12px; }
-      .sidebar-bottom { margin-top: 10px; padding-top: 10px; }
-      .main { margin: 0; }
-      .topbar { padding: 15px 18px; }
-      .content { padding: 23px 16px; }
-      .page-title { font-size: 23px; }
-      .cards { grid-template-columns: 1fr; }
-      .card p { min-height: 0; }
-      .dialog-grid { grid-template-columns: 1fr; }
-      .user-actions { flex-wrap: wrap; }
-      .buyer-summary { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .buyer-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
     }
+
+    .buyer-filters select,
+    .buyer-filters input[type="search"] {
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 10px;
+      min-height: 42px;
+      background: #fff;
+    }
+
+    .buyer-filters input[type="search"] {
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .buyer-filters label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .buyer-summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .buyer-summary .item {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 17px;
+    }
+
+    .buyer-summary .name {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .buyer-summary .value {
+      font-size: 29px;
+      font-weight: 700;
+      margin: 10px 0 5px;
+    }
+
+    .buyer-summary .sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .buyer-table-wrap {
+      overflow: auto;
+      max-height: 70vh;
+    }
+
+    .buyer-table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 12px;
+    }
+
+    .buyer-table th,
+    .buyer-table td {
+      border: 1px solid #dce4ec;
+      padding: 9px;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .buyer-table th {
+      background: #edf3fa;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    .buyer-table .group-buyer {
+      background: #24447c;
+      color: #fff;
+      text-align: center;
+    }
+
+    .buyer-table .group-debt {
+      background: #d95761;
+      color: #fff;
+      text-align: center;
+    }
+
+    .buyer-table .buyer {
+      background: #e6f1fa;
+      text-align: center;
+    }
+
+    .buyer-table .debt {
+      background: #fbe0e1;
+    }
+
+    .buyer-table .money {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    @media (max-width: 800px) {
+      .sidebar {
+        position: static;
+        width: 100%;
+        padding: 15px;
+      }
+
+      .brand {
+        padding-bottom: 12px;
+        margin-bottom: 10px;
+      }
+
+      .sidebar nav {
+        display: flex;
+        overflow-x: auto;
+        gap: 6px;
+      }
+
+      .nav-item {
+        white-space: nowrap;
+        margin: 0;
+        padding: 11px;
+        font-size: 12px;
+      }
+
+      .sidebar-bottom {
+        margin-top: 10px;
+        padding-top: 10px;
+      }
+
+      .main {
+        margin: 0;
+      }
+
+      .topbar {
+        padding: 15px 18px;
+      }
+
+      .content {
+        padding: 23px 16px;
+      }
+
+      .page-title {
+        font-size: 23px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .card p {
+        min-height: 0;
+      }
+
+      .dialog-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .user-actions {
+        flex-wrap: wrap;
+      }
+
+      .buyer-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
     @media (max-width: 420px) {
-      .buyer-summary { grid-template-columns: 1fr; }
+      .buyer-summary {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
+
 <body>
   <section id="loginScreen" class="login-screen">
     <div class="login-card">
@@ -209,8 +783,11 @@
           <div class="panel">
             <form id="buyerFilterForm" class="buyer-filters">
               <select id="buyerSector" aria-label="Setor"></select>
-              <input id="buyerSearch" type="search" placeholder="Buscar por PDV ou nome do cliente" aria-label="Buscar PDV ou fantasia">
-              <select id="buyerVisit" aria-label="Dia de visita"><option value="">Todas as visitas</option></select>
+              <input id="buyerSearch" type="search" placeholder="Buscar por PDV ou nome do cliente"
+                aria-label="Buscar PDV ou fantasia">
+              <select id="buyerVisit" aria-label="Dia de visita">
+                <option value="">Todas as visitas</option>
+              </select>
               <label><input id="buyerNComp" type="checkbox"> N Comp</label>
               <button id="buyerFilterButton" class="primary" type="submit">Filtrar</button>
               <button id="buyerClear" class="secondary" type="button">Limpar</button>
@@ -218,10 +795,26 @@
             <div id="buyerError" class="message hidden" role="alert"></div>
           </div>
           <div class="buyer-summary">
-            <div class="item"><div class="name">Total de PDVs</div><div id="buyerTotal" class="value">—</div><div id="buyerTotalSub" class="sub">Base filtrada</div></div>
-            <div class="item"><div class="name">Compradores</div><div id="buyerOK" class="value" style="color:#23834b">—</div><div id="buyerOKSub" class="sub"></div></div>
-            <div class="item"><div class="name">Não compradores</div><div id="buyerNotOK" class="value" style="color:#b57912">—</div><div id="buyerNotOKSub" class="sub"></div></div>
-            <div class="item"><div class="name">Inadimplentes</div><div id="buyerDebt" class="value" style="color:#bf3645">—</div><div id="buyerDebtSub" class="sub"></div></div>
+            <div class="item">
+              <div class="name">Total de PDVs</div>
+              <div id="buyerTotal" class="value">—</div>
+              <div id="buyerTotalSub" class="sub">Base filtrada</div>
+            </div>
+            <div class="item">
+              <div class="name">Compradores</div>
+              <div id="buyerOK" class="value" style="color:#23834b">—</div>
+              <div id="buyerOKSub" class="sub"></div>
+            </div>
+            <div class="item">
+              <div class="name">Não compradores</div>
+              <div id="buyerNotOK" class="value" style="color:#b57912">—</div>
+              <div id="buyerNotOKSub" class="sub"></div>
+            </div>
+            <div class="item">
+              <div class="name">Inadimplentes</div>
+              <div id="buyerDebt" class="value" style="color:#bf3645">—</div>
+              <div id="buyerDebtSub" class="sub"></div>
+            </div>
           </div>
           <div class="panel">
             <strong>Planificador de Compradores</strong>
@@ -234,12 +827,24 @@
                     <th colspan="2" class="group-debt">Inadimplência</th>
                   </tr>
                   <tr>
-                    <th>PDV</th><th>Fantasia</th><th>Cidade</th><th>Setor</th><th>Visita</th>
-                    <th class="buyer">Ambev Total</th><th class="buyer">MKTP</th><th class="buyer">NAB</th><th class="buyer">Match</th>
-                    <th class="debt">Inad?</th><th class="debt">Valor Inad.</th>
+                    <th>PDV</th>
+                    <th>Fantasia</th>
+                    <th>Cidade</th>
+                    <th>Setor</th>
+                    <th>Visita</th>
+                    <th class="buyer">Ambev Total</th>
+                    <th class="buyer">MKTP</th>
+                    <th class="buyer">NAB</th>
+                    <th class="buyer">Match</th>
+                    <th class="debt">Inad?</th>
+                    <th class="debt">Valor Inad.</th>
                   </tr>
                 </thead>
-                <tbody id="buyerBody"><tr><td colspan="11" class="empty">Carregando...</td></tr></tbody>
+                <tbody id="buyerBody">
+                  <tr>
+                    <td colspan="11" class="empty">Carregando...</td>
+                  </tr>
+                </tbody>
               </table>
             </div>
             <div class="pagination">
@@ -255,7 +860,8 @@
           <p class="lead">Gerencie o acesso dos funcionários ao Portal Comercial.</p>
           <div class="panel">
             <div class="toolbar">
-              <input id="userSearch" class="search" placeholder="Buscar nome, login ou setor" aria-label="Buscar usuários">
+              <input id="userSearch" class="search" placeholder="Buscar nome, login ou setor"
+                aria-label="Buscar usuários">
               <div class="toolbar-actions">
                 <button id="refreshUsers" class="secondary">Atualizar</button>
                 <button id="newUser" class="primary">+ Novo funcionário</button>
@@ -265,15 +871,31 @@
             <div id="userSummary" class="admin-summary"></div>
             <div class="table-wrap">
               <table class="users-table">
-                <thead><tr><th>Nome</th><th>Login</th><th>Perfil</th><th>Setores</th><th>Situação</th><th>Ações</th></tr></thead>
-                <tbody id="usersBody"><tr><td colspan="6" class="empty">Carregando...</td></tr></tbody>
+                <thead>
+                  <tr>
+                    <th>Nome</th>
+                    <th>Login</th>
+                    <th>Perfil</th>
+                    <th>Setores</th>
+                    <th>Situação</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="usersBody">
+                  <tr>
+                    <td colspan="6" class="empty">Carregando...</td>
+                  </tr>
+                </tbody>
               </table>
             </div>
           </div>
           <div class="panel import-panel">
             <h2 style="margin-top:0;font-size:20px">Importar Compradores</h2>
-            <p class="hint">Selecione o arquivo Excel (.xlsm ou .xlsx). A aba <b>Planificador</b> será lida automaticamente e, após validação, substituirá toda a base atual. Nenhuma macro será executada e o arquivo não será armazenado.</p>
-            <label for="compradoresFile" style="display:block;font-weight:700;margin:15px 0 8px">Selecionar planilha</label>
+            <p class="hint">Selecione o arquivo Excel (.xlsm ou .xlsx). A aba <b>Planificador</b> será lida
+              automaticamente e, após validação, substituirá toda a base atual. Nenhuma macro será executada e o arquivo
+              não será armazenado.</p>
+            <label for="compradoresFile" style="display:block;font-weight:700;margin:15px 0 8px">Selecionar
+              planilha</label>
             <input class="import-input" id="compradoresFile" type="file" accept=".xlsm,.xlsx">
             <div id="importStatus" class="message hidden" role="status" aria-live="polite"></div>
             <div id="importProgress" class="import-progress hidden">
@@ -292,24 +914,32 @@
       <h3 id="dialogTitle">Funcionário</h3>
       <form id="userForm">
         <div id="dialogMessage" class="message error hidden" role="alert"></div>
-        <div class="field"><label for="userName">Nome completo</label><input id="userName" maxlength="150" required></div>
+        <div class="field"><label for="userName">Nome completo</label><input id="userName" maxlength="150" required>
+        </div>
         <div class="dialog-grid">
-          <div class="field"><label for="userLogin">Login ou código</label><input id="userLogin" maxlength="40" pattern="[A-Za-z0-9._-]{2,40}" required></div>
+          <div class="field"><label for="userLogin">Login ou código</label><input id="userLogin" maxlength="40"
+              pattern="[A-Za-z0-9._-]{2,40}" required></div>
           <div class="field">
             <label for="userRole">Perfil</label>
             <select id="userRole" required>
-              <option value="rn">RN</option><option value="gv">GV</option>
-              <option value="gc">GC</option><option value="admin">Administrador</option>
+              <option value="rn">RN</option>
+              <option value="gv">GV</option>
+              <option value="gc">GC</option>
+              <option value="admin">Administrador</option>
             </select>
           </div>
         </div>
-        <div id="newPasswordField" class="field"><label for="userPassword">Senha inicial (mínimo 8 caracteres)</label><input id="userPassword" type="password" minlength="8" maxlength="128" autocomplete="new-password"></div>
+        <div id="newPasswordField" class="field"><label for="userPassword">Senha inicial (mínimo 8
+            caracteres)</label><input id="userPassword" type="password" minlength="8" maxlength="128"
+            autocomplete="new-password"></div>
         <div class="field">
           <label for="userSectors">Setores vinculados</label>
           <input id="userSectors" placeholder="Ex.: 611, 612, 613">
-          <div class="hint">Separe os códigos por vírgula. RN e GV precisam de pelo menos um setor. GC e Admin podem visualizar todos os setores.</div>
+          <div class="hint">Separe os códigos por vírgula. RN e GV precisam de pelo menos um setor. GC e Admin podem
+            visualizar todos os setores.</div>
         </div>
-        <label id="activeLine" class="check-line hidden"><input id="userActive" type="checkbox" checked> Usuário ativo</label>
+        <label id="activeLine" class="check-line hidden"><input id="userActive" type="checkbox" checked> Usuário
+          ativo</label>
         <div class="dialog-actions">
           <button id="cancelUser" type="button" class="secondary">Cancelar</button>
           <button id="saveUser" type="submit" class="primary">Salvar</button>
@@ -507,10 +1137,21 @@
           for (const id of ['buyerTotal', 'buyerOK', 'buyerNotOK', 'buyerDebt']) $(id).textContent = '0';
           return;
         }
-        for (const setor of sectors) $('buyerSector').add(new Option(`Setor ${setor}`, setor));
+        // A opção consolidada aparece primeiro somente para GV, GC e Admin.
+        // O banco continua aplicando RLS: GV só recebe seus setores autorizados.
+        const canViewAllSectors = ['gv', 'gc', 'admin'].includes(currentUser.perfil);
+        if (canViewAllSectors) {
+          const label = currentUser.perfil === 'gv'
+            ? 'Todos os setores da equipe'
+            : 'Todos os setores';
+          $('buyerSector').add(new Option(label, ''));
+        }
+        for (const setor of sectors) {
+          $('buyerSector').add(new Option(`Setor ${setor}`, setor));
+        }
         $('buyerVisit').replaceChildren(new Option('Todas as visitas', ''));
         for (const visita of visits) $('buyerVisit').add(new Option(visita, visita));
-        buyerFilters = { setor: sectors[0], q: '', visita: '', ncomp: false };
+        buyerFilters = { setor: canViewAllSectors ? '' : sectors[0], q: '', visita: '', ncomp: false };
         $('buyerSearch').value = '';
         $('buyerNComp').checked = false;
         buyerPage = 1;
@@ -644,7 +1285,9 @@
     $('buyerFilterForm').onsubmit = async e => {
       e.preventDefault();
       buyerFilters = {
-        setor: $('buyerSector').value,
+        setor: currentUser?.perfil === 'rn'
+          ? ($('buyerSector').value || $('buyerSector').options[0]?.value || '')
+          : $('buyerSector').value,
         q: $('buyerSearch').value.trim(),
         visita: $('buyerVisit').value,
         ncomp: $('buyerNComp').checked
@@ -1064,4 +1707,5 @@
     init();
   </script>
 </body>
+
 </html>
