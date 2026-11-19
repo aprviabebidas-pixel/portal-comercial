@@ -630,6 +630,24 @@
       margin-top: 18px;
     }
 
+    /* Painel Remuneração */
+    .rem-toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+    .rem-toolbar select{min-width:230px;padding:11px;border:1px solid #cbd5e1;border-radius:8px;background:white}
+    .rem-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px;margin:16px 0 24px}
+    .rem-card{background:#fff;border:1px solid var(--border);border-radius:13px;padding:20px;box-shadow:0 3px 12px #101d3408}
+    .rem-card h3{font-size:14px;margin:0 0 15px;color:#34435b}
+    .rem-card .pct{font-size:29px;font-weight:800;color:#17335c}
+    .rem-card .bar{height:9px;background:#e9eff6;border-radius:20px;overflow:hidden;margin:13px 0}
+    .rem-card .bar span{display:block;height:100%;background:#2363d1;border-radius:20px}
+    .rem-card .pair{display:flex;justify-content:space-between;gap:12px;margin-top:8px;font-size:12px}
+    .rem-card .pair span:first-child{color:var(--muted)}
+    .rem-table{width:100%;border-collapse:collapse;font-size:13px}
+    .rem-table th,.rem-table td{padding:12px;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}
+    .rem-table th{background:#f3f7fc;color:#34435b}
+    .rem-table th:first-child,.rem-table td:first-child{text-align:left}
+    .rem-section{margin-top:20px}
+    .rem-section h2{font-size:18px;margin:0 0 15px}
+    .rem-click{cursor:pointer;color:#2363d1;font-weight:700;text-decoration:underline}
     @media (max-width: 800px) {
       .sidebar {
         position: static;
@@ -736,7 +754,7 @@
       <nav aria-label="Menu principal">
         <button class="nav-item active" id="navInicio" type="button">🏠 Início</button>
         <button class="nav-item" id="navCompradores" type="button">🛒 Compradores</button>
-        <button class="nav-item" disabled type="button">📊 Painel Remuneração</button>
+        <button class="nav-item" id="navRemuneracao" type="button">📊 Painel Remuneração</button>
         <button class="nav-item hidden" id="navAdmin" type="button">⚙️ Administração</button>
       </nav>
       <div class="sidebar-bottom">
@@ -855,6 +873,26 @@
           </div>
         </section>
 
+        <section id="remuneracaoPage" class="hidden">
+          <h1 class="page-title">Painel Remuneração</h1>
+          <p class="lead">Indicadores de desempenho da aba MATINAL.</p>
+          <div id="remError" class="message hidden" role="alert"></div>
+          <div class="rem-toolbar">
+            <label for="remView"><strong>Visualização</strong></label>
+            <select id="remView" aria-label="Visualização do painel"></select>
+            <button class="secondary" id="remRefresh" type="button">Atualizar</button>
+          </div>
+          <div id="remContext" class="hint"></div>
+          <div id="remCards" class="rem-cards"></div>
+          <div class="panel rem-section">
+            <h2>Detalhamento dos indicadores</h2>
+            <div class="table-wrap"><table class="rem-table"><thead><tr><th>Indicador</th><th>Meta</th><th>Real</th><th>Atingimento</th><th>GAP</th><th>Tendência</th><th>% Tendência</th></tr></thead><tbody id="remDetails"></tbody></table></div>
+          </div>
+          <div id="remTeamSection" class="panel rem-section hidden">
+            <h2>Visão RN</h2>
+            <div class="table-wrap"><table class="rem-table"><thead><tr><th>Setor / RN</th><th>Cerveja</th><th>NAB</th><th>MKTP</th><th>Force</th><th>Água</th></tr></thead><tbody id="remTeam"></tbody></table></div>
+          </div>
+        </section>
         <section id="adminPage" class="hidden">
           <h1 class="page-title">Administração de usuários</h1>
           <p class="lead">Gerencie o acesso dos funcionários ao Portal Comercial.</p>
@@ -903,6 +941,15 @@
               <span class="hint" id="importStep">Preparando...</span>
             </div>
             <p class="import-history">A base anterior só é substituída se a importação for concluída com sucesso.</p>
+          </div>
+          <div class="panel import-panel">
+            <h2 style="margin-top:0;font-size:20px">Importar Matinal</h2>
+            <p class="hint">Selecione o Excel (.xlsx ou .xlsm). Somente a aba <b>MATINAL</b> será lida. A importação substituirá a base anterior do Painel Remuneração, sem alterar Compradores.</p>
+            <label for="matinalFile" style="display:block;font-weight:700;margin:15px 0 8px">Selecionar planilha Matinal</label>
+            <input class="import-input" id="matinalFile" type="file" accept=".xlsx,.xlsm">
+            <div id="matinalStatus" class="message hidden" role="status" aria-live="polite"></div>
+            <div id="matinalProgress" class="import-progress hidden"><progress id="matinalBar" max="100" value="0"></progress><span class="hint" id="matinalStep">Preparando...</span></div>
+            <p class="import-history">Os valores serão lidos do resultado calculado salvo no Excel. Antes de importar, atualize e salve a planilha no Excel.</p>
           </div>
         </section>
       </div>
@@ -959,6 +1006,7 @@
     const loginFunction = `${SUPABASE_URL}/functions/v1/portal-login`;
     const adminFunction = `${SUPABASE_URL}/functions/v1/portal-gerenciar-usuarios`;
     const importFunction = `${SUPABASE_URL}/functions/v1/portal-importar-pdvs`;
+    const matinalFunction = `${SUPABASE_URL}/functions/v1/portal-importar-matinal`;
     const $ = id => document.getElementById(id);
     const roles = { rn: 'RN', gv: 'GV', gc: 'GC', admin: 'Administrador' };
     let currentUser = null;
@@ -973,11 +1021,12 @@
     }
 
     function showPage(page) {
-      for (const id of ['homePage', 'compradoresPage', 'adminPage']) {
+      for (const id of ['homePage', 'compradoresPage', 'remuneracaoPage', 'adminPage']) {
         $(id).classList.toggle('hidden', id !== page);
       }
       $('navInicio').classList.toggle('active', page === 'homePage');
       $('navCompradores').classList.toggle('active', page === 'compradoresPage');
+      $('navRemuneracao').classList.toggle('active', page === 'remuneracaoPage');
       $('navAdmin').classList.toggle('active', page === 'adminPage');
     }
 
@@ -1066,6 +1115,8 @@
     $('navInicio').onclick = () => showPage('homePage');
     $('navCompradores').onclick = openCompradores;
     $('openCompradoresCard').onclick = openCompradores;
+    $('navRemuneracao').onclick = openRemuneracao;
+    $('openRemuneracaoCard').onclick = openRemuneracao;
     $('navAdmin').onclick = openAdmin;
     $('openAdminCard').onclick = openAdmin;
 
@@ -1690,6 +1741,163 @@
         input.disabled = false;
         input.value = '';
       }
+    });
+
+    // MATINAL: somente resultados calculados, com acesso filtrado pela RLS.
+    const REM_METRICS = ['Volume Cerveja','Volume NAB','Faturamento MKTP','Pontos Force','Volume Água'];
+    const REM_FIELDS = ['meta','real','percent','gap','tend','tend_percent'];
+    let remRows = [];
+    const remNum = v => typeof v === 'number' && Number.isFinite(v) ? v : null;
+    const remFmt = (v,dec=2) => remNum(v) === null ? '—' : v.toLocaleString('pt-BR',{minimumFractionDigits:dec,maximumFractionDigits:dec});
+    const remPct = v => remNum(v) === null ? '—' : (v*100).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+'%';
+    function remAggregate(rows) {
+      const output = {};
+      for(const metric of REM_METRICS){
+        const entries = rows.map(r=>r.indicadores?.[metric]).filter(Boolean);
+        const sum = key => {const nums=entries.map(x=>remNum(x[key])).filter(x=>x!==null);return nums.length?nums.reduce((a,b)=>a+b,0):null;};
+        const meta=sum('meta'),real=sum('real'),tend=sum('tend');
+        output[metric]={meta,real,percent:meta?real/meta:null,gap:meta!==null&&real!==null?meta-real:null,tend,tend_percent:meta&&tend!==null?tend/meta:null};
+      }
+      return output;
+    }
+    function remElement(tag,text,cls=''){const el=document.createElement(tag);el.textContent=text; if(cls)el.className=cls;return el;}
+    function remRender(){
+      const selection=$('remView').value;
+      const overview=selection==='__all__';
+      const rows=overview?remRows:remRows.filter(r=>String(r.setor)===selection);
+      const indicators=overview?remAggregate(rows):(rows[0]?.indicadores||{});
+      $('remContext').textContent=overview?`Visão Geral · ${rows.length} setor(es) autorizado(s)`:
+        rows.length?`Visão RN · Setor ${rows[0].setor} · ${rows[0].rn_nome||'RN'}`:'Nenhum resultado disponível';
+      const cards=$('remCards');cards.replaceChildren();
+      const details=$('remDetails');details.replaceChildren();
+      for(const metric of REM_METRICS){
+        const m=indicators[metric]||{};
+        const card=remElement('article','','rem-card');
+        card.append(remElement('h3',metric),remElement('div',remPct(m.percent),'pct'));
+        const bar=remElement('div','','bar');const fill=remElement('span');fill.style.width=Math.min(100,Math.max(0,(remNum(m.percent)||0)*100))+'%';bar.append(fill);card.append(bar);
+        for(const [label,value] of [['Meta',remFmt(m.meta)],['Real',remFmt(m.real)],['GAP',remFmt(m.gap)],['Tendência',remFmt(m.tend)],['% Tendência',remPct(m.tend_percent)]]){
+          const pair=remElement('div','','pair');pair.append(remElement('span',label),remElement('strong',value));card.append(pair);
+        }
+        cards.append(card);
+        const tr=document.createElement('tr');
+        for(const value of [metric,remFmt(m.meta),remFmt(m.real),remPct(m.percent),remFmt(m.gap),remFmt(m.tend),remPct(m.tend_percent)])tr.append(remElement('td',value));
+        details.append(tr);
+      }
+      $('remTeamSection').classList.toggle('hidden',!overview);
+      const team=$('remTeam');team.replaceChildren();
+      if(overview){
+        const ordered=[...rows].sort((a,b)=>String(a.setor).localeCompare(String(b.setor),'pt-BR',{numeric:true}));
+        for(const row of ordered){
+          const tr=document.createElement('tr');
+          const first=remElement('td',`${row.setor} · ${row.rn_nome||'RN'}`,'rem-click');
+          first.onclick=()=>{$('remView').value=String(row.setor);remRender();window.scrollTo({top:0,behavior:'smooth'});};
+          tr.append(first);
+          for(const metric of REM_METRICS)tr.append(remElement('td',remPct(row.indicadores?.[metric]?.percent)));
+          team.append(tr);
+        }
+      }
+    }
+    async function openRemuneracao(){
+      if(!currentUser)return;
+      showPage('remuneracaoPage');message('remError','');
+      $('remContext').textContent='Carregando resultados autorizados...';
+      $('remCards').replaceChildren();$('remDetails').replaceChildren();$('remTeam').replaceChildren();
+      try{
+        const rows=[];
+        for(let offset=0;offset<15000;offset+=1000){
+          const {data,error}=await supabase.from('portal_matinal_resultados')
+            .select('setor,rn_nome,gv_codigo,indicadores').order('setor').range(offset,offset+999);
+          if(error)throw error;
+          rows.push(...(data||[]));if(!data||data.length<1000)break;
+        }
+        remRows=rows;
+        const sel=$('remView');sel.replaceChildren();
+        const canOverview=['gv','gc','admin'].includes(currentUser.perfil);
+        if(canOverview)sel.add(new Option('Visão Geral','__all__'));
+        for(const row of rows.sort((a,b)=>String(a.setor).localeCompare(String(b.setor),'pt-BR',{numeric:true}))){
+          sel.add(new Option(`Visão RN · ${row.setor} · ${row.rn_nome||'RN'}`,String(row.setor)));
+        }
+        if(!rows.length){$('remContext').textContent='Nenhum resultado da MATINAL disponível para seu acesso.';return;}
+        sel.value=canOverview?'__all__':String(rows[0].setor);
+        remRender();
+      }catch(err){message('remError',err.message||'Falha ao consultar MATINAL');$('remContext').textContent='';}
+    }
+    $('remView').onchange=remRender;
+    $('remRefresh').onclick=openRemuneracao;
+
+    // Importação Matinal em Web Worker para evitar travar a interface com arquivos grandes.
+    let importingMatinal=false;
+    function matinalProgress(step,percent){$('matinalProgress').classList.remove('hidden');$('matinalBar').value=percent;$('matinalStep').textContent=step;}
+    function makeMatinalWorker(){
+      const source=String.raw`
+        const CDN='https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js';
+        const metrics=[['Volume Cerveja',['G','H','I','J','K','L']],['Volume NAB',['N','O','P','Q','R','S']],['Faturamento MKTP',['U','V','W','X','Y','Z']],['Pontos Force',['AB','AC','AD','AE']],['Volume Água',['AG','AH','AI','AJ','AL','AM']]];
+        const keys=['meta','real','percent','gap','tend','tend_percent'];
+        function value(sheet,cell){return sheet[cell];}
+        function text(cell){return cell?.v===null||cell?.v===undefined?'':String(cell.v).trim();}
+        function num(cell,ref){
+          if(!cell||cell.v===null||cell.v===undefined||cell.v==='')return null;
+          if(cell.t==='e')throw new Error('Erro de fórmula em '+ref+'. Atualize e salve o Excel antes de importar.');
+          const n=Number(cell.v);
+          if(!Number.isFinite(n))throw new Error('Valor inválido em '+ref+'.');
+          return n;
+        }
+        self.onmessage=e=>{
+          try{
+            self.postMessage({type:'progress',text:'Carregando leitor de Excel...',percent:10});
+            importScripts(CDN);
+            self.postMessage({type:'progress',text:'Lendo somente a aba MATINAL...',percent:25});
+            const wb=XLSX.read(e.data.buffer,{type:'array',sheets:['MATINAL'],cellFormula:false,cellDates:false,cellStyles:false,bookVBA:false,cellHTML:false,cellNF:false,cellText:false});
+            const sheet=wb.Sheets['MATINAL'];if(!sheet||!sheet['!ref'])throw new Error('A aba MATINAL não foi encontrada ou está vazia.');
+            const range=XLSX.utils.decode_range(sheet['!ref']);const results=[],seen=new Set();
+            for(let r=10;r<=range.e.r;r++){
+              const row=r+1,sector=text(value(sheet,'E'+row));
+              if(!/^\d{1,10}$/.test(sector))continue;
+              const rn=text(value(sheet,'F'+row));
+              if(!rn)continue;
+              if(seen.has(sector))throw new Error('Setor duplicado na MATINAL: '+sector+' (linha '+row+').');
+              seen.add(sector);
+              const indicators={};
+              for(const [metric,cols] of metrics){
+                const obj={};
+                for(let i=0;i<cols.length;i++)obj[keys[i]]=num(value(sheet,cols[i]+row),cols[i]+row);
+                if(cols.length===4){obj.tend=null;obj.tend_percent=null;}
+                indicators[metric]=obj;
+              }
+              results.push({setor:sector,rn_nome:rn,gv_codigo:text(value(sheet,'D'+row)),indicadores:indicators});
+              if(results.length>15000)throw new Error('Limite de 15.000 setores excedido.');
+            }
+            if(!results.length)throw new Error('Nenhum setor encontrado na aba MATINAL a partir da linha 11.');
+            self.postMessage({type:'done',results});
+          }catch(err){self.postMessage({type:'error',message:err?.message||'Falha ao ler a MATINAL.'});}
+        };`;
+      const url=URL.createObjectURL(new Blob([source],{type:'text/javascript'}));
+      const worker=new Worker(url);URL.revokeObjectURL(url);return worker;
+    }
+    function parseMatinal(buffer){return new Promise((resolve,reject)=>{
+      let worker;try{worker=makeMatinalWorker();}catch(err){reject(err);return;}
+      worker.onmessage=e=>{const m=e.data;if(m.type==='progress'){matinalProgress(m.text,m.percent);return;}worker.terminate();if(m.type==='done')resolve(m.results);else reject(new Error(m.message||'Falha na leitura.'));};
+      worker.onerror=()=>{worker.terminate();reject(new Error('Falha no leitor de Excel.'));};
+      worker.postMessage({buffer},[buffer]);
+    });}
+    $('matinalFile').addEventListener('change',async e=>{
+      const input=e.currentTarget,file=input.files?.[0];if(!file||importingMatinal)return;
+      if(currentUser?.perfil!=='admin'){message('matinalStatus','Somente administradores podem importar.');input.value='';return;}
+      if(!/\.(xlsx|xlsm)$/i.test(file.name)){message('matinalStatus','Selecione um Excel .xlsx ou .xlsm.');input.value='';return;}
+      importingMatinal=true;input.disabled=true;message('matinalStatus','');
+      try{
+        matinalProgress('Preparando leitura...',5);
+        const results=await parseMatinal(await file.arrayBuffer());
+        matinalProgress(`${results.length} setores validados. Enviando ao Supabase...`,65);
+        const {data:{session},error}=await supabase.auth.getSession();
+        if(error||!session)throw new Error('Sessão expirada. Entre novamente.');
+        const response=await fetch(matinalFunction,{method:'POST',headers:{'Content-Type':'application/json',apikey:SUPABASE_KEY,Authorization:`Bearer ${session.access_token}`},body:JSON.stringify({nome_arquivo:file.name,resultados:results})});
+        let result;try{result=await response.json();}catch{throw new Error(`Resposta inválida (HTTP ${response.status}).`);}
+        if(!response.ok||!result.success)throw new Error(result.error||`Erro HTTP ${response.status}.`);
+        matinalProgress('Importação concluída.',100);
+        message('matinalStatus',`Matinal importada! ${Number(result.setores).toLocaleString('pt-BR')} setores atualizados.`,'success');
+      }catch(err){message('matinalStatus',err.message||'Erro ao importar MATINAL.');$('matinalProgress').classList.add('hidden');}
+      finally{importingMatinal=false;input.disabled=false;input.value='';}
     });
 
     async function init() {
