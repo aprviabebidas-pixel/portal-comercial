@@ -861,7 +861,9 @@
     @media(max-width:380px){.giro-filters{grid-template-columns:1fr}}
   
     /* V11: acesso à senha por ícone e filtros móveis do Giro */
-    .password-eye{display:inline-flex;align-items:center;justify-content:center;flex:0 0 44px;width:44px;height:44px;padding:0;border:1px solid #d5deea;border-radius:10px;background:#f8fafc;color:#263a56;cursor:pointer}
+    .password-line{position:relative;display:block;gap:0}
+    .password-line input{width:100%;padding-right:54px}
+    .password-eye{position:absolute;right:5px;top:50%;transform:translateY(-50%);z-index:1;display:inline-flex;align-items:center;justify-content:center;flex:0 0 44px;width:44px;height:44px;padding:0;border:0;border-radius:8px;background:transparent;color:#263a56;cursor:pointer}
     .password-eye:hover{background:#eaf1fa}
     .password-eye:focus-visible{outline:3px solid #75a7f3;outline-offset:2px}
     .giro-filters{align-items:stretch;gap:12px}
