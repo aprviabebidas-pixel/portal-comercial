@@ -841,7 +841,21 @@
     .giro-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0}
     .giro-kpis .item{border:1px solid var(--border,#dbe4ed);border-radius:12px;padding:16px;background:var(--card,#fff)}
     .giro-kpis .name{font-size:13px;opacity:.75}.giro-kpis .value{font-size:28px;font-weight:800;margin:8px 0}.giro-kpis .sub{font-size:12px;opacity:.8}
-    .giro-table{min-width:1450px}.giro-table td,.giro-table th{white-space:nowrap}
+    .giro-table{min-width:1540px;border-collapse:separate;border-spacing:0;font-variant-numeric:tabular-nums}
+    .giro-table th,.giro-table td{white-space:nowrap;text-align:center!important;vertical-align:middle;padding:10px 12px;border-right:1px solid #d5deea;border-bottom:1px solid #e2e8f0}
+    .giro-table th{background:#344a69!important;color:#fff!important;text-transform:uppercase;font-size:11px;letter-spacing:.025em;position:sticky;top:0;z-index:2}
+    .giro-table tbody tr:nth-child(even) td:not(.giro-ok):not(.giro-nok):not(.giro-na):not(.giro-gap-positive):not(.giro-gap-negative):not(.giro-gap-na){background:#f5f8fc}
+    .giro-table tbody tr:hover td{filter:brightness(.97)}
+    .giro-table td.giro-ok{background:#68c78d!important;color:#123e29!important;font-weight:800;text-transform:uppercase}
+    .giro-table td.giro-nok{background:#ffcf79!important;color:#713c07!important;font-weight:800;text-transform:uppercase}
+    .giro-table td.giro-na,.giro-table td.giro-gap-na{background:#e9eef4!important;color:#677588!important}
+    .giro-table td.giro-gap-positive{background:#68c78d!important;color:#123e29!important;font-weight:700}
+    .giro-table td.giro-gap-negative{background:#ffcf79!important;color:#713c07!important;font-weight:700}
+    .giro-table td:nth-child(6),.giro-table td:nth-child(7){font-weight:700}
+    .giro-filters{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .giro-filters button{min-height:42px}
+    #giroPage .buyer-table-wrap{overflow-x:auto;overflow-y:visible;max-height:none}
+    @media(max-width:800px){.giro-table th,.giro-table td{padding:9px 10px}}
     .giro-ok{color:#16824b;font-weight:800}.giro-nok{color:#c44343;font-weight:800}.giro-na{color:#8993a3}
     @media(max-width:800px){.giro-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.giro-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.giro-kpis .item:first-child{grid-column:1/-1}.giro-kpis .value{font-size:24px}}
     @media(max-width:380px){.giro-filters{grid-template-columns:1fr}}
@@ -1007,7 +1021,6 @@
           <div class="panel"><form id="giroForm" class="giro-filters">
             <select id="giroSetor" aria-label="Setor"></select><input id="giroBusca" type="search" placeholder="PDV ou fantasia" aria-label="Buscar PDV ou fantasia">
             <select id="giroVisita" aria-label="Visita"><option value="">Todas as visitas</option></select>
-            <select id="giroCidade" aria-label="Cidade"><option value="">Todas as cidades</option></select>
             <select id="giroSopi" aria-label="Status SOPI"><option value="">SOPI: Todos</option><option value="OK">SOPI: OK</option><option value="NOK">SOPI: NOK</option></select>
             <select id="giroVisa" aria-label="Status VISA"><option value="">VISA: Todos</option><option value="OK">VISA: OK</option><option value="NOK">VISA: NOK</option></select>
             <button type="submit" class="primary">Filtrar</button><button id="giroLimpar" type="button" class="secondary">Limpar</button>
@@ -1018,7 +1031,7 @@
             <div class="item"><div class="name">VISA · OK</div><div id="giroVisaPct" class="value">—</div><div id="giroVisaSub" class="sub">—</div></div>
           </div>
           <div class="panel"><strong>Detalhamento dos PDVs</strong><p class="hint">O status “—” significa sem equipamento e não entra no cálculo de OK/NOK. Deslize a tabela para os lados no celular.</p>
-          <div class="buyer-table-wrap"><table class="buyer-table giro-table"><thead><tr><th>PDV</th><th>Fantasia</th><th>Setor</th><th>Visita</th><th>Cidade</th><th>Qtd SOPI</th><th>Qtd VISA</th><th>Meta SOPI</th><th>Meta VISA</th><th>Real Cerveja</th><th>Real NAB</th><th>GAP SOPI</th><th>GAP VISA</th><th>Status SOPI</th><th>Status VISA</th></tr></thead><tbody id="giroBody"><tr><td colspan="15" class="empty">Abra o painel para consultar.</td></tr></tbody></table></div>
+          <div class="buyer-table-wrap"><table class="buyer-table giro-table"><thead><tr><th>PDV</th><th>Fantasia</th><th>Setor</th><th>Visita</th><th>Cidade</th><th>Qtd SOPI</th><th>Qtd VISA</th><th>META SOPI</th><th>META VISA</th><th>REAL CERV</th><th>REAL NAB</th><th>GAP SOPI</th><th>GAP VISA</th><th>SOPI</th><th>VISA</th></tr></thead><tbody id="giroBody"><tr><td colspan="15" class="empty">Abra o painel para consultar.</td></tr></tbody></table></div>
           <div class="pagination"><button id="giroAnterior" type="button" class="secondary small">← Anterior</button><span id="giroPagina" class="hint">Página 1</span><button id="giroProximo" type="button" class="secondary small">Próxima →</button></div></div>
         </section>
         <section id="remuneracaoPage" class="hidden">
@@ -2142,11 +2155,10 @@
     const GIRO_PAGE_SIZE=100;
     let giroPage=1,giroPages=1,giroVersion=0;
     function giroWhere(query,includeStatus=true){
-      const sector=$('giroSetor').value,visit=$('giroVisita').value,city=$('giroCidade').value;
+      const sector=$('giroSetor').value,visit=$('giroVisita').value;
       const q=$('giroBusca').value.trim().replace(/[%,()]/g,'');
       if(sector)query=query.eq('setor',sector);
       if(visit)query=query.eq('visita',visit);
-      if(city)query=query.eq('cidade',city);
       if(q)query=query.or(`pdv.ilike.%${q}%,fantasia.ilike.%${q}%`);
       if(includeStatus){if($('giroSopi').value)query=query.eq('status_sopi',$('giroSopi').value);if($('giroVisa').value)query=query.eq('status_visa',$('giroVisa').value);}
       return query;
@@ -2159,6 +2171,7 @@
     }
     function giroTd(row,value,cls){const td=document.createElement('td');td.textContent=value??'—';if(cls)td.className=cls;row.append(td);}
     function giroNum(n){return n===null||n===undefined?'—':Number(n).toLocaleString('pt-BR',{maximumFractionDigits:2});}
+    function giroMoney(n){return n===null||n===undefined?'—':Number(n).toLocaleString('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:2,maximumFractionDigits:2});}
     function giroBadge(s){return s==='-'?'—':s;}
     async function loadGiro(){
       const version=++giroVersion;message('giroError','');$('giroBody').innerHTML='<tr><td colspan="15" class="empty">Carregando...</td></tr>';
@@ -2181,7 +2194,7 @@
         if(!data?.length){body.innerHTML='<tr><td colspan="15" class="empty">Nenhum PDV encontrado.</td></tr>';return;}
         for(const r of data){const tr=document.createElement('tr');
           for(const col of ['pdv','fantasia','setor','visita','cidade','qtd_sopi','qtd_visa','meta_sopi','meta_visa','real_cerveja','real_nab','gap_sopi','gap_visa','status_sopi','status_visa']){
-            const v=r[col];giroTd(tr,col.startsWith('status_')?giroBadge(v):['qtd_sopi','qtd_visa','meta_sopi','meta_visa','real_cerveja','real_nab','gap_sopi','gap_visa'].includes(col)?giroNum(v):v,col.startsWith('status_')?(v==='OK'?'giro-ok':v==='NOK'?'giro-nok':'giro-na'):'');
+            const v=r[col];giroTd(tr,col.startsWith('status_')?giroBadge(v):['qtd_sopi','qtd_visa','meta_sopi','meta_visa','real_cerveja','real_nab','gap_sopi','gap_visa'].includes(col)?(['meta_sopi','meta_visa','real_cerveja','real_nab','gap_sopi','gap_visa'].includes(col)?giroMoney(v):giroNum(v)):v,col.startsWith('status_')?(v==='OK'?'giro-ok':v==='NOK'?'giro-nok':'giro-na'):['gap_sopi','gap_visa'].includes(col)?(v===null?'giro-gap-na':Number(v)>=0?'giro-gap-positive':'giro-gap-negative'):'');
           }body.append(tr);
         }
       }catch(err){if(version===giroVersion){message('giroError',err.message||'Falha ao consultar Giro');$('giroBody').innerHTML='<tr><td colspan="15" class="empty">Erro ao carregar.</td></tr>';}}
@@ -2193,19 +2206,20 @@
         if(['gv','gc','admin'].includes(currentUser.perfil))select.add(new Option('Todos os setores',''));
         for(const s of sectors)select.add(new Option('Setor '+s,s));
         if(!select.options.length){message('giroError','Nenhum setor autorizado.');return;}
-        const visits=new Set(),cities=new Set();
+        const visits=new Set();
         for(let offset=0;offset<15000;offset+=1000){
-          const {data,error}=await supabase.from('portal_giro_equipamentos').select('visita,cidade').range(offset,offset+999);
-          if(error)throw error;for(const r of data||[]){if(r.visita)visits.add(r.visita);if(r.cidade)cities.add(r.cidade);}if(!data||data.length<1000)break;
+          const {data,error}=await supabase.from('portal_giro_equipamentos').select('visita').range(offset,offset+999);
+          if(error)throw error;for(const r of data||[]){if(r.visita)visits.add(r.visita);}if(!data||data.length<1000)break;
         }
-        for(const [id,vals,label] of [['giroVisita',visits,'Todas as visitas'],['giroCidade',cities,'Todas as cidades']]){
-          const el=$(id);el.replaceChildren(new Option(label,''));for(const v of [...vals].sort((a,b)=>String(a).localeCompare(String(b),'pt-BR')))el.add(new Option(v,v));
-        }
+        const visitaSelect=$('giroVisita');visitaSelect.replaceChildren(new Option('Todas as visitas',''));
+        const dias={SEG:1,TER:2,QUA:3,QUI:4,SEX:5,SAB:6,DOM:7};
+        const visitaOrdem=v=>{const m=String(v).toUpperCase().match(/D\s*(\d+)/);if(m)return Number(m[1]);const k=String(v).toUpperCase().slice(0,3);return dias[k]||99;};
+        for(const v of [...visits].sort((a,b)=>visitaOrdem(a)-visitaOrdem(b)||String(a).localeCompare(String(b),'pt-BR')))visitaSelect.add(new Option(v,v));
         $('giroBusca').value='';$('giroSopi').value='';$('giroVisa').value='';giroPage=1;await loadGiro();
       }catch(err){message('giroError',err.message||'Falha ao iniciar painel.');}
     }
     $('giroForm').onsubmit=e=>{e.preventDefault();giroPage=1;loadGiro();};
-    $('giroLimpar').onclick=()=>{for(const id of ['giroBusca','giroVisita','giroCidade','giroSopi','giroVisa'])$(id).value='';if(['gv','gc','admin'].includes(currentUser?.perfil))$('giroSetor').value='';giroPage=1;loadGiro();};
+    $('giroLimpar').onclick=()=>{for(const id of ['giroBusca','giroVisita','giroSopi','giroVisa'])$(id).value='';if(['gv','gc','admin'].includes(currentUser?.perfil))$('giroSetor').value='';giroPage=1;loadGiro();};
     $('giroAnterior').onclick=()=>{if(giroPage>1){giroPage--;loadGiro();}};
     $('giroProximo').onclick=()=>{if(giroPage<giroPages){giroPage++;loadGiro();}};
 
