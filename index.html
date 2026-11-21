@@ -859,7 +859,28 @@
     .giro-ok{color:#16824b;font-weight:800}.giro-nok{color:#c44343;font-weight:800}.giro-na{color:#8993a3}
     @media(max-width:800px){.giro-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.giro-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.giro-kpis .item:first-child{grid-column:1/-1}.giro-kpis .value{font-size:24px}}
     @media(max-width:380px){.giro-filters{grid-template-columns:1fr}}
-  </style>
+  
+    /* V11: acesso à senha por ícone e filtros móveis do Giro */
+    .password-eye{display:inline-flex;align-items:center;justify-content:center;flex:0 0 44px;width:44px;height:44px;padding:0;border:1px solid #d5deea;border-radius:10px;background:#f8fafc;color:#263a56;cursor:pointer}
+    .password-eye:hover{background:#eaf1fa}
+    .password-eye:focus-visible{outline:3px solid #75a7f3;outline-offset:2px}
+    .giro-filters{align-items:stretch;gap:12px}
+    .giro-filters select,.giro-filters input{min-height:44px;padding:10px 12px;border:1px solid #cbd6e5;border-radius:9px;background:#fff;font-size:14px}
+    .giro-filters button{min-height:44px;border-radius:9px}
+    @media(max-width:800px){
+      .giro-filters{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+      .giro-filters select,.giro-filters input{font-size:16px;min-height:48px;width:100%;min-width:0}
+      .giro-filters #giroBusca{grid-column:1/-1}
+      .giro-filters button{min-height:48px}
+    }
+    @media(max-width:420px){
+      .giro-filters{grid-template-columns:1fr 1fr;gap:10px}
+      .giro-filters #giroSetor,.giro-filters #giroBusca,.giro-filters #giroVisita{grid-column:1/-1}
+      .giro-filters #giroSopi{grid-column:1}
+      .giro-filters #giroVisa{grid-column:2}
+    }
+
+</style>
 </head>
 
 <body class="menu-collapsed">
@@ -879,7 +900,7 @@
           <label for="senha">Senha</label>
           <div class="password-line">
             <input id="senha" type="password" autocomplete="current-password" required placeholder="Digite sua senha">
-            <button type="button" id="togglePassword" class="secondary small">Mostrar</button>
+            <button type="button" id="togglePassword" class="password-eye" aria-label="Mostrar senha" title="Mostrar senha" aria-pressed="false"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path class="eye-slash" d="M3 3l18 18" style="display:none"/></svg></button>
           </div>
         </div>
         <button id="loginButton" type="submit" class="primary" style="width:100%">Entrar</button>
@@ -1267,7 +1288,10 @@
     $('togglePassword').onclick = () => {
       const input = $('senha');
       input.type = input.type === 'password' ? 'text' : 'password';
-      $('togglePassword').textContent = input.type === 'password' ? 'Mostrar' : 'Ocultar';
+      $('togglePassword').setAttribute('aria-label', input.type === 'password' ? 'Mostrar senha' : 'Ocultar senha');
+      $('togglePassword').setAttribute('title', input.type === 'password' ? 'Mostrar senha' : 'Ocultar senha');
+      $('togglePassword').setAttribute('aria-pressed', String(input.type !== 'password'));
+      $('togglePassword').querySelector('.eye-slash').style.display = input.type === 'password' ? 'none' : '';
     };
 
     $('loginForm').onsubmit = async e => {
@@ -2160,7 +2184,12 @@
       if(sector)query=query.eq('setor',sector);
       if(visit)query=query.eq('visita',visit);
       if(q)query=query.or(`pdv.ilike.%${q}%,fantasia.ilike.%${q}%`);
-      if(includeStatus){if($('giroSopi').value)query=query.eq('status_sopi',$('giroSopi').value);if($('giroVisa').value)query=query.eq('status_visa',$('giroVisa').value);}
+      if(includeStatus){
+        const sopi=$('giroSopi').value, visa=$('giroVisa').value;
+        // Quando ambos são NOK, basta um dos equipamentos estar NOK (OU).
+        if(sopi==='NOK' && visa==='NOK')query=query.or('status_sopi.eq.NOK,status_visa.eq.NOK');
+        else {if(sopi)query=query.eq('status_sopi',sopi);if(visa)query=query.eq('status_visa',visa);}
+      }
       return query;
     }
     async function giroCount(statusCol,status){
