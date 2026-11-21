@@ -1037,6 +1037,25 @@
     // Configuração de Compradores disponível desde o início do módulo.
     const BUYER_COLUMNS = 'pdv,fantasia,cidade,setor,visita,ambev_total,mktp,nab,match,inad,valor_inad';
     const BUYER_PAGE_SIZE = 150;
+    // Cache isolado por sessão e usuário; dados não persistem no navegador.
+    const buyerCache = { owner: null, sectors: null, visits: null, summaries: new Map(), pages: new Map() };
+    const BUYER_CACHE_TTL = 3 * 60 * 1000;
+    function buyerCacheRead(map, key) {
+      const hit = map.get(key);
+      if (!hit || Date.now() - hit.at > BUYER_CACHE_TTL) { map.delete(key); return null; }
+      return hit.value;
+    }
+    function buyerCacheWrite(map, key, value) {
+      if (map.size > 80) map.delete(map.keys().next().value);
+      map.set(key, { value, at: Date.now() });
+    }
+    function clearBuyerCache() {
+      buyerCache.sectors = null;
+      buyerCache.visits = null;
+      buyerCache.summaries.clear();
+      buyerCache.pages.clear();
+      buyerRequestVersion++;
+    }
 
     function message(id, text, type = 'error') {
       const el = $(id);
@@ -1056,6 +1075,8 @@
 
     function showLogin() {
       currentUser = null;
+      clearBuyerCache();
+      buyerCache.owner = null;
       users = [];
       $('appScreen').classList.add('hidden');
       $('loginScreen').classList.remove('hidden');
@@ -1064,6 +1085,10 @@
     }
 
     function showPortal(user) {
+      if (buyerCache.owner !== user.id) {
+        clearBuyerCache();
+        buyerCache.owner = user.id;
+      }
       currentUser = user;
       $('loginScreen').classList.add('hidden');
       $('appScreen').classList.remove('hidden');
@@ -1168,6 +1193,7 @@
 
     async function getAllowedSectors() {
       // A RLS também filtra os dados; esta lista controla apenas as opções visíveis.
+      if (buyerCache.sectors) return buyerCache.sectors;
       let query = supabase.from('portal_pdvs').select('setor');
       // Até 15 mil registros: não presumir que uma única consulta devolve todos.
       const sectors = new Set();
@@ -1177,10 +1203,11 @@
         for (const row of data || []) sectors.add(String(row.setor));
         if (!data || data.length < 1000) break;
       }
-      return [...sectors].sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true }));
+      return (buyerCache.sectors = [...sectors].sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true })));
     }
 
     async function getAllowedVisits() {
+      if (buyerCache.visits) return buyerCache.visits;
       const visits = new Set();
       for (let offset = 0; offset < 15000; offset += 1000) {
         const { data, error } = await supabase.from('portal_pdvs')
@@ -1190,7 +1217,7 @@
         for (const row of data || []) if (row.visita) visits.add(String(row.visita));
         if (!data || data.length < 1000) break;
       }
-      return [...visits].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+      return (buyerCache.visits = [...visits].sort((a, b) => a.localeCompare(b, 'pt-BR')));
     }
 
     async function openCompradores() {
@@ -1281,70 +1308,114 @@
       $('buyerDebtSub').textContent = `${pct(debt)} da base`;
     }
 
+    function buyerFilterKey() {
+      return JSON.stringify([buyerFilters.setor, buyerFilters.q, buyerFilters.visita, buyerFilters.ncomp]);
+    }
+
+    async function fetchBuyerSummary(version) {
+      let total = 0, ok = 0, debt = 0;
+      for (let offset = 0; offset < 15000; offset += 1000) {
+        const { data, error } = await buyerQuery(
+          supabase.from('portal_pdvs').select('ambev_total,inad')
+        ).range(offset, offset + 999);
+        if (error) throw error;
+        if (version !== buyerRequestVersion) return null;
+        for (const row of data || []) {
+          total++;
+          if (isBuyerOK(row.ambev_total)) ok++;
+          if (isBuyerDebt(row.inad)) debt++;
+        }
+        if (!data || data.length < 1000) break;
+      }
+      return { total, ok, debt };
+    }
+
+    async function fetchBuyerPage(version) {
+      if (buyerFilters.visita) {
+        // Mantém a ordenação numérica original quando há filtro de visita.
+        // O resultado completo é reutilizado entre páginas por até 3 minutos.
+        const allRows = [];
+        for (let offset = 0; offset < 15000; offset += 1000) {
+          const { data, error } = await buyerQuery(
+            supabase.from('portal_pdvs').select(BUYER_COLUMNS)
+          ).range(offset, offset + 999);
+          if (error) throw error;
+          if (version !== buyerRequestVersion) return null;
+          allRows.push(...(data || []));
+          if (!data || data.length < 1000) break;
+        }
+        allRows.sort((a, b) => {
+          const aNum = BigInt(/^\d+$/.test(String(a.pdv)) ? String(a.pdv) : '0');
+          const bNum = BigInt(/^\d+$/.test(String(b.pdv)) ? String(b.pdv) : '0');
+          return aNum < bNum ? -1 : aNum > bNum ? 1 : String(a.pdv).localeCompare(String(b.pdv), 'pt-BR');
+        });
+        return allRows;
+      }
+      const { data, error } = await buyerQuery(
+        supabase.from('portal_pdvs').select(BUYER_COLUMNS)
+      ).order('setor', { ascending: true })
+       .order('visita', { ascending: true })
+       .order('fantasia', { ascending: true })
+       .range((buyerPage - 1) * BUYER_PAGE_SIZE, buyerPage * BUYER_PAGE_SIZE - 1);
+      if (error) throw error;
+      return data || [];
+    }
+
     async function loadBuyers() {
       const version = ++buyerRequestVersion;
       const button = $('buyerFilterButton');
       button.disabled = true;
       message('buyerError', '');
-      $('buyerBody').innerHTML = '<tr><td colspan="11" class="empty">Carregando PDVs...</td></tr>';
-      try {
-        // Resumo correto de toda a base filtrada, não apenas da página.
-        // A leitura em lotes respeita a RLS e evita o limite padrão de 1.000 linhas.
-        let total = 0, ok = 0, debt = 0;
-        for (let offset = 0; offset < 15000; offset += 1000) {
-          const { data, error } = await buyerQuery(
-            supabase.from('portal_pdvs').select('ambev_total,inad')
-          ).range(offset, offset + 999);
-          if (error) throw error;
-          if (version !== buyerRequestVersion) return;
-          for (const row of data || []) {
-            total++;
-            if (isBuyerOK(row.ambev_total)) ok++;
-            if (isBuyerDebt(row.inad)) debt++;
-          }
-          if (!data || data.length < 1000) break;
-        }
-
-        let query = buyerQuery(supabase.from('portal_pdvs').select(BUYER_COLUMNS));
-        if (buyerFilters.visita) {
-          // Ordenação numérica de PDV na página: os códigos numéricos devem ser
-          // classificados no servidor para ordenação global exata.
-          // Aqui buscamos a base filtrada (até 15 mil) e ordenamos no navegador.
-          const allRows = [];
-          for (let offset = 0; offset < 15000; offset += 1000) {
-            const { data, error } = await buyerQuery(
-              supabase.from('portal_pdvs').select(BUYER_COLUMNS)
-            ).range(offset, offset + 999);
-            if (error) throw error;
-            if (version !== buyerRequestVersion) return;
-            allRows.push(...(data || []));
-            if (!data || data.length < 1000) break;
-          }
-          allRows.sort((a, b) => {
-            const aNum = BigInt(/^\d+$/.test(String(a.pdv)) ? String(a.pdv) : '0');
-            const bNum = BigInt(/^\d+$/.test(String(b.pdv)) ? String(b.pdv) : '0');
-            return aNum < bNum ? -1 : aNum > bNum ? 1 : String(a.pdv).localeCompare(String(b.pdv), 'pt-BR');
-          });
-          renderBuyerRows(allRows.slice((buyerPage - 1) * BUYER_PAGE_SIZE, buyerPage * BUYER_PAGE_SIZE));
-        } else {
-          const { data, error } = await query
-            .order('setor', { ascending: true })
-            .order('visita', { ascending: true })
-            .order('fantasia', { ascending: true })
-            .range((buyerPage - 1) * BUYER_PAGE_SIZE, buyerPage * BUYER_PAGE_SIZE - 1);
-          if (error) throw error;
-          if (version !== buyerRequestVersion) return;
-          renderBuyerRows(data || []);
-        }
-        updateBuyerSummary(total, ok, total - ok, debt);
+      const filterKey = buyerFilterKey();
+      const pageKey = JSON.stringify([filterKey, buyerPage]);
+      const cachedSummary = buyerCacheRead(buyerCache.summaries, filterKey);
+      const cachedRows = buyerCacheRead(buyerCache.pages, buyerFilters.visita ? filterKey : pageKey);
+      if (cachedRows) {
+        const rows = buyerFilters.visita
+          ? cachedRows.slice((buyerPage - 1) * BUYER_PAGE_SIZE, buyerPage * BUYER_PAGE_SIZE)
+          : cachedRows;
+        renderBuyerRows(rows);
+      } else {
+        $('buyerBody').innerHTML = '<tr><td colspan="11" class="empty">Carregando PDVs...</td></tr>';
+      }
+      if (cachedSummary) {
+        updateBuyerSummary(cachedSummary.total, cachedSummary.ok,
+          cachedSummary.total - cachedSummary.ok, cachedSummary.debt);
+      } else {
+        for (const id of ['buyerTotal', 'buyerOK', 'buyerNotOK', 'buyerDebt']) $(id).textContent = '…';
+      }
+      const applyPagination = total => {
         buyerTotalPages = Math.max(1, Math.ceil(total / BUYER_PAGE_SIZE));
         $('buyerPageLabel').textContent = `Página ${buyerPage} de ${buyerTotalPages}`;
         $('buyerPrevious').disabled = buyerPage <= 1;
         $('buyerNext').disabled = buyerPage >= buyerTotalPages;
+      };
+      if (cachedSummary) applyPagination(cachedSummary.total);
+      try {
+        // Busca a primeira página e o resumo em paralelo; não bloqueia a tabela.
+        const pagePromise = cachedRows ? Promise.resolve(cachedRows) : fetchBuyerPage(version);
+        const summaryPromise = cachedSummary ? Promise.resolve(cachedSummary) : fetchBuyerSummary(version);
+        const pageTask = pagePromise.then(rows => {
+          if (version !== buyerRequestVersion || rows === null) return;
+          if (!cachedRows) buyerCacheWrite(buyerCache.pages,
+            buyerFilters.visita ? filterKey : pageKey, rows);
+          renderBuyerRows(buyerFilters.visita
+            ? rows.slice((buyerPage - 1) * BUYER_PAGE_SIZE, buyerPage * BUYER_PAGE_SIZE)
+            : rows);
+        });
+        const summaryTask = summaryPromise.then(summary => {
+          if (version !== buyerRequestVersion || !summary) return;
+          if (!cachedSummary) buyerCacheWrite(buyerCache.summaries, filterKey, summary);
+          updateBuyerSummary(summary.total, summary.ok, summary.total - summary.ok, summary.debt);
+          applyPagination(summary.total);
+        });
+        const results = await Promise.allSettled([pageTask, summaryTask]);
+        if (version !== buyerRequestVersion) return;
+        const errors = results.filter(r => r.status === 'rejected');
+        if (errors.length) throw errors[0].reason;
       } catch (err) {
         if (version === buyerRequestVersion) {
           message('buyerError', err.message || 'Erro ao consultar os PDVs.');
-          renderBuyerRows([]);
         }
       } finally {
         if (version === buyerRequestVersion) button.disabled = false;
@@ -1754,6 +1825,7 @@
         try { result = await response.json(); }
         catch { throw new Error(`Resposta inválida do servidor (HTTP ${response.status}).`); }
         if (!response.ok || !result.success) throw new Error(result.error || `Erro HTTP ${response.status}.`);
+        clearBuyerCache();
         importProgress('Importação concluída.', 100);
         message('importStatus', `Importação concluída! ${Number(result.registros).toLocaleString('pt-BR')} PDVs na base atual.`, 'success');
       } catch (err) {
