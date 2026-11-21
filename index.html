@@ -835,6 +835,16 @@
     @media(prefers-reduced-motion:reduce){
       .sidebar{transition:none!important}
     }
+
+    .giro-filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-items:center}
+    .giro-filters input,.giro-filters select{min-width:0;width:100%}
+    .giro-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0}
+    .giro-kpis .item{border:1px solid var(--border,#dbe4ed);border-radius:12px;padding:16px;background:var(--card,#fff)}
+    .giro-kpis .name{font-size:13px;opacity:.75}.giro-kpis .value{font-size:28px;font-weight:800;margin:8px 0}.giro-kpis .sub{font-size:12px;opacity:.8}
+    .giro-table{min-width:1450px}.giro-table td,.giro-table th{white-space:nowrap}
+    .giro-ok{color:#16824b;font-weight:800}.giro-nok{color:#c44343;font-weight:800}.giro-na{color:#8993a3}
+    @media(max-width:800px){.giro-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.giro-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.giro-kpis .item:first-child{grid-column:1/-1}.giro-kpis .value{font-size:24px}}
+    @media(max-width:380px){.giro-filters{grid-template-columns:1fr}}
   </style>
 </head>
 
@@ -870,6 +880,7 @@
       <nav aria-label="Menu principal">
         <button class="nav-item active" id="navInicio" type="button">🏠 Início</button>
         <button class="nav-item" id="navCompradores" type="button">🛒 Compradores</button>
+        <button class="nav-item" id="navGiro" type="button">🧊 Giro de Equipamentos</button>
         <button class="nav-item" id="navRemuneracao" type="button">📊 Painel Remuneração</button>
         <button class="nav-item hidden" id="navAdmin" type="button">⚙️ Administração</button>
       </nav>
@@ -901,6 +912,7 @@
               <span class="status">DISPONÍVEL</span>
               <button id="openRemuneracaoCard" class="primary" type="button">Acessar Remuneração</button>
             </article>
+            <article class="card"><div class="emoji">🧊</div><h3>Giro de Equipamentos</h3><p>Acompanhe SOPI, VISA, metas, resultados, GAP e status dos PDVs.</p><span class="status">DISPONÍVEL</span><button id="openGiroCard" class="primary" type="button">Acessar Giro</button></article>
             <article id="adminCard" class="card hidden">
               <div class="emoji">⚙️</div>
               <h3>Administração</h3>
@@ -989,6 +1001,26 @@
           </div>
         </section>
 
+        <section id="giroPage" class="hidden">
+          <h1 class="page-title">Giro de Equipamentos</h1><p class="lead">Plan Giro de Equipamentos mês · SOPI e VISA</p>
+          <div id="giroError" class="message hidden" role="alert"></div>
+          <div class="panel"><form id="giroForm" class="giro-filters">
+            <select id="giroSetor" aria-label="Setor"></select><input id="giroBusca" type="search" placeholder="PDV ou fantasia" aria-label="Buscar PDV ou fantasia">
+            <select id="giroVisita" aria-label="Visita"><option value="">Todas as visitas</option></select>
+            <select id="giroCidade" aria-label="Cidade"><option value="">Todas as cidades</option></select>
+            <select id="giroSopi" aria-label="Status SOPI"><option value="">SOPI: Todos</option><option value="OK">SOPI: OK</option><option value="NOK">SOPI: NOK</option></select>
+            <select id="giroVisa" aria-label="Status VISA"><option value="">VISA: Todos</option><option value="OK">VISA: OK</option><option value="NOK">VISA: NOK</option></select>
+            <button type="submit" class="primary">Filtrar</button><button id="giroLimpar" type="button" class="secondary">Limpar</button>
+          </form></div>
+          <div class="giro-kpis">
+            <div class="item"><div class="name">PDVs filtrados</div><div id="giroTotal" class="value">—</div><div class="sub">Inclui sem equipamento</div></div>
+            <div class="item"><div class="name">SOPI · OK</div><div id="giroSopiPct" class="value">—</div><div id="giroSopiSub" class="sub">—</div></div>
+            <div class="item"><div class="name">VISA · OK</div><div id="giroVisaPct" class="value">—</div><div id="giroVisaSub" class="sub">—</div></div>
+          </div>
+          <div class="panel"><strong>Detalhamento dos PDVs</strong><p class="hint">O status “—” significa sem equipamento e não entra no cálculo de OK/NOK. Deslize a tabela para os lados no celular.</p>
+          <div class="buyer-table-wrap"><table class="buyer-table giro-table"><thead><tr><th>PDV</th><th>Fantasia</th><th>Setor</th><th>Visita</th><th>Cidade</th><th>Qtd SOPI</th><th>Qtd VISA</th><th>Meta SOPI</th><th>Meta VISA</th><th>Real Cerveja</th><th>Real NAB</th><th>GAP SOPI</th><th>GAP VISA</th><th>Status SOPI</th><th>Status VISA</th></tr></thead><tbody id="giroBody"><tr><td colspan="15" class="empty">Abra o painel para consultar.</td></tr></tbody></table></div>
+          <div class="pagination"><button id="giroAnterior" type="button" class="secondary small">← Anterior</button><span id="giroPagina" class="hint">Página 1</span><button id="giroProximo" type="button" class="secondary small">Próxima →</button></div></div>
+        </section>
         <section id="remuneracaoPage" class="hidden">
           <h1 class="page-title">Painel Remuneração</h1>
           <p class="lead">Indicadores de desempenho da aba MATINAL.</p>
@@ -1067,6 +1099,11 @@
             <div id="matinalProgress" class="import-progress hidden"><progress id="matinalBar" max="100" value="0"></progress><span class="hint" id="matinalStep">Preparando...</span></div>
             <p class="import-history">Os valores serão lidos do resultado calculado salvo no Excel. Antes de importar, atualize e salve a planilha no Excel.</p>
           </div>
+          <div class="panel import-panel"><h2 style="margin-top:0;font-size:20px">Importar Giro de Equipamentos</h2>
+            <p class="hint">Arquivo Excel (.xlsm ou .xlsx), aba <b>Plan Giro de Equipamentos mês</b>. Apenas as colunas B:T são processadas. Abra, atualize e salve a planilha no Excel antes de importar, para manter os resultados calculados das fórmulas.</p>
+            <label for="giroFile" style="display:block;font-weight:700;margin:15px 0 8px">Selecionar planilha Giro</label><input class="import-input" id="giroFile" type="file" accept=".xlsm,.xlsx">
+            <div id="giroImportStatus" class="message hidden" role="status"></div><div id="giroImportProgress" class="import-progress hidden"><progress id="giroImportBar" max="100" value="0"></progress><span class="hint" id="giroImportStep">Preparando...</span></div>
+            <p class="import-history">A base anterior é preservada se a importação falhar.</p></div>
         </section>
       </div>
     </main>
@@ -1122,6 +1159,7 @@
     const loginFunction = `${SUPABASE_URL}/functions/v1/portal-login`;
     const adminFunction = `${SUPABASE_URL}/functions/v1/portal-gerenciar-usuarios`;
     const importFunction = `${SUPABASE_URL}/functions/v1/portal-importar-pdvs`;
+    const giroFunction = `${SUPABASE_URL}/functions/v1/portal-importar-giro`;
     const matinalFunction = `${SUPABASE_URL}/functions/v1/portal-importar-matinal`;
     const $ = id => document.getElementById(id);
     const roles = { rn: 'RN', gv: 'GV', gc: 'GC', admin: 'Administrador' };
@@ -1164,11 +1202,12 @@
     }
 
     function showPage(page) {
-      for (const id of ['homePage', 'compradoresPage', 'remuneracaoPage', 'adminPage']) {
+      for (const id of ['homePage', 'compradoresPage', 'remuneracaoPage', 'giroPage', 'adminPage']) {
         $(id).classList.toggle('hidden', id !== page);
       }
       $('navInicio').classList.toggle('active', page === 'homePage');
       $('navCompradores').classList.toggle('active', page === 'compradoresPage');
+      $('navGiro').classList.toggle('active', page === 'giroPage');
       $('navRemuneracao').classList.toggle('active', page === 'remuneracaoPage');
       $('navAdmin').classList.toggle('active', page === 'adminPage');
     }
@@ -1266,6 +1305,8 @@
     $('openCompradoresCard').onclick = openCompradores;
     $('navRemuneracao').onclick = openRemuneracao;
     $('openRemuneracaoCard').onclick = openRemuneracao;
+    $('navGiro').onclick = openGiro;
+    $('openGiroCard').onclick = openGiro;
     $('navAdmin').onclick = openAdmin;
     $('openAdminCard').onclick = openAdmin;
 
@@ -2093,6 +2134,135 @@
         message('matinalStatus',`Matinal importada! ${Number(result.setores).toLocaleString('pt-BR')} setores atualizados.`,'success');
       }catch(err){message('matinalStatus',err.message||'Erro ao importar MATINAL.');$('matinalProgress').classList.add('hidden');}
       finally{importingMatinal=false;input.disabled=false;input.value='';}
+    });
+
+
+    // Giro: consulta paginada, filtros independentes e cálculo sem status '-'.
+    const GIRO_COLS='pdv,fantasia,setor,visita,cidade,qtd_sopi,qtd_visa,meta_sopi,meta_visa,real_cerveja,real_nab,gap_sopi,gap_visa,status_sopi,status_visa';
+    const GIRO_PAGE_SIZE=100;
+    let giroPage=1,giroPages=1,giroVersion=0;
+    function giroWhere(query,includeStatus=true){
+      const sector=$('giroSetor').value,visit=$('giroVisita').value,city=$('giroCidade').value;
+      const q=$('giroBusca').value.trim().replace(/[%,()]/g,'');
+      if(sector)query=query.eq('setor',sector);
+      if(visit)query=query.eq('visita',visit);
+      if(city)query=query.eq('cidade',city);
+      if(q)query=query.or(`pdv.ilike.%${q}%,fantasia.ilike.%${q}%`);
+      if(includeStatus){if($('giroSopi').value)query=query.eq('status_sopi',$('giroSopi').value);if($('giroVisa').value)query=query.eq('status_visa',$('giroVisa').value);}
+      return query;
+    }
+    async function giroCount(statusCol,status){
+      let query=supabase.from('portal_giro_equipamentos').select('id',{count:'exact',head:true});
+      query=giroWhere(query);
+      if(statusCol)query=query.eq(statusCol,status);
+      const {count,error}=await query;if(error)throw error;return count||0;
+    }
+    function giroTd(row,value,cls){const td=document.createElement('td');td.textContent=value??'—';if(cls)td.className=cls;row.append(td);}
+    function giroNum(n){return n===null||n===undefined?'—':Number(n).toLocaleString('pt-BR',{maximumFractionDigits:2});}
+    function giroBadge(s){return s==='-'?'—':s;}
+    async function loadGiro(){
+      const version=++giroVersion;message('giroError','');$('giroBody').innerHTML='<tr><td colspan="15" class="empty">Carregando...</td></tr>';
+      try{
+        const query=giroWhere(supabase.from('portal_giro_equipamentos').select(GIRO_COLS,{count:'exact'}));
+        const {data,count,error}=await query.order('setor').order('pdv').range((giroPage-1)*GIRO_PAGE_SIZE,giroPage*GIRO_PAGE_SIZE-1);
+        if(error)throw error;
+        const [sopiOK,sopiNOK,visaOK,visaNOK]=await Promise.all([
+          giroCount('status_sopi','OK'),giroCount('status_sopi','NOK'),giroCount('status_visa','OK'),giroCount('status_visa','NOK')]);
+        if(version!==giroVersion)return;
+        const total=count||0;giroPages=Math.max(1,Math.ceil(total/GIRO_PAGE_SIZE));
+        $('giroTotal').textContent=total.toLocaleString('pt-BR');
+        for(const [kind,ok,nok] of [['Sopi',sopiOK,sopiNOK],['Visa',visaOK,visaNOK]]){
+          const denom=ok+nok;$('giro'+kind+'Pct').textContent=denom?(100*ok/denom).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%':'—';
+          $('giro'+kind+'Sub').textContent=`${ok} OK · ${nok} NOK · ${total-denom} sem equipamento`;
+        }
+        $('giroPagina').textContent=`Página ${giroPage} de ${giroPages}`;
+        $('giroAnterior').disabled=giroPage<=1;$('giroProximo').disabled=giroPage>=giroPages;
+        const body=$('giroBody');body.replaceChildren();
+        if(!data?.length){body.innerHTML='<tr><td colspan="15" class="empty">Nenhum PDV encontrado.</td></tr>';return;}
+        for(const r of data){const tr=document.createElement('tr');
+          for(const col of ['pdv','fantasia','setor','visita','cidade','qtd_sopi','qtd_visa','meta_sopi','meta_visa','real_cerveja','real_nab','gap_sopi','gap_visa','status_sopi','status_visa']){
+            const v=r[col];giroTd(tr,col.startsWith('status_')?giroBadge(v):['qtd_sopi','qtd_visa','meta_sopi','meta_visa','real_cerveja','real_nab','gap_sopi','gap_visa'].includes(col)?giroNum(v):v,col.startsWith('status_')?(v==='OK'?'giro-ok':v==='NOK'?'giro-nok':'giro-na'):'');
+          }body.append(tr);
+        }
+      }catch(err){if(version===giroVersion){message('giroError',err.message||'Falha ao consultar Giro');$('giroBody').innerHTML='<tr><td colspan="15" class="empty">Erro ao carregar.</td></tr>';}}
+    }
+    async function openGiro(){
+      if(!currentUser)return;showPage('giroPage');message('giroError','');
+      try{
+        const sectors=await getAllowedSectors();const select=$('giroSetor');select.replaceChildren();
+        if(['gv','gc','admin'].includes(currentUser.perfil))select.add(new Option('Todos os setores',''));
+        for(const s of sectors)select.add(new Option('Setor '+s,s));
+        if(!select.options.length){message('giroError','Nenhum setor autorizado.');return;}
+        const visits=new Set(),cities=new Set();
+        for(let offset=0;offset<15000;offset+=1000){
+          const {data,error}=await supabase.from('portal_giro_equipamentos').select('visita,cidade').range(offset,offset+999);
+          if(error)throw error;for(const r of data||[]){if(r.visita)visits.add(r.visita);if(r.cidade)cities.add(r.cidade);}if(!data||data.length<1000)break;
+        }
+        for(const [id,vals,label] of [['giroVisita',visits,'Todas as visitas'],['giroCidade',cities,'Todas as cidades']]){
+          const el=$(id);el.replaceChildren(new Option(label,''));for(const v of [...vals].sort((a,b)=>String(a).localeCompare(String(b),'pt-BR')))el.add(new Option(v,v));
+        }
+        $('giroBusca').value='';$('giroSopi').value='';$('giroVisa').value='';giroPage=1;await loadGiro();
+      }catch(err){message('giroError',err.message||'Falha ao iniciar painel.');}
+    }
+    $('giroForm').onsubmit=e=>{e.preventDefault();giroPage=1;loadGiro();};
+    $('giroLimpar').onclick=()=>{for(const id of ['giroBusca','giroVisita','giroCidade','giroSopi','giroVisa'])$(id).value='';if(['gv','gc','admin'].includes(currentUser?.perfil))$('giroSetor').value='';giroPage=1;loadGiro();};
+    $('giroAnterior').onclick=()=>{if(giroPage>1){giroPage--;loadGiro();}};
+    $('giroProximo').onclick=()=>{if(giroPage<giroPages){giroPage++;loadGiro();}};
+
+    // Leitura da planilha em Worker: nenhuma macro executada; apenas valores em cache das fórmulas.
+    let importingGiro=false;
+    function giroProgress(label,pct){$('giroImportProgress').classList.remove('hidden');$('giroImportBar').value=pct;$('giroImportStep').textContent=label;}
+    function makeGiroWorker(){
+      const source=String.raw`
+        self.onmessage=e=>{try{
+          self.postMessage({type:'progress',text:'Carregando leitor de Excel...',percent:10});
+          importScripts('https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js');
+          const wb=XLSX.read(e.data.buffer,{type:'array',sheets:['Plan Giro de Equipamentos mês '],cellFormula:false,cellDates:false,cellStyles:false,bookVBA:false,cellHTML:false,cellNF:false,cellText:false});
+          const name=wb.SheetNames.find(n=>n.trim().toLowerCase()==='plan giro de equipamentos mês');
+          if(!name)throw new Error('Aba "Plan Giro de Equipamentos mês" não encontrada.');
+          const sheet=wb.Sheets[name];if(!sheet?.['!ref'])throw new Error('Aba Giro vazia.');
+          const range=XLSX.utils.decode_range(sheet['!ref']);
+          const fields={pdv:'B',fantasia:'C',setor:'D',visita:'E',cidade:'F',qtd_sopi:'G',qtd_visa:'H',meta_sopi:'J',meta_visa:'K',real_cerveja:'M',real_nab:'N',gap_sopi:'P',gap_visa:'Q',status_sopi:'S',status_visa:'T'};
+          const numeric=new Set(['qtd_sopi','qtd_visa','meta_sopi','meta_visa','real_cerveja','real_nab','gap_sopi','gap_visa']);
+          const records=[],seen=new Set();
+          for(let row=8;row<=range.e.r+1;row++){
+            const record={};for(const [field,col] of Object.entries(fields)){
+              const cell=sheet[col+row];if(cell?.t==='e')throw new Error('Erro de fórmula na célula '+col+row+'. Atualize e salve a planilha.');
+              const v=cell?.v;record[field]=numeric.has(field)?(v==null||v===''||v==='-'?null:Number(v)):String(v??'').trim();
+              if(numeric.has(field)&&record[field]!==null&&!Number.isFinite(record[field]))throw new Error('Número inválido em '+col+row);
+            }
+            if(!record.pdv&&!record.setor)continue;
+            if(!record.pdv||!record.setor)throw new Error('PDV ou setor ausente na linha '+row);
+            for(const field of ['status_sopi','status_visa']){
+              record[field]=(record[field]||'-').toUpperCase();if(!['OK','NOK','-'].includes(record[field]))throw new Error('Status inválido na linha '+row+': '+record[field]);
+            }
+            const key=record.pdv+'|'+record.setor;if(seen.has(key))throw new Error('PDV duplicado no setor na linha '+row+': '+key);seen.add(key);
+            records.push(record);if(records.length>25000)throw new Error('Limite de 25 mil registros excedido.');
+          }
+          if(!records.length)throw new Error('Nenhum PDV encontrado a partir da linha 8.');
+          self.postMessage({type:'done',records});
+        }catch(err){self.postMessage({type:'error',message:err?.message||'Erro na leitura do Excel.'});}};`;
+      const url=URL.createObjectURL(new Blob([source],{type:'text/javascript'}));const worker=new Worker(url);URL.revokeObjectURL(url);return worker;
+    }
+    function parseGiro(buffer){return new Promise((resolve,reject)=>{
+      const worker=makeGiroWorker();worker.onmessage=e=>{const m=e.data;if(m.type==='progress'){giroProgress(m.text,m.percent);return;}worker.terminate();m.type==='done'?resolve(m.records):reject(new Error(m.message||'Erro de leitura.'));};
+      worker.onerror=()=>{worker.terminate();reject(new Error('Erro no leitor Excel.'));};worker.postMessage({buffer},[buffer]);
+    });}
+    $('giroFile').addEventListener('change',async e=>{
+      const input=e.currentTarget,file=input.files?.[0];if(!file||importingGiro)return;
+      if(currentUser?.perfil!=='admin'){message('giroImportStatus','Apenas administradores podem importar.');input.value='';return;}
+      if(!/\.(xlsm|xlsx)$/i.test(file.name)){message('giroImportStatus','Selecione um arquivo .xlsm ou .xlsx.');input.value='';return;}
+      importingGiro=true;input.disabled=true;message('giroImportStatus','');
+      try{
+        giroProgress('Preparando planilha...',5);const registros=await parseGiro(await file.arrayBuffer());
+        giroProgress(`${registros.length} PDVs validados. Enviando ao Supabase...`,70);
+        const {data:{session},error}=await supabase.auth.getSession();if(error||!session)throw new Error('Sessão expirada. Entre novamente.');
+        const response=await fetch(giroFunction,{method:'POST',headers:{'Content-Type':'application/json',apikey:SUPABASE_KEY,Authorization:`Bearer ${session.access_token}`},body:JSON.stringify({nome_arquivo:file.name,registros})});
+        let result;try{result=await response.json();}catch{throw new Error('Resposta inválida do servidor (HTTP '+response.status+').');}
+        if(!response.ok||!result.success)throw new Error(result.error||'Erro HTTP '+response.status);
+        giroProgress('Importação concluída!',100);message('giroImportStatus',`Giro importado com sucesso: ${Number(result.total).toLocaleString('pt-BR')} PDVs.`,'success');
+      }catch(err){message('giroImportStatus',err.message||'Erro na importação.');$('giroImportProgress').classList.add('hidden');}
+      finally{importingGiro=false;input.disabled=false;input.value='';}
     });
 
     async function init() {
