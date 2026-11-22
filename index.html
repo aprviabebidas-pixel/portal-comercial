@@ -1251,6 +1251,7 @@
     function showLogin() {
       currentUser = null;
       clearBuyerCache();
+      clearGiroCache();giroCache.owner=null;
       buyerCache.owner = null;
       users = [];
       $('appScreen').classList.add('hidden');
@@ -2180,6 +2181,14 @@
     const GIRO_COLS='pdv,fantasia,setor,visita,cidade,qtd_sopi,qtd_visa,meta_sopi,meta_visa,real_cerveja,real_nab,gap_sopi,gap_visa,status_sopi,status_visa';
     const GIRO_PAGE_SIZE=100;
     let giroPage=1,giroPages=1,giroVersion=0;
+    // Cache em memória: separado por usuário, com expiração e limite de entradas.
+    const giroCache={owner:null,visits:null,summary:new Map(),pages:new Map()};
+    const GIRO_CACHE_TTL=3*60*1000;
+    function giroCacheGet(map,key){const hit=map.get(key);if(!hit||Date.now()-hit.at>GIRO_CACHE_TTL){map.delete(key);return null;}return hit.value;}
+    function giroCacheSet(map,key,value){if(map.size>=60)map.delete(map.keys().next().value);map.set(key,{at:Date.now(),value});}
+    function clearGiroCache(){giroCache.visits=null;giroCache.summary.clear();giroCache.pages.clear();giroVersion++;}
+    function giroEnsureOwner(){const owner=currentUser?.id||null;if(giroCache.owner!==owner){clearGiroCache();giroCache.owner=owner;}}
+    function giroFilterKey(){return JSON.stringify([$('giroSetor').value,$('giroVisita').value,$('giroBusca').value.trim(),$('giroSopi').value,$('giroVisa').value]);}
     function giroWhere(query,includeStatus=true){
       const sector=$('giroSetor').value,visit=$('giroVisita').value;
       const q=$('giroBusca').value.trim().replace(/[%,()]/g,'');
@@ -2204,43 +2213,62 @@
     function giroNum(n){return n===null||n===undefined?'—':Number(n).toLocaleString('pt-BR',{maximumFractionDigits:2});}
     function giroMoney(n){return n===null||n===undefined?'—':Number(n).toLocaleString('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:2,maximumFractionDigits:2});}
     function giroBadge(s){return s==='-'?'—':s;}
+    function renderGiroResult(data,summary){
+      const {total,sopiOK,sopiNOK,visaOK,visaNOK}=summary;
+      giroPages=Math.max(1,Math.ceil(total/GIRO_PAGE_SIZE));
+      $('giroTotal').textContent=total.toLocaleString('pt-BR');
+      for(const [kind,ok,nok] of [['Sopi',sopiOK,sopiNOK],['Visa',visaOK,visaNOK]]){
+        const denom=ok+nok;
+        $('giro'+kind+'Pct').textContent=denom?(100*ok/denom).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%':'—';
+        $('giro'+kind+'Sub').textContent=`${ok} OK · ${nok} NOK · ${total-denom} sem equipamento`;
+      }
+      $('giroPagina').textContent=`Página ${giroPage} de ${giroPages}`;
+      $('giroAnterior').disabled=giroPage<=1;$('giroProximo').disabled=giroPage>=giroPages;
+      const body=$('giroBody');const fragment=document.createDocumentFragment();
+      if(!data?.length){body.innerHTML='<tr><td colspan="15" class="empty">Nenhum PDV encontrado.</td></tr>';return;}
+      for(const r of data){const tr=document.createElement('tr');
+        for(const col of ['pdv','fantasia','setor','visita','cidade','qtd_sopi','qtd_visa','meta_sopi','meta_visa','real_cerveja','real_nab','gap_sopi','gap_visa','status_sopi','status_visa']){
+          const v=r[col];giroTd(tr,col.startsWith('status_')?giroBadge(v):['qtd_sopi','qtd_visa','meta_sopi','meta_visa','real_cerveja','real_nab','gap_sopi','gap_visa'].includes(col)?(['meta_sopi','meta_visa','real_cerveja','real_nab','gap_sopi','gap_visa'].includes(col)?giroMoney(v):giroNum(v)):v,col.startsWith('status_')?(v==='OK'?'giro-ok':v==='NOK'?'giro-nok':'giro-na'):['gap_sopi','gap_visa'].includes(col)?(v===null?'giro-gap-na':Number(v)>=0?'giro-gap-positive':'giro-gap-negative'):'');
+        }fragment.append(tr);
+      }
+      body.replaceChildren(fragment);
+    }
     async function loadGiro(){
-      const version=++giroVersion;message('giroError','');$('giroBody').innerHTML='<tr><td colspan="15" class="empty">Carregando...</td></tr>';
+      giroEnsureOwner();const version=++giroVersion;message('giroError','');
+      const filterKey=giroFilterKey(),pageKey=JSON.stringify([filterKey,giroPage]);
+      const cachedSummary=giroCacheGet(giroCache.summary,filterKey);
+      const cachedPage=giroCacheGet(giroCache.pages,pageKey);
+      if(cachedSummary&&cachedPage){renderGiroResult(cachedPage,cachedSummary);return;}
+      $('giroBody').innerHTML='<tr><td colspan="15" class="empty">Carregando...</td></tr>';
       try{
-        const query=giroWhere(supabase.from('portal_giro_equipamentos').select(GIRO_COLS,{count:'exact'}));
-        const {data,count,error}=await query.order('setor').order('pdv').range((giroPage-1)*GIRO_PAGE_SIZE,giroPage*GIRO_PAGE_SIZE-1);
-        if(error)throw error;
-        const [sopiOK,sopiNOK,visaOK,visaNOK]=await Promise.all([
+        // Página e contagens executadas em paralelo; contagens são reutilizadas ao paginar.
+        const pagePromise=cachedPage?Promise.resolve({data:cachedPage,count:cachedSummary?.total??null,error:null}):giroWhere(supabase.from('portal_giro_equipamentos').select(GIRO_COLS,{count:'exact'})).order('setor').order('pdv').range((giroPage-1)*GIRO_PAGE_SIZE,giroPage*GIRO_PAGE_SIZE-1);
+        const countsPromise=cachedSummary?Promise.resolve(null):Promise.all([
           giroCount('status_sopi','OK'),giroCount('status_sopi','NOK'),giroCount('status_visa','OK'),giroCount('status_visa','NOK')]);
+        const [pageResult,counts]=await Promise.all([pagePromise,countsPromise]);
+        if(pageResult.error)throw pageResult.error;
         if(version!==giroVersion)return;
-        const total=count||0;giroPages=Math.max(1,Math.ceil(total/GIRO_PAGE_SIZE));
-        $('giroTotal').textContent=total.toLocaleString('pt-BR');
-        for(const [kind,ok,nok] of [['Sopi',sopiOK,sopiNOK],['Visa',visaOK,visaNOK]]){
-          const denom=ok+nok;$('giro'+kind+'Pct').textContent=denom?(100*ok/denom).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%':'—';
-          $('giro'+kind+'Sub').textContent=`${ok} OK · ${nok} NOK · ${total-denom} sem equipamento`;
-        }
-        $('giroPagina').textContent=`Página ${giroPage} de ${giroPages}`;
-        $('giroAnterior').disabled=giroPage<=1;$('giroProximo').disabled=giroPage>=giroPages;
-        const body=$('giroBody');body.replaceChildren();
-        if(!data?.length){body.innerHTML='<tr><td colspan="15" class="empty">Nenhum PDV encontrado.</td></tr>';return;}
-        for(const r of data){const tr=document.createElement('tr');
-          for(const col of ['pdv','fantasia','setor','visita','cidade','qtd_sopi','qtd_visa','meta_sopi','meta_visa','real_cerveja','real_nab','gap_sopi','gap_visa','status_sopi','status_visa']){
-            const v=r[col];giroTd(tr,col.startsWith('status_')?giroBadge(v):['qtd_sopi','qtd_visa','meta_sopi','meta_visa','real_cerveja','real_nab','gap_sopi','gap_visa'].includes(col)?(['meta_sopi','meta_visa','real_cerveja','real_nab','gap_sopi','gap_visa'].includes(col)?giroMoney(v):giroNum(v)):v,col.startsWith('status_')?(v==='OK'?'giro-ok':v==='NOK'?'giro-nok':'giro-na'):['gap_sopi','gap_visa'].includes(col)?(v===null?'giro-gap-na':Number(v)>=0?'giro-gap-positive':'giro-gap-negative'):'');
-          }body.append(tr);
-        }
+        const summary=cachedSummary||{total:pageResult.count||0,sopiOK:counts[0],sopiNOK:counts[1],visaOK:counts[2],visaNOK:counts[3]};
+        if(!cachedSummary)giroCacheSet(giroCache.summary,filterKey,summary);
+        if(!cachedPage)giroCacheSet(giroCache.pages,pageKey,pageResult.data||[]);
+        renderGiroResult(pageResult.data||[],summary);
       }catch(err){if(version===giroVersion){message('giroError',err.message||'Falha ao consultar Giro');$('giroBody').innerHTML='<tr><td colspan="15" class="empty">Erro ao carregar.</td></tr>';}}
     }
     async function openGiro(){
-      if(!currentUser)return;showPage('giroPage');message('giroError','');
+      if(!currentUser)return;giroEnsureOwner();showPage('giroPage');message('giroError','');
       try{
         const sectors=await getAllowedSectors();const select=$('giroSetor');select.replaceChildren();
         if(['gv','gc','admin'].includes(currentUser.perfil))select.add(new Option('Todos os setores',''));
         for(const s of sectors)select.add(new Option('Setor '+s,s));
         if(!select.options.length){message('giroError','Nenhum setor autorizado.');return;}
-        const visits=new Set();
-        for(let offset=0;offset<15000;offset+=1000){
-          const {data,error}=await supabase.from('portal_giro_equipamentos').select('visita').range(offset,offset+999);
-          if(error)throw error;for(const r of data||[]){if(r.visita)visits.add(r.visita);}if(!data||data.length<1000)break;
+        let visits=giroCache.visits&&Date.now()-giroCache.visits.at<GIRO_CACHE_TTL?giroCache.visits.value:null;
+        if(!visits){
+          const found=new Set();
+          for(let offset=0;offset<15000;offset+=1000){
+            const {data,error}=await supabase.from('portal_giro_equipamentos').select('visita').range(offset,offset+999);
+            if(error)throw error;for(const r of data||[]){if(r.visita)found.add(r.visita);}if(!data||data.length<1000)break;
+          }
+          visits=[...found];giroCache.visits={value:visits,at:Date.now()};
         }
         const visitaSelect=$('giroVisita');visitaSelect.replaceChildren(new Option('Todas as visitas',''));
         const dias={SEG:1,TER:2,QUA:3,QUI:4,SEX:5,SAB:6,DOM:7};
@@ -2305,7 +2333,7 @@
         const response=await fetch(giroFunction,{method:'POST',headers:{'Content-Type':'application/json',apikey:SUPABASE_KEY,Authorization:`Bearer ${session.access_token}`},body:JSON.stringify({nome_arquivo:file.name,registros})});
         let result;try{result=await response.json();}catch{throw new Error('Resposta inválida do servidor (HTTP '+response.status+').');}
         if(!response.ok||!result.success)throw new Error(result.error||'Erro HTTP '+response.status);
-        giroProgress('Importação concluída!',100);message('giroImportStatus',`Giro importado com sucesso: ${Number(result.total).toLocaleString('pt-BR')} PDVs.`,'success');
+        clearGiroCache();giroProgress('Importação concluída!',100);message('giroImportStatus',`Giro importado com sucesso: ${Number(result.total).toLocaleString('pt-BR')} PDVs.`,'success');
       }catch(err){message('giroImportStatus',err.message||'Erro na importação.');$('giroImportProgress').classList.add('hidden');}
       finally{importingGiro=false;input.disabled=false;input.value='';}
     });
