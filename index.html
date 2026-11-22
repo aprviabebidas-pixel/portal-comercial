@@ -1699,6 +1699,11 @@
       await loadBuyers();
     };
     $('buyerClear').onclick = async () => {
+      // GV, GC e admin retornam à opção consolidada; RN permanece no setor autorizado.
+      const sector = $('buyerSector');
+      sector.value = ['gv', 'gc', 'admin'].includes(currentUser?.perfil)
+        ? ''
+        : (sector.options[0]?.value || '');
       $('buyerSearch').value = '';
       $('buyerVisit').value = '';
       $('buyerNComp').checked = false;
@@ -2368,7 +2373,7 @@
       }catch(err){message('giroError',err.message||'Falha ao iniciar painel.');}
     }
     $('giroForm').onsubmit=e=>{e.preventDefault();giroPage=1;loadGiro();};
-    $('giroLimpar').onclick=()=>{for(const id of ['giroBusca','giroVisita','giroSopi','giroVisa'])$(id).value='';giroPage=1;loadGiro();};
+    $('giroLimpar').onclick=()=>{const sector=$('giroSetor');sector.value=['gv','gc','admin'].includes(currentUser?.perfil)?'':(sector.options[0]?.value||'');for(const id of ['giroBusca','giroVisita','giroSopi','giroVisa'])$(id).value='';giroPage=1;loadGiro();};
     $('giroAnterior').onclick=()=>{if(giroPage>1){giroPage--;loadGiro();}};
     $('giroProximo').onclick=()=>{if(giroPage<giroPages){giroPage++;loadGiro();}};
 
