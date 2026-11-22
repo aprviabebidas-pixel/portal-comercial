@@ -2273,7 +2273,8 @@
         const visitaSelect=$('giroVisita');visitaSelect.replaceChildren(new Option('Todas as visitas',''));
         const dias={SEG:1,TER:2,QUA:3,QUI:4,SEX:5,SAB:6,DOM:7};
         const visitaOrdem=v=>{const m=String(v).toUpperCase().match(/D\s*(\d+)/);if(m)return Number(m[1]);const k=String(v).toUpperCase().slice(0,3);return dias[k]||99;};
-        for(const v of [...visits].sort((a,b)=>visitaOrdem(a)-visitaOrdem(b)||String(a).localeCompare(String(b),'pt-BR')))visitaSelect.add(new Option(v,v));
+        const visitaRotulo=v=>{const k=String(v).trim().toUpperCase().slice(0,3);const mapa={SEG:'D2',TER:'D3',QUA:'D4',QUI:'D5',SEX:'D6',SAB:'D7',DOM:'D1'};return mapa[k]||String(v).trim();};
+        for(const v of [...visits].sort((a,b)=>visitaOrdem(a)-visitaOrdem(b)||String(a).localeCompare(String(b),'pt-BR')))visitaSelect.add(new Option(visitaRotulo(v),v));
         $('giroBusca').value='';$('giroSopi').value='';$('giroVisa').value='';giroPage=1;await loadGiro();
       }catch(err){message('giroError',err.message||'Falha ao iniciar painel.');}
     }
