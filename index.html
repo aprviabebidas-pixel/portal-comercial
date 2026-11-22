@@ -883,6 +883,9 @@
       .giro-filters #giroVisa{grid-column:2}
     }
 
+
+/* Gestão de Tarefas Diárias */
+.td-activity-grid{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))!important}.td-activity-stat{border-top:4px solid var(--task-color)}.td-activity-stat .td-progress{margin:9px 0 0;height:7px}.td-inline-detail>td{padding:0!important;white-space:normal!important}.td-inline-panel{padding:16px;background:#f8fbff;border:1px solid #dce5f0;border-radius:10px;margin:8px 0 16px}.td-inline-panel h3{margin:0 0 12px}.td-rn-summary{margin-top:16px}.td-rn-summary h4{margin:0}.td-inline-panel .td-table{min-width:550px}.td-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:15px 0}.td-stat{padding:18px;background:#fff;border:1px solid #dce5f0;border-radius:12px}.td-stat small{display:block;color:#64748b;margin-bottom:8px}.td-stat strong{font-size:26px}.td-progress{height:11px;border-radius:15px;background:#e2e8f0;overflow:hidden;margin:12px 0}.td-progress span{display:block;height:100%;background:#2363d1}.td-good{color:#16824b;font-weight:700}.td-task{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:18px;background:#fff;border:1px solid #dce5f0;border-left:5px solid var(--task-color,#2363d1);border-radius:12px;margin:12px 0}.td-task h3{margin:0 0 8px}.td-counter{display:flex;align-items:center;gap:12px}.td-counter button{min-width:48px;min-height:48px;border:1px solid #cbd5e1;border-radius:10px;background:#f8fafc;font-size:25px}.td-counter strong{min-width:35px;text-align:center;font-size:23px}.td-savebar{position:sticky;bottom:0;z-index:10;background:#f3f6fbf5;padding:14px 0;border-top:1px solid #dce5f0}.td-savebar button{width:100%}.td-controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0}.td-controls select,.td-controls input{min-height:44px;padding:10px;border:1px solid #cbd5e1;border-radius:8px;max-width:100%}.td-table{width:100%;border-collapse:collapse;min-width:740px}.td-table th,.td-table td{padding:12px;border-bottom:1px solid #e2e8f0;text-align:left;white-space:nowrap}.td-table th{background:#f8fafc}.td-draft-row{display:grid;grid-template-columns:minmax(0,2fr) minmax(75px,1fr) auto;gap:8px;align-items:center;margin:8px 0}.td-draft-row input{width:100%;min-height:43px;padding:8px;border:1px solid #cbd5e1;border-radius:8px}.td-participants{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:9px}.td-participants label{padding:10px;border:1px solid #e2e8f0;border-radius:8px}.td-muted{color:#64748b}.td-section{margin:20px 0}.td-history-filters{display:flex;flex-wrap:wrap;gap:10px;align-items:end}.td-history-filters label{display:grid;gap:5px;font-size:13px}.td-history-filters input,.td-history-filters select{padding:10px;border:1px solid #cbd5e1;border-radius:8px;min-height:43px}.td-actions{display:flex;gap:6px;flex-wrap:wrap}.td-actions button{padding:7px 10px}.td-table-wrap{overflow:auto}.td-banner{padding:12px;border-radius:8px;background:#eef6ff;margin:10px 0}@media(max-width:800px){.td-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.td-stat{padding:12px}.td-stat strong{font-size:19px}.td-task{flex-direction:column;align-items:stretch}.td-counter{justify-content:space-between}.td-draft-row{grid-template-columns:minmax(0,1fr) 78px auto}}
 </style>
 </head>
 
@@ -920,6 +923,7 @@
         <button class="nav-item" id="navCompradores" type="button">🛒 Compradores</button>
         <button class="nav-item" id="navGiro" type="button">🧊 Giro de Equipamentos</button>
         <button class="nav-item" id="navRemuneracao" type="button">📊 Painel Remuneração</button>
+        <button class="nav-item" id="navTarefas" type="button">📋 Gestão de Tarefas Diárias</button>
         <button class="nav-item hidden" id="navAdmin" type="button">⚙️ Administração</button>
       </nav>
       <div class="sidebar-bottom">
@@ -951,6 +955,7 @@
               <button id="openRemuneracaoCard" class="primary" type="button">Acessar Remuneração</button>
             </article>
             <article class="card"><div class="emoji">🧊</div><h3>Giro de Equipamentos</h3><p>Acompanhe SOPI, VISA, metas, resultados, GAP e status dos PDVs.</p><span class="status">DISPONÍVEL</span><button id="openGiroCard" class="primary" type="button">Acessar Giro</button></article>
+            <article class="card"><div class="emoji">📋</div><h3>Gestão de Tarefas Diárias</h3><p>Metas, propostas, resultados e acompanhamento diário da equipe.</p><span class="status">DISPONÍVEL</span><button id="openTarefasCard" class="primary" type="button">Acessar Tarefas</button></article>
             <article id="adminCard" class="card hidden">
               <div class="emoji">⚙️</div>
               <h3>Administração</h3>
@@ -1078,7 +1083,12 @@
             <div class="table-wrap"><table class="rem-table"><thead><tr><th>Setor / RN</th><th>Cerveja</th><th>NAB</th><th>MKTP</th><th>Force</th><th>Água</th></tr></thead><tbody id="remTeam"></tbody></table></div>
           </div>
         </section>
-        <section id="adminPage" class="hidden">
+        <section id="tarefasPage" class="hidden">
+ <div class="toolbar"><div><h1 class="page-title">Gestão de Tarefas Diárias</h1><p class="lead">Propostas, metas e acompanhamento de resultados.</p></div><button class="secondary" id="tdRefresh">Atualizar</button></div>
+ <div id="tdMessage" class="message hidden" role="status"></div>
+ <div id="tdRoot"></div>
+</section>
+<section id="adminPage" class="hidden">
           <h1 class="page-title">Administração de usuários</h1>
           <p class="lead">Gerencie o acesso dos funcionários ao Portal Comercial.</p>
           <div class="panel">
@@ -1273,7 +1283,7 @@
     }
 
     function showPage(page) {
-      for (const id of ['homePage', 'compradoresPage', 'remuneracaoPage', 'giroPage', 'adminPage']) {
+      for (const id of ['homePage', 'compradoresPage', 'remuneracaoPage', 'giroPage', 'tarefasPage', 'adminPage']) {
         $(id).classList.toggle('hidden', id !== page);
       }
       $('navInicio').classList.toggle('active', page === 'homePage');
@@ -1281,6 +1291,7 @@
       $('navGiro').classList.toggle('active', page === 'giroPage');
       $('navRemuneracao').classList.toggle('active', page === 'remuneracaoPage');
       $('navAdmin').classList.toggle('active', page === 'adminPage');
+      $('navTarefas').classList.toggle('active', page === 'tarefasPage');
     }
 
     function showLogin() {
@@ -1384,8 +1395,127 @@
     $('openRemuneracaoCard').onclick = openRemuneracao;
     $('navGiro').onclick = openGiro;
     $('openGiroCard').onclick = openGiro;
+    $('navTarefas').onclick = openTarefas;
+    $('openTarefasCard').onclick = openTarefas;
     $('navAdmin').onclick = openAdmin;
     $('openAdminCard').onclick = openAdmin;
+
+    // Gestão de Tarefas Diárias — utiliza as tabelas e RPCs da migração 03.
+    const td = {equipes:[], equipe:null, proposta:null, atividades:[], participantes:[], resultados:[], valores:{}, base:{}, revisoes:{}, salvando:false, historyPage:0, history:[], filters:{team:'',start:'',end:''}, draft:null, details:null, loaded:false, successTimer:null};
+    const tdEsc = x => String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const tdPct=(a,b)=>b?((100*a/b).toFixed(1).replace('.',',')+'%'):'0,0%';
+    const tdColor=i=>['#2363d1','#0d9488','#d97706','#9333ea','#db2777','#0891b2','#65a30d'][i%7];
+    const tdErr=e=>{message('tdMessage',e?.message||String(e));};
+    const tdClear=()=>message('tdMessage','');
+    const tdQuery=async(q)=>{const {data,error}=await q;if(error)throw error;return data||[]};
+    const tdRpc=async(name,args)=>{const {data,error}=await supabase.rpc(name,args);if(error)throw error;return data};
+    const tdDirty=()=>td.atividades.some(a=>Number(td.valores[a.id])!==Number(td.base[a.id]));
+    function tdGuard(){if(currentUser?.perfil==='rn'&&tdDirty()&&!td.salvando){return window.confirm('Existem alterações não salvas.\n\nOK: Sair sem salvar\nCancelar: Continuar editando');}return !td.salvando;}
+    function openTarefas(){if(!tdGuard()&& !$('tarefasPage').classList.contains('hidden'))return;showPage('tarefasPage');tdLoad();}
+    async function tdLoad(){tdClear();td.loaded=false;$('tdRoot').innerHTML='<div class="panel">Carregando...</div>';try{
+      td.equipes=await tdQuery(supabase.from('portal_td_equipes').select('id,codigo,nome').order('codigo'));
+      if(currentUser.perfil==='rn')await tdLoadRn();else await tdLoadManager();td.loaded=true;
+    }catch(e){tdErr(e);$('tdRoot').innerHTML='<div class="panel">Não foi possível carregar o módulo. Confira as permissões e a conexão.</div>';}}
+    async function tdLoadRn(){
+      const propostas=await tdQuery(supabase.from('portal_td_propostas').select('id,nome,equipe_id,status').eq('status','ativa').order('id',{ascending:false}));
+      td.proposta=null;
+      for(const p of propostas){const part=await tdQuery(supabase.from('portal_td_participantes').select('setor').eq('proposta_id',p.id));if(part.length){td.proposta=p;td.participantes=part;break;}}
+      if(!td.proposta){td.atividades=[];td.valores={};td.base={};$('tdRoot').innerHTML='<div class="panel empty"><h3>Nenhuma proposta ativa no momento</h3><p>Aguarde a publicação de uma nova proposta pelo gestor.</p></div>';return;}
+      const p=td.proposta;td.atividades=await tdQuery(supabase.from('portal_td_atividades').select('id,nome,meta,ordem').eq('proposta_id',p.id).order('ordem'));
+      td.resultados=await tdQuery(supabase.from('portal_td_resultados').select('atividade_id,setor,realizado,revisao_admin').eq('proposta_id',p.id));
+      const rset=new Set(td.resultados.map(r=>r.setor));const setor=td.participantes.find(x=>rset.has(x.setor))?.setor||td.participantes[0]?.setor;td.setor=setor;
+      td.valores={};td.base={};td.revisoes={};for(const a of td.atividades){const r=td.resultados.find(r=>r.atividade_id===a.id&&r.setor===setor);td.valores[a.id]=td.base[a.id]=r?.realizado??0;td.revisoes[a.id]=r?.revisao_admin??0;}
+      tdRenderRn();
+    }
+    function tdRenderRn(){const total=td.atividades.reduce((s,a)=>s+a.meta,0),real=td.atividades.reduce((s,a)=>s+Number(td.valores[a.id]||0),0);const pct=total?100*real/total:0;
+      $('tdRoot').innerHTML=`<div class="panel"><h2>${tdEsc(td.proposta.nome)}</h2><p class="td-muted">RN ${tdEsc(td.setor)}</p><div class="td-grid"><div class="td-stat"><small>Meta total</small><strong>${total}</strong></div><div class="td-stat"><small>Realizado</small><strong>${real}</strong></div><div class="td-stat"><small>Atingimento</small><strong>${tdPct(real,total)}</strong></div></div><div class="td-progress"><span style="width:${Math.min(100,pct)}%"></span></div>${real>=total?'<p class="td-good">✓ Meta geral atingida</p>':''}</div><div id="tdTasks">${td.atividades.map((a,i)=>`<article class="td-task" style="--task-color:${tdColor(i)}"><div><h3>${tdEsc(a.nome)}</h3><div class="td-muted">Meta: ${a.meta} · Realizado: ${td.valores[a.id]} · ${tdPct(td.valores[a.id],a.meta)}</div>${td.valores[a.id]>=a.meta?'<div class="td-good">✓ Meta atingida</div>':''}</div><div class="td-counter"><button data-td-minus="${a.id}" ${td.salvando||td.valores[a.id]===0?'disabled':''} aria-label="Diminuir ${tdEsc(a.nome)}">−</button><strong>${td.valores[a.id]}</strong><button data-td-plus="${a.id}" ${td.salvando?'disabled':''} aria-label="Aumentar ${tdEsc(a.nome)}">+</button></div></article>`).join('')}</div><div class="td-savebar"><button id="tdSave" class="primary" ${td.salvando||!tdDirty()?'disabled':''}>${td.salvando?'Salvando...':'Salvar alterações'}</button></div>`;
+      $('tdRoot').querySelectorAll('[data-td-plus],[data-td-minus]').forEach(b=>b.onclick=()=>{if(td.salvando)return;const id=Number(b.dataset.tdPlus||b.dataset.tdMinus),delta=b.dataset.tdPlus?1:-1;td.valores[id]=Math.max(0,Number(td.valores[id])+delta);tdClear();tdRenderRn();});$('tdSave').onclick=tdSaveRn;
+    }
+    async function tdSaveRn(){if(td.salvando||!tdDirty())return;td.salvando=true;tdClear();tdRenderRn();try{const result=await tdRpc('portal_td_salvar_rn',{p_proposta:td.proposta.id,p_itens:td.atividades.map(a=>({atividade_id:a.id,realizado:td.valores[a.id],revisao_admin:td.revisoes[a.id]}))});if(result.correcoes_preservadas?.length){await tdLoadRn();message('tdMessage','Uma correção do administrador foi preservada. Os resultados foram atualizados.','success');}else{td.base={...td.valores};message('tdMessage','Alterações salvas com sucesso!','success');}clearTimeout(td.successTimer);td.successTimer=setTimeout(()=>{if($('tdMessage').classList.contains('success'))tdClear()},3000);}catch(e){if(/encerrada pelo gestor/i.test(e.message)){tdErr(e);await tdLoadRn();message('tdMessage','Esta proposta foi encerrada pelo gestor. Suas alterações não foram salvas.');}else tdErr(e);}finally{td.salvando=false;if(td.proposta&&td.atividades.length)tdRenderRn();}}
+    async function tdLoadManager(){
+      td.equipe=td.equipes.find(e=>e.id===td.equipe)?.id||td.equipes[0]?.id||null;
+      tdRenderManager();if(td.equipe)await tdOpenTeam();
+    }
+    function tdRenderManager(){const options=td.equipes.map(e=>`<option value="${e.id}" ${e.id===td.equipe?'selected':''}>${tdEsc(e.codigo)}</option>`).join('');$('tdRoot').innerHTML=`<div class="panel"><div class="td-controls"><label>Equipe <select id="tdTeam">${options}</select></label><button id="tdNew" class="primary ${currentUser.perfil==='gc'?'hidden':''}">+ Nova proposta</button></div><div id="tdTeamContent"></div></div><section class="panel td-section"><h2>Histórico de propostas</h2><div class="td-history-filters"><label>Equipe<select id="tdFilterTeam"><option value="">Todas</option>${td.equipes.map(e=>`<option value="${e.id}">${tdEsc(e.codigo)}</option>`).join('')}</select></label><label>Data inicial<input id="tdStart" type="date"></label><label>Data final<input id="tdEnd" type="date"></label><button id="tdSearch" class="secondary">Pesquisar</button><button id="tdExport" class="secondary">Exportar Excel</button></div><div id="tdHistory"></div><div class="pagination"><button id="tdPrev" class="secondary">Anterior</button><span id="tdPageInfo"></span><button id="tdNext" class="secondary">Próxima</button></div></section>`;
+      $('tdTeam').onchange=async e=>{td.equipe=Number(e.target.value);$('tdTeamContent').innerHTML='Selecione Atualizar para consultar os resultados.';td.proposta=null;td.draft=null;await tdOpenTeam(false);};
+      $('tdNew').onclick=tdNewDraft;$('tdSearch').onclick=()=>tdSearch(0);$('tdPrev').onclick=()=>tdSearch(Math.max(0,td.historyPage-1));$('tdNext').onclick=()=>tdSearch(td.historyPage+1);$('tdExport').onclick=tdExport;
+      tdSearch(0);
+    }
+    async function tdOpenTeam(loadResults=true){const area=$('tdTeamContent');area.innerHTML='Carregando...';try{const ps=await tdQuery(supabase.from('portal_td_propostas').select('*').eq('equipe_id',td.equipe).in('status',['ativa','rascunho']).order('id',{ascending:false}));td.draft=ps.find(p=>p.status==='rascunho')||null;td.proposta=ps.find(p=>p.status==='ativa')||null;let html='';if(td.draft)html+=`<div class="td-banner"><strong>Rascunho</strong><p>${tdEsc(td.draft.nome||'Proposta em preparação')}</p><button class="primary" id="tdEditDraft">Editar rascunho</button> <button class="danger" id="tdDeleteDraft">Excluir rascunho</button></div>`;if(td.proposta)html+=`<div class="td-banner"><strong>${tdEsc(td.proposta.nome)}</strong> · Ativa <div class="td-actions"><button class="secondary" id="tdShowActive">${loadResults?'Atualizar resultados':'Consultar resultados'}</button>${currentUser.perfil!=='gc'?'<button class="danger" id="tdClose">Encerrar</button><button class="danger" id="tdDeleteActive">Excluir</button>':''}</div></div><div id="tdActiveResults">${loadResults?'Carregando resultados...':'Selecione Atualizar para consultar os resultados.'}</div>`;if(!ps.length)html='<p class="td-muted">Nenhuma proposta ativa ou rascunho para esta equipe.</p>';area.innerHTML=html;
+      if(td.draft){$('tdEditDraft').onclick=()=>tdEditDraft(td.draft.id);$('tdDeleteDraft').onclick=()=>tdDelete(td.draft,1);}
+      if(td.proposta){$('tdShowActive').onclick=()=>tdShowResults(td.proposta.id,'tdActiveResults');if($('tdClose'))$('tdClose').onclick=async()=>{if(!confirm('Encerrar esta proposta?'))return;try{await tdRpc('portal_td_encerrar',{p_proposta:td.proposta.id});await tdOpenTeam();tdSearch(0);}catch(e){tdErr(e)}};if($('tdDeleteActive'))$('tdDeleteActive').onclick=()=>tdDelete(td.proposta,2);if(loadResults)await tdShowResults(td.proposta.id,'tdActiveResults');}
+    }catch(e){tdErr(e);area.textContent='Erro ao carregar equipe.';}}
+    async function tdNewDraft(){try{const existing=await tdQuery(supabase.from('portal_td_propostas').select('id,status').eq('equipe_id',td.equipe).in('status',['ativa','rascunho']));if(existing.length)throw Error('Encerre ou exclua a proposta aberta antes de criar outra.');const {data,error}=await supabase.from('portal_td_propostas').insert({equipe_id:td.equipe,criado_por:currentUser.id,status:'rascunho'}).select('id').single();if(error)throw error;await tdEditDraft(data.id);}catch(e){tdErr(e)}}
+    async function tdEditDraft(id){tdClear();try{const [activities,participants,sectors]=await Promise.all([tdQuery(supabase.from('portal_td_atividades').select('*').eq('proposta_id',id).order('ordem')),tdQuery(supabase.from('portal_td_participantes').select('setor').eq('proposta_id',id)),tdQuery(supabase.from('portal_td_equipe_setores').select('setor').eq('equipe_id',td.equipe))]);td.edit={id,activities:activities.map(a=>({id:a.id,nome:a.nome,meta:a.meta})),participants:new Set(sectors.map(x=>x.setor)),sectors:sectors.map(x=>x.setor).sort((a,b)=>Number(a)-Number(b))};tdRenderDraft();}catch(e){tdErr(e)}}
+    function tdReadDraft(){if(!td.edit)return;document.querySelectorAll('#tdDraftRows .td-draft-row').forEach((el,i)=>{if(td.edit.activities[i]){td.edit.activities[i].nome=el.querySelector('[data-name]').value;td.edit.activities[i].meta=Number(el.querySelector('[data-meta]').value)}});td.edit.participants=new Set(td.edit.sectors);}
+    function tdRenderDraft(){const d=td.edit;$('tdTeamContent').innerHTML=`<h3>Editar rascunho</h3><p class="td-muted">Defina as atividades e metas por RN. Todos os RNs da equipe serão incluídos automaticamente.</p><div id="tdDraftRows">${d.activities.map((a,i)=>`<div class="td-draft-row"><input data-name placeholder="Nome da atividade" value="${tdEsc(a.nome)}" maxlength="150"><input data-meta type="number" min="1" step="1" value="${a.meta}" aria-label="Meta"><div class="td-actions"><button class="secondary" data-up="${i}" ${i===0?'disabled':''}>↑</button><button class="secondary" data-down="${i}" ${i===d.activities.length-1?'disabled':''}>↓</button><button class="danger" data-remove="${i}">×</button></div></div>`).join('')}</div><button id="tdAddActivity" class="secondary">+ Atividade</button><p class="td-muted"><strong>Participantes automáticos:</strong> ${d.sectors.length} RNs (${d.sectors.map(x=>`RN ${tdEsc(x)}`).join(', ')}).</p><div class="td-controls"><button class="secondary" id="tdKeepDraft">Salvar rascunho</button><button class="primary" id="tdPublish">Publicar proposta</button><button class="secondary" id="tdBackDraft">Voltar</button></div>`;
+      $('tdAddActivity').onclick=()=>{tdReadDraft();d.activities.push({nome:'',meta:1});tdRenderDraft()};document.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{tdReadDraft();d.activities.splice(Number(b.dataset.remove),1);tdRenderDraft()});document.querySelectorAll('[data-up],[data-down]').forEach(b=>b.onclick=()=>{tdReadDraft();const i=Number(b.dataset.up??b.dataset.down),j=i+(b.hasAttribute('data-up')?-1:1);[d.activities[i],d.activities[j]]=[d.activities[j],d.activities[i]];tdRenderDraft()});$('tdKeepDraft').onclick=()=>tdSaveDraft(false);$('tdPublish').onclick=()=>tdSaveDraft(true);$('tdBackDraft').onclick=()=>tdOpenTeam();
+    }
+    async function tdSaveDraft(publish){tdReadDraft();const d=td.edit;if(d.activities.some(a=>!a.nome.trim()||!Number.isInteger(a.meta)||a.meta<1)){tdErr(Error('Informe nome e meta inteira positiva para cada atividade.'));return;}if(publish&&(!d.activities.length||!d.participants.size)){tdErr(Error('Informe ao menos uma atividade e um RN participante.'));return;}const buttons=['tdKeepDraft','tdPublish'];buttons.forEach(id=>$(id).disabled=true);tdClear();try{
+      // Salvar edição do rascunho com IDs estáveis para atividades existentes.
+      const old=await tdQuery(supabase.from('portal_td_atividades').select('id,ordem').eq('proposta_id',d.id));
+      // A restrição UNIQUE(proposta_id,ordem) exige deslocamento antes da reordenação.
+      for(const a of old){const {error}=await supabase.from('portal_td_atividades').update({ordem:a.ordem+100000}).eq('id',a.id);if(error)throw error;}
+      for(const a of old.filter(a=>!d.activities.some(x=>x.id===a.id))){const {error}=await supabase.from('portal_td_atividades').delete().eq('id',a.id);if(error)throw error;}
+      for(let i=0;i<d.activities.length;i++){const a=d.activities[i];const payload={nome:a.nome.trim(),meta:a.meta,ordem:i+1};const q=a.id?supabase.from('portal_td_atividades').update(payload).eq('id',a.id):supabase.from('portal_td_atividades').insert({...payload,proposta_id:d.id});const {error}=await q;if(error)throw error;}
+      const existing=await tdQuery(supabase.from('portal_td_participantes').select('setor').eq('proposta_id',d.id));for(const x of existing.filter(x=>!d.participants.has(x.setor))){const {error}=await supabase.from('portal_td_participantes').delete().eq('proposta_id',d.id).eq('setor',x.setor);if(error)throw error;}
+      const add=[...d.participants].filter(x=>!existing.some(e=>e.setor===x));if(add.length){const {error}=await supabase.from('portal_td_participantes').insert(add.map(setor=>({proposta_id:d.id,setor})));if(error)throw error;}
+      if(publish){await tdRpc('portal_td_publicar',{p_proposta:d.id});message('tdMessage','Proposta publicada com sucesso!','success');}else message('tdMessage','Rascunho salvo com sucesso!','success');await tdOpenTeam();tdSearch(0);
+    }catch(e){tdErr(e);buttons.forEach(id=>{if($(id))$(id).disabled=false});}}
+    async function tdDelete(p,confirmations){if(!confirm('Excluir esta proposta?'))return;if(confirmations===2&&!confirm('Confirma a exclusão definitiva?'))return;try{await tdRpc('portal_td_excluir',{p_proposta:p.id});await tdOpenTeam();tdSearch(0);message('tdMessage','Proposta excluída.','success');}catch(e){tdErr(e)}}
+    async function tdShowResults(id,target){
+      const el=$(target);if(!el)return;el.textContent='Carregando resultados...';
+      try{
+        const [p,acts,parts,results]=await Promise.all([
+          tdQuery(supabase.from('portal_td_propostas').select('*').eq('id',id)),
+          tdQuery(supabase.from('portal_td_atividades').select('*').eq('proposta_id',id).order('ordem')),
+          tdQuery(supabase.from('portal_td_participantes').select('*').eq('proposta_id',id)),
+          tdQuery(supabase.from('portal_td_resultados').select('*').eq('proposta_id',id))
+        ]);
+        if(!p.length)throw Error('Proposta indisponível.');
+        const sorted=parts.sort((a,b)=>Number(a.setor)-Number(b.setor));
+        const goal=acts.reduce((sum,a)=>sum+a.meta,0);
+        const total=results.reduce((sum,r)=>sum+Number(r.realizado||0),0);
+        const teamGoal=goal*sorted.length;
+        const cards=acts.map((a,i)=>{
+          const real=results.filter(r=>r.atividade_id===a.id).reduce((sum,r)=>sum+Number(r.realizado||0),0);
+          const meta=a.meta*sorted.length;
+          const pct=meta?100*real/meta:0;
+          return `<div class="td-stat td-activity-stat" style="--task-color:${tdColor(i)}"><small>${tdEsc(a.nome)}</small><strong>${real} / ${meta}</strong><div class="td-muted">${tdPct(real,meta)} de atingimento</div><div class="td-progress"><span style="width:${Math.min(100,pct)}%;background:${tdColor(i)}"></span></div>${real>=meta&&meta?'<span class="td-good">✓ Meta atingida</span>':''}</div>`;
+        }).join('');
+        const rows=sorted.map(x=>{
+          const sector=String(x.setor);
+          const real=results.filter(r=>String(r.setor)===sector).reduce((sum,r)=>sum+Number(r.realizado||0),0);
+          return `<tr><td>RN ${tdEsc(sector)}</td><td>${goal}</td><td>${real}</td><td>${tdPct(real,goal)}</td><td>${x.ultimo_salvamento?new Date(x.ultimo_salvamento).toLocaleString('pt-BR'):'Nunca salvou'}</td><td><button class="secondary small" data-details="${tdEsc(sector)}" aria-expanded="false">Ver detalhes</button></td></tr>`;
+        }).join('');
+        el.innerHTML=`<div class="td-grid td-activity-grid">${cards}</div>${total>=teamGoal&&teamGoal?'<p class="td-good">✓ Meta da equipe atingida</p>':''}<div class="td-table-wrap"><table class="td-table"><thead><tr><th>RN</th><th>Meta</th><th>Realizado</th><th>Atingimento</th><th>Última atualização</th><th>Detalhes</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+        el.querySelectorAll('[data-details]').forEach(button=>button.onclick=()=>{
+          const sector=button.dataset.details;
+          const row=button.closest('tr');
+          const next=row.nextElementSibling;
+          if(next?.classList.contains('td-inline-detail')){next.remove();button.textContent='Ver detalhes';button.setAttribute('aria-expanded','false');return;}
+          el.querySelectorAll('.td-inline-detail').forEach(r=>r.remove());
+          el.querySelectorAll('[data-details]').forEach(b=>{b.textContent='Ver detalhes';b.setAttribute('aria-expanded','false')});
+          const real=results.filter(r=>String(r.setor)===sector).reduce((sum,r)=>sum+Number(r.realizado||0),0);
+          const detail=document.createElement('tr');detail.className='td-inline-detail';
+          const cell=document.createElement('td');cell.colSpan=6;
+          cell.innerHTML=`<div class="td-inline-panel"><h3>RN ${tdEsc(sector)} — Detalhamento</h3><div class="td-table-wrap"><table class="td-table"><thead><tr><th>Atividade</th><th>Meta</th><th>Realizado</th><th>Atingimento</th>${currentUser.perfil==='admin'?'<th>Correção</th>':''}</tr></thead><tbody>${acts.map(a=>{const r=results.find(r=>r.atividade_id===a.id&&String(r.setor)===sector),n=r?.realizado??0;return `<tr><td>${tdEsc(a.nome)}</td><td>${a.meta}</td><td>${n}</td><td>${tdPct(n,a.meta)}</td>${currentUser.perfil==='admin'?`<td><input type="number" min="0" step="1" style="width:90px" value="${n}" data-fix="${a.id}"> <button class="secondary small" data-apply="${a.id}">Corrigir</button></td>`:''}</tr>`}).join('')}</tbody></table></div><div class="td-rn-summary"><h4>Resumo geral do RN</h4><div class="td-grid"><div class="td-stat"><small>Meta geral</small><strong>${goal}</strong></div><div class="td-stat"><small>Realizado</small><strong>${real}</strong></div><div class="td-stat"><small>Atingimento</small><strong>${tdPct(real,goal)}</strong></div></div></div></div>`;
+          detail.appendChild(cell);row.after(detail);button.textContent='Ocultar detalhes';button.setAttribute('aria-expanded','true');
+          cell.querySelectorAll('[data-apply]').forEach(btn=>btn.onclick=async()=>{
+            const val=Number(cell.querySelector(`[data-fix="${btn.dataset.apply}"]`).value);
+            if(!Number.isInteger(val)||val<0){tdErr(Error('Informe um número inteiro não negativo.'));return;}
+            try{await tdRpc('portal_td_corrigir',{p_atividade:Number(btn.dataset.apply),p_setor:sector,p_realizado:val});message('tdMessage','Correção registrada.','success');await tdShowResults(id,target);}catch(e){tdErr(e)}
+          });
+        });
+      }catch(e){tdErr(e);el.textContent='Falha ao carregar resultados.';}
+    }
+    async function tdSearch(page){const start=$('tdStart')?.value||'',end=$('tdEnd')?.value||'',team=$('tdFilterTeam')?.value||'';if(start&&end&&start>end){tdErr(Error('Data inicial não pode ser posterior à data final.'));return;}td.filters={start,end,team};td.historyPage=page;const el=$('tdHistory');el.innerHTML='<p>Carregando histórico...</p>';try{let q=supabase.from('portal_td_propostas').select('id,equipe_id,nome,data_publicacao,status,criado_em',{count:'exact'}).in('status',['ativa','encerrada']).order('data_publicacao',{ascending:false}).order('id',{ascending:false}).range(page*20,page*20+19);if(team)q=q.eq('equipe_id',Number(team));if(start)q=q.gte('data_publicacao',start);if(end)q=q.lte('data_publicacao',end);const {data,error,count}=await q;if(error)throw error;td.history=data||[];el.innerHTML=td.history.length?`<div class="td-table-wrap"><table class="td-table"><thead><tr><th>Data</th><th>Equipe</th><th>Proposta</th><th>Situação</th><th>Ações</th></tr></thead><tbody>${td.history.map(p=>`<tr><td>${tdEsc(p.data_publicacao)}</td><td>${tdEsc(td.equipes.find(e=>e.id===p.equipe_id)?.codigo||'')}</td><td>${tdEsc(p.nome)}</td><td>${p.status==='ativa'?'Ativa':'Encerrada'}</td><td class="td-actions"><button class="secondary small" data-hist="${p.id}">Ver resultados</button>${currentUser.perfil!=='gc'?`<button class="danger small" data-hist-delete="${p.id}">Excluir</button>`:''}</td></tr>`).join('')}</tbody></table></div>`:'<p class="empty">Nenhuma proposta encontrada para os filtros selecionados.</p>';el.querySelectorAll('[data-hist]').forEach(b=>b.onclick=async()=>{const id=Number(b.dataset.hist);let panel=$('tdHistoryDetail');if(!panel){panel=document.createElement('div');panel.id='tdHistoryDetail';panel.className='panel td-section';el.after(panel);}await tdShowResults(id,'tdHistoryDetail')});el.querySelectorAll('[data-hist-delete]').forEach(b=>b.onclick=()=>tdDelete({id:Number(b.dataset.hist)},2));$('tdPageInfo').textContent=`Página ${page+1} de ${Math.max(1,Math.ceil((count||0)/20))}`;$('tdPrev').disabled=page===0;$('tdNext').disabled=(page+1)*20>=(count||0);
+    }catch(e){tdErr(e);el.textContent='Não foi possível carregar o histórico.';}}
+    async function tdExport(){tdClear();const {start,end,team}=td.filters;if(start&&end&&start>end){tdErr(Error('Intervalo inválido.'));return;}try{let all=[];for(let offset=0;;offset+=500){let q=supabase.from('portal_td_propostas').select('id,equipe_id,nome,data_publicacao,status').in('status',['ativa','encerrada']).order('data_publicacao',{ascending:true}).order('equipe_id',{ascending:true}).order('id',{ascending:true}).range(offset,offset+499);if(team)q=q.eq('equipe_id',Number(team));if(start)q=q.gte('data_publicacao',start);if(end)q=q.lte('data_publicacao',end);const chunk=await tdQuery(q);all.push(...chunk);if(chunk.length<500)break;}if(!all.length){tdErr(Error('Nenhuma proposta encontrada para os filtros selecionados.'));return;}const XLSX=await import('https://cdn.jsdelivr.net/npm/xlsx@0.18.5/+esm');const summary=[],detail=[];for(const p of all){const [acts,parts,res]=await Promise.all([tdQuery(supabase.from('portal_td_atividades').select('*').eq('proposta_id',p.id).order('ordem')),tdQuery(supabase.from('portal_td_participantes').select('setor').eq('proposta_id',p.id)),tdQuery(supabase.from('portal_td_resultados').select('atividade_id,setor,realizado').eq('proposta_id',p.id))]);parts.sort((a,b)=>Number(a.setor)-Number(b.setor));const equipe=td.equipes.find(e=>e.id===p.equipe_id)?.codigo||'',goal=acts.reduce((s,a)=>s+a.meta,0);for(const part of parts){const real=acts.reduce((s,a)=>s+(res.find(r=>r.atividade_id===a.id&&r.setor===part.setor)?.realizado||0),0);summary.push({'Data de publicação':p.data_publicacao,'Equipe':equipe,'Proposta':p.nome,'RN':part.setor,'Meta':goal,'Realizado':real,'Atingimento (%)':goal?Number((real*100/goal).toFixed(1)):0});for(const a of acts){const n=res.find(r=>r.atividade_id===a.id&&r.setor===part.setor)?.realizado||0;detail.push({'Data de publicação':p.data_publicacao,'Equipe':equipe,'Proposta':p.nome,'RN':part.setor,'Atividade':a.nome,'Meta':a.meta,'Realizado':n,'Atingimento (%)':Number((100*n/a.meta).toFixed(1))});}}}const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(summary),'Resumo por RN');XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(detail),'Detalhamento');const fmt=d=>d.split('-').reverse().join('-');const filename=start&&end?`Tarefas_Diarias_${fmt(start)}_a_${fmt(end)}.xlsx`:'Tarefas_Diarias_Historico_Completo.xlsx';XLSX.writeFile(wb,filename);
+    }catch(e){tdErr(e);}}
+    $('tdRefresh').onclick=()=>{if(currentUser?.perfil==='rn'&&tdDirty()){tdErr(Error('Salve ou reverta suas alterações antes de atualizar.'));return;}tdLoad()};
+    // Impede que o RN perca alterações ao navegar pelos demais módulos.
+    for(const id of ['navInicio','navCompradores','navGiro','navRemuneracao','navAdmin','openCompradoresCard','openGiroCard','openRemuneracaoCard','openAdminCard']){const btn=$(id);if(!btn)continue;btn.addEventListener('click',e=>{if(!$('tarefasPage').classList.contains('hidden')&&!tdGuard()){e.stopImmediatePropagation();e.preventDefault();}},true)}
 
     // COMPRADORES: consultas paginadas com RLS no Supabase.
 
