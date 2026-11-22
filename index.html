@@ -1211,6 +1211,40 @@
     // Configuração de Compradores disponível desde o início do módulo.
     const BUYER_COLUMNS = 'pdv,fantasia,cidade,setor,visita,ambev_total,mktp,nab,match,inad,valor_inad';
     const BUYER_PAGE_SIZE = 150;
+    // V16: cache compartilhado em memória para consultas de leitura.
+    // Identidade isolada por usuário; sem localStorage ou persistência entre sessões.
+    const portalDataCache = { owner: null, entries: new Map(), pending: new Map(), generation: 0 };
+    const PORTAL_CACHE_TTL = 3 * 60 * 1000;
+    function portalResetCache() {
+      portalDataCache.generation++;
+      portalDataCache.entries.clear();
+      portalDataCache.pending.clear();
+    }
+    function portalEnsureCacheOwner() {
+      const owner = currentUser?.id || null;
+      if (portalDataCache.owner !== owner) {
+        portalResetCache();
+        portalDataCache.owner = owner;
+      }
+    }
+    async function portalCached(key, loader, ttl = PORTAL_CACHE_TTL) {
+      portalEnsureCacheOwner();
+      const hit = portalDataCache.entries.get(key);
+      if (hit && Date.now() < hit.expires) return hit.value;
+      if (portalDataCache.pending.has(key)) return portalDataCache.pending.get(key);
+      const generation = portalDataCache.generation;
+      const owner = portalDataCache.owner;
+      const task = Promise.resolve().then(loader).then(value => {
+        if (generation === portalDataCache.generation && owner === portalDataCache.owner) {
+          if (portalDataCache.entries.size >= 40) portalDataCache.entries.delete(portalDataCache.entries.keys().next().value);
+          portalDataCache.entries.set(key, { value, expires: Date.now() + ttl });
+        }
+        return value;
+      });
+      portalDataCache.pending.set(key, task);
+      try { return await task; }
+      finally { if (portalDataCache.pending.get(key) === task) portalDataCache.pending.delete(key); }
+    }
     // Cache isolado por sessão e usuário; dados não persistem no navegador.
     const buyerCache = { owner: null, sectors: null, visits: null, summaries: new Map(), pages: new Map() };
     const BUYER_CACHE_TTL = 3 * 60 * 1000;
@@ -1250,6 +1284,7 @@
 
     function showLogin() {
       currentUser = null;
+      portalResetCache();portalDataCache.owner=null;
       clearBuyerCache();
       clearGiroCache();giroCache.owner=null;
       buyerCache.owner = null;
@@ -1266,6 +1301,7 @@
         buyerCache.owner = user.id;
       }
       currentUser = user;
+      portalEnsureCacheOwner();
       $('loginScreen').classList.add('hidden');
       $('appScreen').classList.remove('hidden');
       $('topUserName').textContent = user.nome;
@@ -1372,7 +1408,7 @@
       return query;
     }
 
-    async function getAllowedSectors() {
+    async function fetchAllowedSectors() {
       // A RLS também filtra os dados; esta lista controla apenas as opções visíveis.
       if (buyerCache.sectors) return buyerCache.sectors;
       let query = supabase.from('portal_pdvs').select('setor');
@@ -1387,7 +1423,10 @@
       return (buyerCache.sectors = [...sectors].sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true })));
     }
 
-    async function getAllowedVisits() {
+    async function getAllowedSectors() {
+      return portalCached('compradores:setores', fetchAllowedSectors);
+    }
+    async function fetchAllowedVisits() {
       if (buyerCache.visits) return buyerCache.visits;
       const visits = new Set();
       for (let offset = 0; offset < 15000; offset += 1000) {
@@ -1401,6 +1440,9 @@
       return (buyerCache.visits = [...visits].sort((a, b) => a.localeCompare(b, 'pt-BR')));
     }
 
+    async function getAllowedVisits() {
+      return portalCached('compradores:visitas', fetchAllowedVisits);
+    }
     async function openCompradores() {
       if (!currentUser) return;
       showPage('compradoresPage');
@@ -2006,7 +2048,7 @@
         try { result = await response.json(); }
         catch { throw new Error(`Resposta inválida do servidor (HTTP ${response.status}).`); }
         if (!response.ok || !result.success) throw new Error(result.error || `Erro HTTP ${response.status}.`);
-        clearBuyerCache();
+        clearBuyerCache();portalResetCache();
         importProgress('Importação concluída.', 100);
         message('importStatus', `Importação concluída! ${Number(result.registros).toLocaleString('pt-BR')} PDVs na base atual.`, 'success');
       } catch (err) {
@@ -2079,13 +2121,18 @@
       $('remContext').textContent='Carregando resultados autorizados...';
       $('remCards').replaceChildren();$('remDetails').replaceChildren();$('remTeam').replaceChildren();
       try{
-        const rows=[];
-        for(let offset=0;offset<15000;offset+=1000){
-          const {data,error}=await supabase.from('portal_matinal_resultados')
-            .select('setor,rn_nome,gv_codigo,indicadores').order('setor').range(offset,offset+999);
-          if(error)throw error;
-          rows.push(...(data||[]));if(!data||data.length<1000)break;
-        }
+        const requestOwner=currentUser.id;
+        const rows=await portalCached('remuneracao:resultados', async () => {
+          const result=[];
+          for(let offset=0;offset<15000;offset+=1000){
+            const {data,error}=await supabase.from('portal_matinal_resultados')
+              .select('setor,rn_nome,gv_codigo,indicadores').order('setor').range(offset,offset+999);
+            if(error)throw error;
+            result.push(...(data||[]));if(!data||data.length<1000)break;
+          }
+          return result;
+        });
+        if(currentUser?.id!==requestOwner)return;
         remRows=rows;
         const sel=$('remView');sel.replaceChildren();
         const canOverview=['gv','gc','admin'].includes(currentUser.perfil);
@@ -2170,6 +2217,7 @@
         const response=await fetch(matinalFunction,{method:'POST',headers:{'Content-Type':'application/json',apikey:SUPABASE_KEY,Authorization:`Bearer ${session.access_token}`},body:JSON.stringify({nome_arquivo:file.name,resultados:results})});
         let result;try{result=await response.json();}catch{throw new Error(`Resposta inválida (HTTP ${response.status}).`);}
         if(!response.ok||!result.success)throw new Error(result.error||`Erro HTTP ${response.status}.`);
+        portalResetCache();
         matinalProgress('Importação concluída.',100);
         message('matinalStatus',`Matinal importada! ${Number(result.setores).toLocaleString('pt-BR')} setores atualizados.`,'success');
       }catch(err){message('matinalStatus',err.message||'Erro ao importar MATINAL.');$('matinalProgress').classList.add('hidden');}
@@ -2334,7 +2382,7 @@
         const response=await fetch(giroFunction,{method:'POST',headers:{'Content-Type':'application/json',apikey:SUPABASE_KEY,Authorization:`Bearer ${session.access_token}`},body:JSON.stringify({nome_arquivo:file.name,registros})});
         let result;try{result=await response.json();}catch{throw new Error('Resposta inválida do servidor (HTTP '+response.status+').');}
         if(!response.ok||!result.success)throw new Error(result.error||'Erro HTTP '+response.status);
-        clearGiroCache();giroProgress('Importação concluída!',100);message('giroImportStatus',`Giro importado com sucesso: ${Number(result.total).toLocaleString('pt-BR')} PDVs.`,'success');
+        clearGiroCache();portalResetCache();giroProgress('Importação concluída!',100);message('giroImportStatus',`Giro importado com sucesso: ${Number(result.total).toLocaleString('pt-BR')} PDVs.`,'success');
       }catch(err){message('giroImportStatus',err.message||'Erro na importação.');$('giroImportProgress').classList.add('hidden');}
       finally{importingGiro=false;input.disabled=false;input.value='';}
     });
