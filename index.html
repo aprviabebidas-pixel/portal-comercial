@@ -1536,6 +1536,29 @@
     }
 
     async function fetchBuyerSummary(version) {
+      // V17: a RPC calcula o resumo no banco quando os filtros são compatíveis.
+      // Pesquisa textual e "Não compradores" continuam usando o cálculo original,
+      // pois a RPC atual não recebe esses filtros.
+      if (!buyerFilters.q && !buyerFilters.ncomp) {
+        try {
+          const { data, error } = await supabase.rpc('portal_resumo_compradores', {
+            p_setor: buyerFilters.setor || null,
+            p_visita: buyerFilters.visita || null
+          });
+          if (version !== buyerRequestVersion) return null;
+          if (error) throw error;
+          const result = Array.isArray(data) ? data[0] : data;
+          if (!result || result.total_pdvs == null) throw new Error('Resumo SQL indisponível');
+          return {
+            total: Number(result.total_pdvs),
+            ok: Number(result.ambev_ok),
+            debt: Number(result.inadimplentes)
+          };
+        } catch (error) {
+          // Fallback para manter a página funcional caso a RPC falhe.
+          console.warn('Resumo RPC indisponível; usando consulta original:', error);
+        }
+      }
       let total = 0, ok = 0, debt = 0;
       for (let offset = 0; offset < 15000; offset += 1000) {
         const { data, error } = await buyerQuery(
