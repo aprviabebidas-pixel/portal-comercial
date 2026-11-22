@@ -2344,7 +2344,7 @@
     async function openGiro(){
       if(!currentUser)return;giroEnsureOwner();showPage('giroPage');message('giroError','');
       try{
-        const sectors=await getAllowedSectors();const select=$('giroSetor');select.replaceChildren();
+        const {sectors}=await getBuyerFilterOptions();const select=$('giroSetor');select.replaceChildren();
         if(['gv','gc','admin'].includes(currentUser.perfil))select.add(new Option('Todos os setores',''));
         for(const s of sectors)select.add(new Option('Setor '+s,s));
         if(!select.options.length){message('giroError','Nenhum setor autorizado.');return;}
