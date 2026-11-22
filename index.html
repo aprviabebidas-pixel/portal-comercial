@@ -1423,9 +1423,6 @@
       return (buyerCache.sectors = [...sectors].sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true })));
     }
 
-    async function getAllowedSectors() {
-      return portalCached('compradores:setores', fetchAllowedSectors);
-    }
     async function fetchAllowedVisits() {
       if (buyerCache.visits) return buyerCache.visits;
       const visits = new Set();
@@ -1440,8 +1437,27 @@
       return (buyerCache.visits = [...visits].sort((a, b) => a.localeCompare(b, 'pt-BR')));
     }
 
-    async function getAllowedVisits() {
-      return portalCached('compradores:visitas', fetchAllowedVisits);
+    // V17.1: uma única RPC fornece ambos os filtros, respeitando RLS.
+    // Cache compartilhado impede chamadas duplicadas ao abrir o módulo.
+    async function getBuyerFilterOptions() {
+      return portalCached('compradores:opcoes-filtros', async () => {
+        try {
+          const { data, error } = await supabase.rpc('portal_filtros_compradores');
+          if (error) throw error;
+          if (!Array.isArray(data)) throw new Error('Resposta inválida da RPC de filtros');
+          const sectors = [...new Set(data.filter(r => r.tipo === 'setor' && r.valor)
+            .map(r => String(r.valor)))].sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true }));
+          const visits = [...new Set(data.filter(r => r.tipo === 'visita' && r.valor)
+            .map(r => String(r.valor)))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+          buyerCache.sectors = sectors;
+          buyerCache.visits = visits;
+          return { sectors, visits };
+        } catch (error) {
+          console.warn('RPC de filtros indisponível; usando consultas anteriores:', error);
+          const [sectors, visits] = await Promise.all([fetchAllowedSectors(), fetchAllowedVisits()]);
+          return { sectors, visits };
+        }
+      });
     }
     async function openCompradores() {
       if (!currentUser) return;
@@ -1449,7 +1465,7 @@
       message('buyerError', '');
       $('buyerBody').innerHTML = '<tr><td colspan="11" class="empty">Carregando setores...</td></tr>';
       try {
-        const [sectors, visits] = await Promise.all([getAllowedSectors(), getAllowedVisits()]);
+        const { sectors, visits } = await getBuyerFilterOptions();
         $('buyerSector').replaceChildren();
         if (!sectors.length) {
           $('buyerBody').innerHTML = '<tr><td colspan="11" class="empty">Nenhum setor autorizado.</td></tr>';
