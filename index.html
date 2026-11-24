@@ -893,6 +893,22 @@
 .td-editor-layout{display:grid;grid-template-columns:minmax(0,3fr) minmax(210px,1fr);gap:18px;align-items:start}.td-editor-main{min-width:0}.td-editor-box{border:1px solid #dce5f0;border-radius:13px;padding:18px;background:#fff;margin-bottom:16px}.td-editor-box h4{margin:0 0 6px;font-size:17px}.td-editor-help{font-size:13px;color:#64748b;margin:0 0 16px}.td-editor-form{display:grid;grid-template-columns:minmax(0,2fr) minmax(105px,.7fr) auto;align-items:end;gap:10px}.td-editor-form label{display:flex;flex-direction:column;gap:6px;font-weight:600;font-size:13px}.td-editor-form input{min-height:44px;width:100%;border:1px solid #cbd5e1;border-radius:8px;padding:10px;font:inherit}.td-editor-form input:focus,.td-editor-row input:focus{outline:2px solid #9cc6ff;border-color:#2872dd}.td-editor-list-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.td-editor-count{background:#e9f2ff;color:#245a9d;padding:6px 11px;border-radius:20px;font-size:12px;font-weight:700}.td-editor-table{width:100%;border-collapse:collapse}.td-editor-table th{background:#f2f6fc;color:#334155;text-align:left;font-size:12px;padding:12px 9px}.td-editor-table td{border-bottom:1px solid #e5edf7;padding:10px 7px}.td-editor-table tr:last-child td{border-bottom:0}.td-editor-row input{width:100%;min-width:0;min-height:39px;border:1px solid #dce5f0;border-radius:7px;padding:7px 9px;font:inherit}.td-editor-row .td-num{max-width:100px}.td-editor-index{display:inline-flex;align-items:center;justify-content:center;min-width:29px;height:29px;background:#e8f3ff;color:#2363d1;border-radius:7px;font-weight:700}.td-editor-actions{display:flex;gap:4px}.td-editor-actions button{min-width:32px;padding:6px 8px}.td-editor-side{display:grid;gap:14px}.td-editor-side-card{padding:18px;border-radius:13px;border:1px solid #cce8dc;background:#f1fbf6}.td-editor-side-card h4{margin:0 0 6px}.td-editor-side-card strong{font-size:28px;color:#086d43}.td-editor-side-card p{font-size:13px;color:#4c6671}.td-editor-goal{background:#f7f4ff;border-color:#e2d8ff}.td-editor-goal strong{color:#5932b7}.td-editor-footer{display:flex;flex-wrap:wrap;gap:10px;padding-top:17px;border-top:1px solid #e2e8f0;margin-top:6px}.td-editor-empty{padding:20px;color:#64748b;text-align:center;background:#f8fbff;border:1px dashed #cbd5e1;border-radius:10px}.td-editor-table-wrap{overflow-x:auto}
 @media(max-width:850px){.td-editor-layout{grid-template-columns:1fr}.td-editor-side{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:580px){.td-editor-form{grid-template-columns:1fr 1fr}.td-editor-form label:first-child{grid-column:1/-1}.td-editor-form button{grid-column:1/-1}.td-editor-side{grid-template-columns:1fr}.td-editor-box{padding:12px}.td-editor-table{min-width:590px}}
  .td-meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(95px,1fr));gap:10px;margin:12px 0}.td-meta-grid label{display:grid;gap:4px;font-size:12px}.td-meta-grid input{width:100%;min-width:0;box-sizing:border-box}.td-custom-edit td{background:#f5f8fc}
+
+/* Alinhamento exclusivo da tabela de atividades */
+#tarefasPage .td-editor-table-wrap{max-width:100%;overflow-x:auto}
+#tarefasPage .td-editor-table{display:table;width:100%;min-width:720px;table-layout:fixed;border-collapse:collapse}
+#tarefasPage .td-editor-table thead{display:table-header-group}
+#tarefasPage .td-editor-table tbody{display:table-row-group}
+#tarefasPage .td-editor-table tr{display:table-row;grid-template-columns:none}
+#tarefasPage .td-editor-table th,#tarefasPage .td-editor-table td{display:table-cell;vertical-align:middle;text-align:left;white-space:normal}
+#tarefasPage .td-editor-table th:nth-child(1){width:7%}
+#tarefasPage .td-editor-table th:nth-child(2){width:29%}
+#tarefasPage .td-editor-table th:nth-child(3){width:15%}
+#tarefasPage .td-editor-table th:nth-child(4){width:15%}
+#tarefasPage .td-editor-table th:nth-child(5){width:34%}
+#tarefasPage .td-editor-actions{display:flex;flex-wrap:nowrap;align-items:center;gap:4px}
+#tarefasPage .td-editor-actions button{width:auto;flex:0 0 auto;white-space:nowrap;min-width:30px;padding:6px 7px}
+#tarefasPage .td-editor-row input{box-sizing:border-box;max-width:100%}
 </style>
 </head>
 
