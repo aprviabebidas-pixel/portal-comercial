@@ -2466,11 +2466,23 @@
       }
       return query;
     }
-    async function giroCount(statusCol,status){
-      let query=supabase.from('portal_giro_equipamentos').select('id',{count:'exact',head:true});
-      query=giroWhere(query);
-      if(statusCol)query=query.eq(statusCol,status);
-      const {count,error}=await query;if(error)throw error;return count||0;
+    function giroEquipmentOK(qty,real,unit){
+      return Math.min(qty,Math.max(0,Math.floor((Number(real)||0)/unit)));
+    }
+    async function giroEquipmentSummary(version){
+      const summary={total:0,sopiOK:0,sopiNOK:0,visaOK:0,visaNOK:0};
+      for(let offset=0;;offset+=500){
+        if(version!==giroVersion)return null;
+        const {data,error}=await giroWhere(supabase.from('portal_giro_equipamentos').select('qtd_sopi,qtd_visa,real_cerveja,real_nab')).order('id').range(offset,offset+499);
+        if(error)throw error;
+        for(const r of data||[]){
+          const s=Math.max(0,Math.floor(Number(r.qtd_sopi)||0)),v=Math.max(0,Math.floor(Number(r.qtd_visa)||0));
+          const so=giroEquipmentOK(s,r.real_cerveja,2000),vo=giroEquipmentOK(v,r.real_nab,1200);
+          summary.total++;summary.sopiOK+=so;summary.sopiNOK+=s-so;summary.visaOK+=vo;summary.visaNOK+=v-vo;
+        }
+        if(!data||data.length<500)break;
+      }
+      return summary;
     }
     function giroTd(row,value,cls){const td=document.createElement('td');td.textContent=value??'—';if(cls)td.className=cls;row.append(td);}
     function giroNum(n){return n===null||n===undefined?'—':Number(n).toLocaleString('pt-BR',{maximumFractionDigits:2});}
@@ -2486,7 +2498,7 @@
       for(const [kind,ok,nok] of [['Sopi',sopiOK,sopiNOK],['Visa',visaOK,visaNOK]]){
         const denom=ok+nok;
         $('giro'+kind+'Pct').textContent=denom?(100*ok/denom).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%':'—';
-        $('giro'+kind+'Sub').textContent=`${ok} OK · ${nok} NOK · ${total-denom} sem equipamento`;
+        $('giro'+kind+'Sub').textContent=`${ok} OK · ${nok} NOK · ${denom} total`;
       }
       $('giroPagina').textContent=`Página ${giroPage} de ${giroPages}`;
       $('giroAnterior').disabled=giroPage<=1;$('giroProximo').disabled=giroPage>=giroPages;
@@ -2509,12 +2521,10 @@
       try{
         // Página e contagens executadas em paralelo; contagens são reutilizadas ao paginar.
         const pagePromise=cachedPage?Promise.resolve({data:cachedPage,count:cachedSummary?.total??null,error:null}):giroWhere(supabase.from('portal_giro_equipamentos').select(GIRO_COLS,{count:'exact'})).order('setor').order('pdv').range((giroPage-1)*GIRO_PAGE_SIZE,giroPage*GIRO_PAGE_SIZE-1);
-        const countsPromise=cachedSummary?Promise.resolve(null):Promise.all([
-          giroCount('status_sopi','OK'),giroCount('status_sopi','NOK'),giroCount('status_visa','OK'),giroCount('status_visa','NOK')]);
-        const [pageResult,counts]=await Promise.all([pagePromise,countsPromise]);
+        const countsPromise=cachedSummary?Promise.resolve(cachedSummary):giroEquipmentSummary(version);
+        const [pageResult,summary]=await Promise.all([pagePromise,countsPromise]);
         if(pageResult.error)throw pageResult.error;
-        if(version!==giroVersion)return;
-        const summary=cachedSummary||{total:pageResult.count||0,sopiOK:counts[0],sopiNOK:counts[1],visaOK:counts[2],visaNOK:counts[3]};
+        if(version!==giroVersion||!summary)return;
         if(!cachedSummary)giroCacheSet(giroCache.summary,filterKey,summary);
         if(!cachedPage)giroCacheSet(giroCache.pages,pageKey,pageResult.data||[]);
         renderGiroResult(pageResult.data||[],summary);
