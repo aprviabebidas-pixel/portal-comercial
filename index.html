@@ -630,7 +630,7 @@
       margin-top: 18px;
     }
 
-    /* Painel Remuneração */
+    /* Painel Remuneração Variável */
     .rem-toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
     .rem-toolbar select{min-width:230px;padding:11px;border:1px solid #cbd5e1;border-radius:8px;background:white}
     .rem-cards{display:grid;grid-template-columns:repeat(5,minmax(215px,1fr));gap:12px;margin:16px 0 24px;overflow-x:auto;padding-bottom:8px;scrollbar-width:thin}
@@ -909,6 +909,8 @@
 #tarefasPage .td-editor-actions{display:flex;flex-wrap:nowrap;align-items:center;gap:4px}
 #tarefasPage .td-editor-actions button{width:auto;flex:0 0 auto;white-space:nowrap;min-width:30px;padding:6px 7px}
 #tarefasPage .td-editor-row input{box-sizing:border-box;max-width:100%}
+
+#adminPage .users-table{min-width:0} #adminPage .users-table td{white-space:normal} .admin-filters,.admin-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:16px}.admin-filters select,.admin-filters input{width:100%;min-width:0;border:1px solid #cbd5e1;border-radius:8px;padding:10px;background:white}.admin-kpis div{border:1px solid var(--border);border-radius:10px;padding:12px}.admin-kpis strong{display:block;font-size:23px;margin-top:5px}.admin-kpis small,.user-login{color:var(--muted);font-size:12px}.user-name{font-weight:700;overflow-wrap:anywhere}.user-login{display:block;margin-top:5px;overflow-wrap:anywhere}.user-profile{font-weight:700;color:#2363d1}.admin-menu{position:fixed;z-index:150;background:white;border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 25px #101d3426;padding:5px;width:190px}.admin-menu button{display:block;width:100%;text-align:left;background:white;border:0;padding:12px;border-radius:6px;color:var(--text)}.admin-menu button:hover{background:#edf3fa}.admin-menu button.danger{color:#b42318}.detail-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid var(--border)}.detail-row span:last-child{overflow-wrap:anywhere;text-align:right}.detail-row label{color:var(--muted);font-size:13px}.detail-value{display:flex;align-items:center;gap:8px;min-width:0;overflow-wrap:anywhere}.admin-eye{border:0;background:transparent;color:#263a56;padding:8px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}.admin-modal{z-index:160}.admin-modal .dialog{max-width:440px} .admin-modal h3{overflow-wrap:anywhere}.admin-more{min-width:42px;font-size:20px;line-height:1}.admin-detail-status{margin-bottom:10px}.admin-modal .dialog-actions{margin-top:16px}@media(max-width:800px){.admin-filters,.admin-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-filters input{grid-column:1/-1}#adminPage .users-table{min-width:520px}#adminPage .users-table td,#adminPage .users-table th{padding:10px 7px}.admin-kpis div{padding:10px}.admin-kpis strong{font-size:20px}}
 </style>
 </head>
 
@@ -945,7 +947,7 @@
         <button class="nav-item active" id="navInicio" type="button">🏠 Início</button>
         <button class="nav-item" id="navCompradores" type="button">🛒 Compradores</button>
         <button class="nav-item" id="navGiro" type="button">🧊 Giro de Equipamentos</button>
-        <button class="nav-item" id="navRemuneracao" type="button">📊 Painel Remuneração</button>
+        <button class="nav-item" id="navRemuneracao" type="button">📊 Painel Remuneração Variável</button>
         <button class="nav-item" id="navTarefas" type="button">📋 Gestão de Tarefas Diárias</button>
         <button class="nav-item hidden" id="navAdmin" type="button">⚙️ Administração</button>
       </nav>
@@ -972,10 +974,10 @@
             </article>
             <article class="card">
               <div class="emoji">📊</div>
-              <h3>Painel Remuneração</h3>
+              <h3>Painel Remuneração Variável</h3>
               <p>Acompanhe metas, resultados, indicadores e desempenho comercial por RN.</p>
               <span class="status">DISPONÍVEL</span>
-              <button id="openRemuneracaoCard" class="primary" type="button">Acessar Remuneração</button>
+              <button id="openRemuneracaoCard" class="primary" type="button">Acessar Remuneração Variável</button>
             </article>
             <article class="card"><div class="emoji">🧊</div><h3>Giro de Equipamentos</h3><p>Acompanhe SOPI, VISA, metas, resultados, GAP e status dos PDVs.</p><span class="status">DISPONÍVEL</span><button id="openGiroCard" class="primary" type="button">Acessar Giro</button></article>
             <article class="card"><div class="emoji">📋</div><h3>Gestão de Tarefas Diárias</h3><p>Metas, propostas, resultados e acompanhamento diário da equipe.</p><span class="status">DISPONÍVEL</span><button id="openTarefasCard" class="primary" type="button">Acessar Tarefas</button></article>
@@ -1087,7 +1089,7 @@
           <div class="pagination"><button id="giroAnterior" type="button" class="secondary small">← Anterior</button><span id="giroPagina" class="hint">Página 1</span><button id="giroProximo" type="button" class="secondary small">Próxima →</button></div></div>
         </section>
         <section id="remuneracaoPage" class="hidden">
-          <h1 class="page-title">Painel Remuneração</h1>
+          <h1 class="page-title">Painel Remuneração Variável</h1>
           <p class="lead">Indicadores de desempenho da aba MATINAL.</p>
           <div id="remError" class="message hidden" role="alert"></div>
           <div class="rem-toolbar">
@@ -1112,7 +1114,7 @@
  <div id="tdRoot"></div>
 </section>
 <section id="adminPage" class="hidden">
-          <h1 class="page-title">Administração de usuários</h1>
+          <h1 class="page-title">Gerenciamento de funcionários</h1>
           <p class="lead">Gerencie o acesso dos funcionários ao Portal Comercial.</p>
           <div class="panel">
             <div class="toolbar">
@@ -1124,13 +1126,12 @@
               </div>
             </div>
             <div id="adminMessage" class="message hidden" role="status"></div>
-            <div id="userSummary" class="admin-summary"></div>
+            <div id="adminKpis" class="admin-kpis"></div><div class="admin-filters"><select id="userProfileFilter" aria-label="Perfil"><option value="">Todos os perfis</option><option value="admin">Administrador</option><option value="gc">GC</option><option value="gv">GV</option><option value="rn">RN</option></select><select id="userTeamFilter" aria-label="Equipe"><option value="">Todas as equipes</option><option value="6">GV6</option><option value="7">GV7</option><option value="other">Geral / outros</option></select><select id="userStatusFilter" aria-label="Situação"><option value="">Todas as situações</option><option value="on">Ativos</option><option value="off">Inativos</option></select></div><div id="userSummary" class="admin-summary"></div>
             <div class="table-wrap">
               <table class="users-table">
                 <thead>
                   <tr>
-                    <th>Nome</th>
-                    <th>Login</th>
+                    <th>Funcionário</th>
                     <th>Perfil</th>
                     <th>Setores</th>
                     <th>Situação</th>
@@ -1139,7 +1140,7 @@
                 </thead>
                 <tbody id="usersBody">
                   <tr>
-                    <td colspan="6" class="empty">Carregando...</td>
+                    <td colspan="5" class="empty">Carregando...</td>
                   </tr>
                 </tbody>
               </table>
@@ -1162,7 +1163,7 @@
           </div>
           <div class="panel import-panel">
             <h2 style="margin-top:0;font-size:20px">Importar Matinal</h2>
-            <p class="hint">Selecione o Excel (.xlsx ou .xlsm). Somente a aba <b>MATINAL</b> será lida. A importação substituirá a base anterior do Painel Remuneração, sem alterar Compradores.</p>
+            <p class="hint">Selecione o Excel (.xlsx ou .xlsm). Somente a aba <b>MATINAL</b> será lida. A importação substituirá a base anterior do Painel Remuneração Variável, sem alterar Compradores.</p>
             <label for="matinalFile" style="display:block;font-weight:700;margin:15px 0 8px">Selecionar planilha Matinal</label>
             <input class="import-input" id="matinalFile" type="file" accept=".xlsx,.xlsm">
             <div id="matinalStatus" class="message hidden" role="status" aria-live="polite"></div>
@@ -1200,8 +1201,7 @@
           </div>
         </div>
         <div id="newPasswordField" class="field"><label for="userPassword">Senha inicial (mínimo 8
-            caracteres)</label><input id="userPassword" type="password" minlength="8" maxlength="128"
-            autocomplete="new-password"></div>
+            caracteres)</label><div class="password-line"><input id="userPassword" type="password" minlength="8" maxlength="128" autocomplete="new-password"><button type="button" id="initialEye" class="password-eye"></button></div></div>
         <div class="field">
           <label for="userSectors">Setores vinculados</label>
           <input id="userSectors" placeholder="Ex.: 611, 612, 613">
@@ -1218,6 +1218,9 @@
     </div>
   </div>
 
+<div id="adminActionMenu" class="admin-menu hidden"></div>
+<div id="userDetails" class="dialog-backdrop admin-modal hidden"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="detailName"><h3 id="detailName"></h3><div id="detailStatus" class="admin-detail-status"></div><div class="detail-row"><label>Login</label><div class="detail-value"><span id="detailLogin"></span><button id="detailEye" type="button" class="admin-eye"></button></div></div><div class="detail-row"><label>Perfil</label><span id="detailRole"></span></div><div class="detail-row"><label>Setor</label><span id="detailSector"></span></div><div class="dialog-actions"><button id="detailClose" class="secondary">Fechar</button><button id="detailPassword" class="primary">Alterar senha</button></div></div></div>
+<div id="passwordReset" class="dialog-backdrop admin-modal hidden"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="resetTitle"><h3 id="resetTitle">Alterar senha</h3><p id="resetName"></p><form id="resetForm"><div id="resetMessage" class="message hidden" role="alert"></div><div class="field"><label for="resetPassword">Nova senha (mínimo 8 caracteres)</label><div class="password-line"><input id="resetPassword" type="password" minlength="8" maxlength="128" required autocomplete="new-password"><button type="button" id="resetEye" class="password-eye"></button></div></div><div class="dialog-actions"><button type="button" id="resetCancel" class="secondary">Cancelar</button><button type="submit" id="resetSave" class="primary">Salvar senha</button></div></form></div></div>
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
@@ -1323,7 +1326,7 @@
       clearBuyerCache();
       clearGiroCache();giroCache.owner=null;
       buyerCache.owner = null;
-      users = [];
+      users = []; closeAdminMenu(); closeDetails(); closeReset(); closeDialog(); $('usersBody').replaceChildren(); $('adminKpis').replaceChildren();
       $('appScreen').classList.add('hidden');
       $('loginScreen').classList.remove('hidden');
       $('senha').value = '';
@@ -1951,7 +1954,7 @@
       if (loadingUsers) return;
       loadingUsers = true;
       message('adminMessage', '');
-      $('usersBody').innerHTML = '<tr><td colspan="6" class="empty">Carregando usuários...</td></tr>';
+      $('usersBody').innerHTML = '<tr><td colspan="5" class="empty">Carregando usuários...</td></tr>';
       $('refreshUsers').disabled = true;
       try {
         const data = await adminRequest({ acao: 'listar' });
@@ -1975,60 +1978,33 @@
       return td;
     }
 
+    function maskLogin(value) { const v=String(value||''); return v.length<=4 ? v.slice(0,1)+'•••' : v.slice(0,3)+'••••'+v.slice(-2); }
+    function sectorLabel(u) { const a=[...new Set((u.setores||[]).map(String))].sort((x,y)=>Number(x)-Number(y)); if(!a.length)return ['gc','admin'].includes(u.perfil)?'Todos':'—'; return a.length>2 && a.every((v,i)=>i===0||Number(v)===Number(a[i-1])+1) ? a[0]+' a '+a.at(-1):a.join(', '); }
+    function eyeIcon(btn, visible, noun) { btn.innerHTML='<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>'+(visible?'<path d="M3 3l18 18"/>':'')+'</svg>'; btn.setAttribute('aria-label',(visible?'Ocultar ':'Mostrar ')+noun); btn.title=btn.getAttribute('aria-label'); btn.setAttribute('aria-pressed',String(visible)); }
+    function passwordEye(input,button) { const el=$(input), btn=$(button); eyeIcon(btn,false,'senha'); btn.onclick=()=>{el.type=el.type==='password'?'text':'password';eyeIcon(btn,el.type==='text','senha');}; }
+    function hidePassword(input,button) { $(input).type='password';eyeIcon($(button),false,'senha'); }
+    passwordEye('userPassword','initialEye');passwordEye('resetPassword','resetEye');
+    let detailUser=null, resetUser=null;
+    function closeAdminMenu(){ $('adminActionMenu').classList.add('hidden');$('adminActionMenu').replaceChildren(); }
+    function closeDetails(){detailUser=null;$('detailLogin').textContent='';$('userDetails').classList.add('hidden');}
+    function closeReset(){resetUser=null;$('resetPassword').value='';hidePassword('resetPassword','resetEye');$('passwordReset').classList.add('hidden');}
+    function showDetails(u){ if(currentUser?.perfil!=='admin')return; detailUser=u;$('detailName').textContent=u.nome;$('detailStatus').textContent=u.ativo?'Ativo':'Inativo';$('detailStatus').className='admin-detail-status pill '+(u.ativo?'on':'off');$('detailLogin').textContent=maskLogin(u.login);eyeIcon($('detailEye'),false,'login');$('detailRole').textContent=roles[u.perfil]||u.perfil;$('detailSector').textContent=sectorLabel(u);$('userDetails').classList.remove('hidden');$('detailClose').focus(); }
+    $('detailEye').onclick=()=>{if(!detailUser)return;const show=$('detailEye').getAttribute('aria-pressed')!=='true';$('detailLogin').textContent=show?detailUser.login:maskLogin(detailUser.login);eyeIcon($('detailEye'),show,'login');};
+    $('detailClose').onclick=closeDetails;$('detailPassword').onclick=()=>{const u=detailUser;closeDetails();if(u)changePassword(u);};
+    function openAdminMenu(u,anchor){closeAdminMenu();const menu=$('adminActionMenu');const add=(label,fn,danger=false)=>{const b=document.createElement('button');b.type='button';b.textContent=label;if(danger)b.className='danger';b.onclick=()=>{closeAdminMenu();fn();};menu.append(b);};add('Ver detalhes',()=>showDetails(u));add('Editar',()=>openUserDialog(u));add('Alterar senha',()=>changePassword(u));if(u.id!==currentUser.id){if(u.ativo)add('Desativar',()=>deactivateUser(u),true);add('Excluir',()=>deleteUser(u),true);}menu.classList.remove('hidden');const r=anchor.getBoundingClientRect();menu.style.left=Math.max(8,Math.min(r.right-190,innerWidth-198))+'px';menu.style.top=Math.max(8,Math.min(r.bottom+4,innerHeight-menu.offsetHeight-8))+'px';menu.firstElementChild.focus();}
+    document.addEventListener('click',e=>{if(!e.target.closest('#adminActionMenu,.admin-more'))closeAdminMenu();});window.addEventListener('resize',closeAdminMenu);document.addEventListener('scroll',closeAdminMenu,true);document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeAdminMenu();closeDetails();if(!$('resetSave').disabled)closeReset();}});
     function renderUsers() {
-      const filter = $('userSearch').value.trim().toLocaleLowerCase('pt-BR');
-      const filtered = users.filter(u =>
-        [u.nome, u.login, u.perfil, ...(u.setores || [])].join(' ').toLocaleLowerCase('pt-BR').includes(filter)
-      );
-      $('userSummary').textContent = `${filtered.length} funcionário(s) exibido(s) · ${users.filter(u => u.ativo).length} ativo(s) no total`;
-      $('usersBody').replaceChildren();
-      if (!filtered.length) {
-        $('usersBody').innerHTML = '<tr><td colspan="6" class="empty">Nenhum funcionário encontrado.</td></tr>';
-        return;
-      }
-      for (const u of filtered) {
-        const tr = document.createElement('tr');
-        cell(tr, u.nome);
-        cell(tr, u.login);
-        cell(tr, roles[u.perfil] || u.perfil);
-        cell(tr, (u.setores || []).join(', ') || 'Todos / não atribuído');
-        const status = cell(tr, '');
-        const pill = document.createElement('span');
-        pill.className = `pill ${u.ativo ? 'on' : 'off'}`;
-        pill.textContent = u.ativo ? 'Ativo' : 'Inativo';
-        status.append(pill);
-        const actions = cell(tr, '');
-        actions.className = 'user-actions';
-        const edit = document.createElement('button');
-        edit.className = 'secondary small';
-        edit.textContent = 'Editar';
-        edit.onclick = () => openUserDialog(u);
-        const pass = document.createElement('button');
-        pass.className = 'secondary small';
-        pass.textContent = 'Senha';
-        pass.onclick = () => changePassword(u);
-        actions.append(edit, pass);
-        if (u.ativo && u.id !== currentUser.id) {
-          const off = document.createElement('button');
-          off.className = 'danger small';
-          off.textContent = 'Desativar';
-          off.onclick = () => deactivateUser(u);
-          actions.append(off);
-        }
-        if (u.id !== currentUser.id) {
-          const del = document.createElement('button');
-          del.className = 'danger small';
-          del.textContent = 'Excluir';
-          del.title = 'Excluir usuário definitivamente';
-          del.onclick = () => deleteUser(u);
-          actions.append(del);
-        }
-        $('usersBody').append(tr);
-      }
+      closeAdminMenu();
+      const filter=$('userSearch').value.trim().toLocaleLowerCase('pt-BR'), profile=$('userProfileFilter').value, team=$('userTeamFilter').value, status=$('userStatusFilter').value;
+      const rank={admin:0,gc:1,gv:2,rn:3};
+      const filtered=users.filter(u=>{const sectors=(u.setores||[]).map(String);return (!profile||u.perfil===profile)&&(!status||(status==='on')===!!u.ativo)&&(!team||(team==='other'?!sectors.some(v=>/^[67]\d{2}$/.test(v)):sectors.some(v=>new RegExp('^'+team+'\\d{2}$').test(v))))&&[u.nome,u.login,u.perfil,...sectors].join(' ').toLocaleLowerCase('pt-BR').includes(filter);}).sort((a,b)=>(rank[a.perfil]??9)-(rank[b.perfil]??9)||Number((a.setores||[])[0]||0)-Number((b.setores||[])[0]||0)||String(a.nome).localeCompare(String(b.nome),'pt-BR'));
+      const active=users.filter(u=>u.ativo).length;
+      $('adminKpis').replaceChildren();for(const [label,n] of [['Funcionários',users.length],['Ativos',active],['Inativos',users.length-active],['Perfis',new Set(users.map(u=>u.perfil)).size]]){const d=document.createElement('div'),l=document.createElement('small'),v=document.createElement('strong');l.textContent=label;v.textContent=n;d.append(l,v);$('adminKpis').append(d);}
+      $('userSummary').textContent=`${filtered.length} funcionário(s) exibido(s)`;$('usersBody').replaceChildren();
+      if(!filtered.length){$('usersBody').innerHTML='<tr><td colspan="5" class="empty">Nenhum funcionário encontrado.</td></tr>';return;}
+      for(const u of filtered){const tr=document.createElement('tr'),name=cell(tr,''),n=document.createElement('div'),l=document.createElement('span');n.className='user-name';n.textContent=u.nome;l.className='user-login';l.textContent=maskLogin(u.login);name.append(n,l);cell(tr,roles[u.perfil]||u.perfil).className='user-profile';cell(tr,sectorLabel(u));const st=cell(tr,''),pill=document.createElement('span');pill.className='pill '+(u.ativo?'on':'off');pill.textContent=u.ativo?'Ativo':'Inativo';st.append(pill);const actions=cell(tr,''),btn=document.createElement('button');btn.type='button';btn.className='secondary small admin-more';btn.textContent='⋯';btn.setAttribute('aria-label','Ações de '+u.nome);btn.onclick=()=>openAdminMenu(u,btn);actions.append(btn);$('usersBody').append(tr);}
     }
-
-    $('userSearch').oninput = renderUsers;
-    $('refreshUsers').onclick = loadUsers;
+    $('userSearch').oninput=renderUsers;for(const id of ['userProfileFilter','userTeamFilter','userStatusFilter'])$(id).onchange=renderUsers;$('refreshUsers').onclick=loadUsers;
 
     function parseSectors(raw) {
       const values = raw.split(/[,;\s]+/).map(s => s.trim()).filter(Boolean);
@@ -2052,14 +2028,14 @@
       $('activeLine').classList.toggle('hidden', !user);
       $('newPasswordField').classList.toggle('hidden', !!user);
       $('userPassword').required = !user;
-      $('userPassword').value = '';
+      $('userPassword').value = ''; hidePassword('userPassword','initialEye');
       $('saveUser').textContent = user ? 'Salvar alterações' : 'Cadastrar';
       $('dialogBackdrop').classList.remove('hidden');
       $('userName').focus();
     }
 
     $('newUser').onclick = () => openUserDialog();
-    function closeDialog() { $('dialogBackdrop').classList.add('hidden'); editingId = null; }
+    function closeDialog() { $('dialogBackdrop').classList.add('hidden'); $('userPassword').value=''; hidePassword('userPassword','initialEye'); editingId = null; }
     $('cancelUser').onclick = closeDialog;
 
     $('userForm').onsubmit = async e => {
@@ -2095,21 +2071,9 @@
       }
     };
 
-    async function changePassword(u) {
-      const senha = prompt(`Nova senha para ${u.nome} (mínimo 8 caracteres):`);
-      if (senha === null) return;
-      if (senha.length < 8 || senha.length > 128) {
-        message('adminMessage', 'A senha deve ter entre 8 e 128 caracteres.');
-        return;
-      }
-      if (!confirm(`Confirmar alteração de senha de ${u.nome}?`)) return;
-      try {
-        const result = await adminRequest({ acao: 'alterar_senha', id: u.id, senha });
-        message('adminMessage', result.message || 'Senha alterada.', 'success');
-      } catch (err) {
-        message('adminMessage', err.message || 'Erro ao alterar senha.');
-      }
-    }
+    function changePassword(u){if(currentUser?.perfil!=='admin')return;resetUser=u;$('resetName').textContent=u.nome;$('resetForm').reset();hidePassword('resetPassword','resetEye');message('resetMessage','');$('passwordReset').classList.remove('hidden');$('resetPassword').focus();}
+    $('resetCancel').onclick=closeReset;
+    $('resetForm').onsubmit=async e=>{e.preventDefault();if(!resetUser||currentUser?.perfil!=='admin')return;const u=resetUser,senha=$('resetPassword').value;if(senha.length<8||senha.length>128){message('resetMessage','A senha deve ter entre 8 e 128 caracteres.');return;}if(!confirm(`Confirmar alteração de senha de ${u.nome}?`))return;$('resetSave').disabled=true;$('resetCancel').disabled=true;try{const result=await adminRequest({acao:'alterar_senha',id:u.id,senha});closeReset();message('adminMessage',result.message||'Senha alterada.','success');}catch(err){message('resetMessage',err.message||'Erro ao alterar senha.');}finally{$('resetSave').disabled=false;$('resetCancel').disabled=false;}};
 
     async function deactivateUser(u) {
       if (!confirm(`Desativar o acesso de ${u.nome}?`)) return;
