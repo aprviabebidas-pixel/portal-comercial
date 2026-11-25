@@ -838,7 +838,7 @@
 
     .giro-filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-items:center}
     .giro-filters input,.giro-filters select{min-width:0;width:100%}
-    .giro-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0}
+    .giro-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:16px 0}
     .giro-kpis .item{border:1px solid var(--border,#dbe4ed);border-radius:12px;padding:16px;background:var(--card,#fff)}
     .giro-kpis .name{font-size:13px;opacity:.75}.giro-kpis .value{font-size:28px;font-weight:800;margin:8px 0}.giro-kpis .sub{font-size:12px;opacity:.8}
     .giro-table{min-width:1540px;border-collapse:separate;border-spacing:0;font-variant-numeric:tabular-nums}
@@ -857,7 +857,7 @@
     #giroPage .buyer-table-wrap{overflow-x:auto;overflow-y:visible;max-height:none}
     @media(max-width:800px){.giro-table th,.giro-table td{padding:9px 10px}}
     .giro-ok{color:#16824b;font-weight:800}.giro-nok{color:#c44343;font-weight:800}.giro-na{color:#16824b;font-weight:700}
-    @media(max-width:800px){.giro-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.giro-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.giro-kpis .item:first-child{grid-column:1/-1}.giro-kpis .value{font-size:24px}}
+    @media(max-width:800px){.giro-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.giro-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.giro-kpis .value{font-size:24px}}
     @media(max-width:380px){.giro-filters{grid-template-columns:1fr}}
   
     /* V17.3: filtros combinados com OU, setor preservado e logo sem fundo na lateral */
@@ -1081,6 +1081,7 @@
           </form></div>
           <div class="giro-kpis">
             <div class="item"><div class="name">PDVs filtrados</div><div id="giroTotal" class="value">—</div><div class="sub">Inclui sem equipamento</div></div>
+            <div class="item"><div class="name">SOPIV · OK</div><div id="giroSopivPct" class="value">—</div><div id="giroSopivSub" class="sub">—</div></div>
             <div class="item"><div class="name">SOPI · OK</div><div id="giroSopiPct" class="value">—</div><div id="giroSopiSub" class="sub">—</div></div>
             <div class="item"><div class="name">VISA · OK</div><div id="giroVisaPct" class="value">—</div><div id="giroVisaSub" class="sub">—</div></div>
           </div>
@@ -2479,6 +2480,9 @@
       const {total,sopiOK,sopiNOK,visaOK,visaNOK}=summary;
       giroPages=Math.max(1,Math.ceil(total/GIRO_PAGE_SIZE));
       $('giroTotal').textContent=total.toLocaleString('pt-BR');
+      const sopivOK=sopiOK+visaOK, sopivNOK=sopiNOK+visaNOK, sopivTotal=sopivOK+sopivNOK;
+      $('giroSopivPct').textContent=sopivTotal?(100*sopivOK/sopivTotal).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%':'—';
+      $('giroSopivSub').textContent=`${sopivOK} OK · ${sopivNOK} NOK · ${sopivTotal} total`;
       for(const [kind,ok,nok] of [['Sopi',sopiOK,sopiNOK],['Visa',visaOK,visaNOK]]){
         const denom=ok+nok;
         $('giro'+kind+'Pct').textContent=denom?(100*ok/denom).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%':'—';
