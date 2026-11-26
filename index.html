@@ -1007,7 +1007,6 @@
               <button id="buyerFilterButton" class="primary" type="submit">Filtrar</button>
               <button id="buyerClear" class="secondary" type="button">Limpar</button>
             </form>
-            <div id="buyerVisitAlert" class="message hidden" role="status" style="background:#fff3d6;color:#854d0e;border:1px solid #f5d58c">PDVs sem dia de visita: entre em contato com o responsável para regularizar o cadastro.</div>
             <div id="buyerError" class="message hidden" role="alert"></div>
           </div>
           <div class="buyer-summary">
@@ -1863,7 +1862,6 @@
 
     async function loadBuyers() {
       const version = ++buyerRequestVersion;
-      $('buyerVisitAlert').classList.toggle('hidden', buyerFilters.visita !== BUYER_NO_VISIT);
       const button = $('buyerFilterButton');
       button.disabled = true;
       message('buyerError', '');
