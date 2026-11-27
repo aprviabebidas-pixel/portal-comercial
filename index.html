@@ -912,6 +912,17 @@
 #tarefasPage .td-editor-row input{box-sizing:border-box;max-width:100%}
 
 #adminPage .users-table{min-width:0} #adminPage .users-table td{white-space:normal} .admin-filters,.admin-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:16px}.admin-filters select,.admin-filters input{width:100%;min-width:0;border:1px solid #cbd5e1;border-radius:8px;padding:10px;background:white}.admin-kpis div{border:1px solid var(--border);border-radius:10px;padding:12px}.admin-kpis strong{display:block;font-size:23px;margin-top:5px}.admin-kpis small,.user-login{color:var(--muted);font-size:12px}.user-name{font-weight:700;overflow-wrap:anywhere}.user-login{display:block;margin-top:5px;overflow-wrap:anywhere}.user-profile{font-weight:700;color:#2363d1}.admin-menu{position:fixed;z-index:150;background:white;border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 25px #101d3426;padding:5px;width:190px}.admin-menu button{display:block;width:100%;text-align:left;background:white;border:0;padding:12px;border-radius:6px;color:var(--text)}.admin-menu button:hover{background:#edf3fa}.admin-menu button.danger{color:#b42318}.detail-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid var(--border)}.detail-row span:last-child{overflow-wrap:anywhere;text-align:right}.detail-row label{color:var(--muted);font-size:13px}.detail-value{display:flex;align-items:center;gap:8px;min-width:0;overflow-wrap:anywhere}.admin-eye{border:0;background:transparent;color:#263a56;padding:8px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}.admin-modal{z-index:160}.admin-modal .dialog{max-width:440px} .admin-modal h3{overflow-wrap:anywhere}.admin-more{min-width:42px;font-size:20px;line-height:1}.admin-detail-status{margin-bottom:10px}.admin-modal .dialog-actions{margin-top:16px}@media(max-width:800px){.admin-filters,.admin-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-filters input{grid-column:1/-1}#adminPage .users-table{min-width:520px}#adminPage .users-table td,#adminPage .users-table th{padding:10px 7px}.admin-kpis div{padding:10px}.admin-kpis strong{font-size:20px}}
+
+/* Minhas Anotações */
+#notesFab{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:90;width:56px;height:56px;border:0;border-radius:50%;background:var(--blue);color:white;display:grid;place-items:center;box-shadow:0 5px 18px #101d3440}
+#notesShade{position:fixed;inset:0;background:#101d3438;z-index:170;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s;touch-action:none}
+#notesPanel{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px) + var(--notes-keyboard,0px));width:min(390px,calc(100vw - 36px));height:min(580px,calc(var(--notes-vh,100dvh) - 36px));z-index:171;background:white;border:1px solid var(--border);border-radius:16px;box-shadow:0 12px 45px #101d3440;display:flex;flex-direction:column;overflow:hidden;visibility:hidden;opacity:0;transform:translateY(20px) scale(.97);transition:transform .22s,opacity .22s,visibility .22s}
+body.notes-open #notesShade,body.notes-open #notesPanel{visibility:visible;opacity:1;transform:none}
+.notes-head{background:var(--navy);color:white;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px}.notes-head h2{font-size:17px;margin:0}.notes-head small{color:#cbd5e1}.notes-head button{background:transparent;color:white;border:0;font-size:26px;width:44px;height:44px}
+.notes-body{padding:14px;overflow:auto;overscroll-behavior:contain;min-height:0;flex:1}.notes-body textarea{width:100%;min-height:76px;resize:vertical;border:1px solid #cbd5e1;border-radius:8px;padding:10px;font:inherit;font-size:16px}.notes-body .check-line{margin:10px 0}.notes-body input[type=checkbox]{width:20px;height:20px;accent-color:var(--blue);flex-shrink:0}.notes-buttons{display:flex;gap:8px}.notes-buttons button{flex:1}.notes-count{font-size:12px;color:var(--muted);margin:15px 0 8px}.notes-row{display:flex;align-items:flex-start;gap:8px;border:1px solid var(--border);border-radius:9px;padding:10px;margin:8px 0;background:#f8fafc}.notes-text{flex:1;min-width:0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:1.5}.notes-done{text-decoration:line-through;color:var(--muted)}.notes-row button{border:0;background:transparent;color:var(--muted);min-width:34px;min-height:36px;padding:4px;font-size:17px}.notes-foot{padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--border);display:flex;gap:8px}.notes-foot button{flex:1}#notesStatus{font-size:12px;min-height:16px;margin-top:8px;overflow-wrap:anywhere}body.mobile-menu-open #notesFab{visibility:hidden}
+@media(max-width:800px){#notesPanel{right:0;bottom:var(--notes-keyboard,0px);width:100%;height:calc(var(--notes-vh,100dvh) * .65);border-radius:18px 18px 0 0;transform:translateY(100%)}body.notes-open #notesPanel{transform:none}.notes-row button{min-width:40px;min-height:44px}}
+@media(prefers-reduced-motion:reduce){#notesPanel,#notesShade{transition:none}}
+
 </style>
 </head>
 
@@ -1224,6 +1235,18 @@
 <div id="adminActionMenu" class="admin-menu hidden"></div>
 <div id="userDetails" class="dialog-backdrop admin-modal hidden"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="detailName"><h3 id="detailName"></h3><div id="detailStatus" class="admin-detail-status"></div><div class="detail-row"><label>Login</label><div class="detail-value"><span id="detailLogin"></span><button id="detailEye" type="button" class="admin-eye"></button></div></div><div class="detail-row"><label>Perfil</label><span id="detailRole"></span></div><div class="detail-row"><label>Setor</label><span id="detailSector"></span></div><div class="dialog-actions"><button id="detailClose" class="secondary">Fechar</button><button id="detailPassword" class="primary">Alterar senha</button></div></div></div>
 <div id="passwordReset" class="dialog-backdrop admin-modal hidden"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="resetTitle"><h3 id="resetTitle">Alterar senha</h3><p id="resetName"></p><form id="resetForm"><div id="resetMessage" class="message hidden" role="alert"></div><div class="field"><label for="resetPassword">Nova senha (mínimo 8 caracteres)</label><div class="password-line"><input id="resetPassword" type="password" minlength="8" maxlength="128" required autocomplete="new-password"><button type="button" id="resetEye" class="password-eye"></button></div></div><div class="dialog-actions"><button type="button" id="resetCancel" class="secondary">Cancelar</button><button type="submit" id="resetSave" class="primary">Salvar senha</button></div></form></div></div>
+
+  <button id="notesFab" class="hidden" type="button" aria-label="Abrir minhas anotações" aria-controls="notesPanel" aria-expanded="false" title="Minhas Anotações"><svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="15" height="18" rx="2"/><path d="M3 7h4M3 12h4M3 17h4M10 8h6M10 12h6M10 16h4"/></svg></button>
+  <div id="notesShade" aria-hidden="true"></div>
+  <section id="notesPanel" role="dialog" aria-modal="true" aria-labelledby="notesTitle" aria-hidden="true" inert>
+    <header class="notes-head"><div><h2 id="notesTitle">Minhas Anotações</h2><small>Seu bloco de notas pessoal</small></div><button id="notesClose" type="button" aria-label="Recolher anotações">−</button></header>
+    <div class="notes-body">
+      <form id="notesForm"><textarea id="notesDraft" aria-label="Texto da anotação" maxlength="10000" placeholder="Escreva sua anotação..." required></textarea><label class="check-line"><input id="notesCheck" type="checkbox"> Adicionar checkbox</label><div class="notes-buttons"><button id="notesSave" class="primary" type="submit">+ Adicionar</button><button id="notesCancel" class="secondary hidden" type="button">Cancelar</button></div></form>
+      <div id="notesStatus" role="status" aria-live="polite"></div><div id="notesCount" class="notes-count"></div><div id="notesList"></div>
+    </div>
+    <footer class="notes-foot"><button id="notesRefresh" class="secondary" type="button">Atualizar</button><button id="notesClear" class="danger" type="button">Limpar tudo</button></footer>
+  </section>
+
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
@@ -1324,6 +1347,7 @@
     }
 
     function showLogin() {
+      notesReset();
       currentUser = null;
       portalResetCache();portalDataCache.owner=null;
       clearBuyerCache();
@@ -1341,7 +1365,9 @@
         clearBuyerCache();
         buyerCache.owner = user.id;
       }
+      notesReset();
       currentUser = user;
+      $('notesFab').classList.remove('hidden');
       portalEnsureCacheOwner();
       $('loginScreen').classList.add('hidden');
       $('appScreen').classList.remove('hidden');
@@ -2692,6 +2718,32 @@
         $('toggleSidebar').setAttribute('aria-expanded', String(!document.body.classList.contains('menu-collapsed')));
       }
     });
+
+    // Minhas Anotações: estado isolado por sessão; RLS aplica a autorização no servidor.
+    let notesEpoch=0, notesRows=[], notesBusy=false, notesEdit=null, notesLoaded=false;
+    const notesFields='id,texto,tem_checkbox,concluida,criado_em,atualizado_em';
+    function notesStatus(text='',error=false){$('notesStatus').textContent=text;$('notesStatus').style.color=error?'#b42318':'#64748b';}
+    function notesControls(){for(const id of ['notesSave','notesDraft','notesCheck','notesRefresh','notesCancel']) $(id).disabled=notesBusy; $('notesClear').disabled=notesBusy||!notesLoaded||!notesRows.length; $('notesList').querySelectorAll('button,input').forEach(el=>el.disabled=notesBusy);}
+    function notesResetForm(){notesEdit=null;$('notesDraft').value='';$('notesCheck').checked=false;$('notesSave').textContent='+ Adicionar';$('notesCancel').classList.add('hidden');}
+    function notesClosePanel(restore=true){document.body.classList.remove('notes-open');$('notesPanel').inert=true;$('notesPanel').setAttribute('aria-hidden','true');$('notesFab').setAttribute('aria-expanded','false');$('appScreen').inert=false;if(restore&&!$('notesFab').classList.contains('hidden'))$('notesFab').focus({preventScroll:true});}
+    function notesReset(){notesEpoch++;notesRows=[];notesBusy=false;notesLoaded=false;notesClosePanel(false);$('notesFab').classList.add('hidden');notesResetForm();$('notesList').replaceChildren();$('notesCount').textContent='';notesStatus();notesControls();}
+    function notesRender(){const list=$('notesList');list.replaceChildren();const tasks=notesRows.filter(n=>n.tem_checkbox);$('notesCount').textContent=`${notesRows.length} anotação(ões) · ${tasks.filter(n=>n.concluida).length}/${tasks.length} tarefas concluídas`;
+      if(!notesRows.length){const empty=document.createElement('div');empty.className='empty';empty.textContent=notesLoaded?'Nenhuma anotação registrada.':'Anotações ainda não carregadas.';list.append(empty);}
+      for(const n of notesRows){const row=document.createElement('div');row.className='notes-row';if(n.tem_checkbox){const cb=document.createElement('input');cb.type='checkbox';cb.checked=n.concluida;cb.setAttribute('aria-label','Marcar tarefa como concluída');cb.onchange=()=>notesRun(async(owner)=>{const {data,error}=await supabase.from('portal_anotacoes').update({concluida:cb.checked,atualizado_em:new Date().toISOString()}).eq('usuario_id',owner).eq('id',n.id).select(notesFields).single();if(error)throw error;return data;},data=>{notesRows=notesRows.map(x=>x.id===data.id?data:x);});row.append(cb);}
+      const text=document.createElement('div');text.className='notes-text'+(n.concluida?' notes-done':'');text.textContent=n.texto;row.append(text);
+      const edit=document.createElement('button');edit.type='button';edit.textContent='✎';edit.title='Editar';edit.setAttribute('aria-label','Editar anotação');edit.onclick=()=>{notesEdit=n.id;$('notesDraft').value=n.texto;$('notesCheck').checked=n.tem_checkbox;$('notesSave').textContent='Salvar alterações';$('notesCancel').classList.remove('hidden');$('notesDraft').focus();};row.append(edit);
+      const del=document.createElement('button');del.type='button';del.textContent='×';del.title='Excluir';del.setAttribute('aria-label','Excluir anotação');del.onclick=()=>{if(!confirm('Excluir esta anotação?'))return;notesRun(async owner=>{const {data,error}=await supabase.from('portal_anotacoes').delete().eq('usuario_id',owner).eq('id',n.id).select('id').single();if(error)throw error;return data;},()=>{notesRows=notesRows.filter(x=>x.id!==n.id);if(notesEdit===n.id)notesResetForm();});};row.append(del);list.append(row);}
+      notesControls();}
+    async function notesRun(work,apply,success='Salvo no servidor.'){if(notesBusy||!currentUser)return;const epoch=notesEpoch,owner=currentUser.id;notesBusy=true;notesControls();notesStatus('Aguarde...');try{const data=await work(owner);if(epoch!==notesEpoch||currentUser?.id!==owner)return;apply(data);notesStatus(success);}catch(e){if(epoch===notesEpoch&&currentUser?.id===owner)notesStatus('Não foi possível concluir. Verifique a conexão e tente atualizar.',true);}finally{if(epoch===notesEpoch&&currentUser?.id===owner){notesBusy=false;notesRender();}}}
+    function notesLoad(){return notesRun(async owner=>{const all=[];for(let offset=0;;offset+=500){const {data,error}=await supabase.from('portal_anotacoes').select(notesFields).eq('usuario_id',owner).order('criado_em',{ascending:false}).order('id',{ascending:false}).range(offset,offset+499);if(error)throw error;all.push(...data);if(data.length<500)break;}return all;},data=>{notesRows=data;notesLoaded=true;},'Anotações atualizadas.');}
+    $('notesFab').onclick=()=>{if(!currentUser)return;document.body.classList.add('notes-open');$('notesPanel').inert=false;$('notesPanel').setAttribute('aria-hidden','false');$('notesFab').setAttribute('aria-expanded','true');$('appScreen').inert=true;$('notesClose').focus({preventScroll:true});notesLoad();};
+    $('notesClose').onclick=()=>notesClosePanel();$('notesShade').onclick=()=>notesClosePanel();$('notesRefresh').onclick=notesLoad;$('notesCancel').onclick=notesResetForm;
+    $('notesForm').onsubmit=e=>{e.preventDefault();const texto=$('notesDraft').value.trim(),tem_checkbox=$('notesCheck').checked,id=notesEdit;if(!texto||notesBusy)return;const previous=notesRows.find(n=>n.id===id);const payload={texto,tem_checkbox,concluida:tem_checkbox&&!!previous?.concluida};notesRun(async owner=>{const q=id?supabase.from('portal_anotacoes').update({...payload,atualizado_em:new Date().toISOString()}).eq('usuario_id',owner).eq('id',id):supabase.from('portal_anotacoes').insert(payload);const {data,error}=await q.select(notesFields).single();if(error)throw error;return data;},data=>{notesRows=id?notesRows.map(n=>n.id===id?data:n):[data,...notesRows];notesResetForm();});};
+    $('notesClear').onclick=()=>{if(!confirm('Excluir definitivamente todas as suas anotações?'))return;notesRun(async owner=>{const {error}=await supabase.from('portal_anotacoes').delete().eq('usuario_id',owner);if(error)throw error;},()=>{notesRows=[];notesResetForm();},'Anotações excluídas.');};
+    document.addEventListener('keydown',e=>{if(!document.body.classList.contains('notes-open'))return;if(e.key==='Escape'){notesClosePanel();return;}if(e.key==='Tab'){const items=[...$('notesPanel').querySelectorAll('button:not(:disabled),textarea:not(:disabled),input:not(:disabled)')].filter(el=>el.getClientRects().length);const first=items[0],last=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}}});
+    function notesViewport(){const v=window.visualViewport;if(!v)return;document.documentElement.style.setProperty('--notes-vh',v.height+'px');document.documentElement.style.setProperty('--notes-keyboard',Math.max(0,window.innerHeight-v.height-v.offsetTop)+'px');}
+    window.visualViewport?.addEventListener('resize',notesViewport);window.visualViewport?.addEventListener('scroll',notesViewport);notesViewport();
+
     init();
   </script>
 </body>
