@@ -923,6 +923,8 @@ body.notes-open #notesShade,body.notes-open #notesPanel{visibility:visible;opaci
 @media(max-width:800px){#notesPanel{right:0;bottom:var(--notes-keyboard,0px);width:100%;height:calc(var(--notes-vh,100dvh) * .65);border-radius:18px 18px 0 0;transform:translateY(100%)}body.notes-open #notesPanel{transform:none}.notes-row button{min-width:40px;min-height:44px}}
 @media(prefers-reduced-motion:reduce){#notesPanel,#notesShade{transition:none}}
 
+/* Seleção múltipla de visitas */
+.visit-picker{position:relative;min-width:0}.visit-picker summary{list-style:none;cursor:pointer;border:1px solid #cbd5e1;border-radius:8px;padding:11px;background:white;min-height:44px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px}.visit-picker summary::-webkit-details-marker{display:none}.visit-picker summary:after{content:'▾'}.visit-picker[open] summary:after{content:'▴'}.visit-options{position:absolute;top:calc(100% + 5px);left:0;min-width:220px;width:max-content;max-width:min(320px,85vw);background:white;border:1px solid #cbd5e1;border-radius:9px;padding:10px;z-index:30;box-shadow:0 8px 24px #101d3426;max-height:310px;overflow:auto}.visit-options label{display:flex!important;align-items:center;gap:9px;padding:8px;font-size:14px;cursor:pointer;flex-wrap:nowrap!important}.visit-options input[type=checkbox]{width:19px!important;min-height:19px!important;height:19px;flex:none;accent-color:var(--blue)}.visit-options button{width:100%;margin-top:6px}.visit-picker select{display:none!important}@media(max-width:800px){.visit-picker{grid-column:1/-1}.visit-options{width:100%;max-width:100%}}
 </style>
 </head>
 
@@ -1011,9 +1013,9 @@ body.notes-open #notesShade,body.notes-open #notesPanel{visibility:visible;opaci
               <select id="buyerSector" aria-label="Setor"></select>
               <input id="buyerSearch" type="search" placeholder="Buscar por PDV ou nome do cliente"
                 aria-label="Buscar PDV ou fantasia">
-              <select id="buyerVisit" aria-label="Dia de visita">
+              <details class="visit-picker" id="buyerVisitPicker"><summary>Todas as visitas</summary><select multiple hidden id="buyerVisit" aria-label="Dia de visita">
                 <option value="">Todas as visitas</option>
-              </select>
+              </select><div class="visit-options"></div></details>
               <label><input id="buyerNComp" type="checkbox"> N Comp</label>
               <button id="buyerFilterButton" class="primary" type="submit">Filtrar</button>
               <button id="buyerClear" class="secondary" type="button">Limpar</button>
@@ -1087,7 +1089,7 @@ body.notes-open #notesShade,body.notes-open #notesPanel{visibility:visible;opaci
           <div id="giroError" class="message hidden" role="alert"></div>
           <div class="panel"><form id="giroForm" class="giro-filters">
             <select id="giroSetor" aria-label="Setor"></select><input id="giroBusca" type="search" placeholder="PDV ou fantasia" aria-label="Buscar PDV ou fantasia">
-            <select id="giroVisita" aria-label="Visita"><option value="">Todas as visitas</option></select>
+            <details class="visit-picker" id="giroVisitaPicker"><summary>Todas as visitas</summary><select multiple hidden id="giroVisita" aria-label="Visita"><option value="">Todas as visitas</option></select><div class="visit-options"></div></details>
             <select id="giroSopi" aria-label="Status SOPI"><option value="">SOPI: Todos</option><option value="OK">SOPI: OK</option><option value="NOK">SOPI: NOK</option></select>
             <select id="giroVisa" aria-label="Status VISA"><option value="">VISA: Todos</option><option value="OK">VISA: OK</option><option value="NOK">VISA: NOK</option></select>
             <button type="submit" class="primary">Filtrar</button><button id="giroLimpar" type="button" class="secondary">Limpar</button>
@@ -1267,7 +1269,7 @@ body.notes-open #notesShade,body.notes-open #notesPanel{visibility:visible;opaci
     let editingId = null;
     let loadingUsers = false;
     // Estado dos filtros inicializado antes de qualquer navegação.
-    let buyerFilters = { setor: '', q: '', visita: '', ncomp: false };
+    let buyerFilters = { setor: '', q: '', visita: [], ncomp: false };
     let buyerPage = 1;
     let buyerTotalPages = 1;
     let buyerRequestVersion = 0;
@@ -1627,28 +1629,42 @@ body.notes-open #notesShade,body.notes-open #notesPanel{visibility:visible;opaci
       for(const [key,t] of Object.entries(scopeTeams))if(t.sectors.some(s=>sectors.map(String).includes(s)))select.add(new Option(t.label+' — Equipe completa',key));
     }
     function scopeQuery(query,value){return scopeTeams[value]?query.in('setor',scopeTeams[value].sectors):value?query.eq('setor',value):query;}
+    function selectedVisits(id){return Array.from($(id).selectedOptions,o=>o.value).filter(Boolean).sort();}
+    function setVisits(id,values){for(const o of $(id).options)o.selected=values.includes(o.value);renderVisitPicker(id);}
+    function renderVisitPicker(id){
+      const select=$(id), picker=$(id+'Picker'), panel=picker.querySelector('.visit-options');
+      const opts=Array.from(select.options).filter(o=>o.value), chosen=selectedVisits(id);
+      picker.querySelector('summary').textContent=chosen.length===0?'Todas as visitas':chosen.length===1?(opts.find(o=>o.value===chosen[0])?.textContent||chosen[0]):chosen.length+' visitas selecionadas';
+      panel.replaceChildren();
+      function add(label,checked,change){const line=document.createElement('label'), input=document.createElement('input');input.type='checkbox';input.checked=checked;input.onchange=()=>change(input.checked);line.append(input,document.createTextNode(label));panel.append(line);}
+      add('Selecionar todos',opts.length>0&&chosen.length===opts.length,v=>setVisits(id,v?opts.map(o=>o.value):[]));
+      for(const o of opts)add(o.textContent,o.selected,v=>{o.selected=v;renderVisitPicker(id);});
+      const clear=document.createElement('button');clear.type='button';clear.className='secondary small';clear.textContent='Limpar seleção';clear.onclick=()=>setVisits(id,[]);panel.append(clear);
+      const done=document.createElement('button');done.type='button';done.className='primary small';done.textContent='Concluir seleção';done.onclick=()=>{picker.open=false;};panel.append(done);
+    }
+    document.addEventListener('click',e=>{for(const id of ['buyerVisit','giroVisita']){const p=$(id+'Picker');if(p.open&&!p.contains(e.target))p.open=false;}});
     const BUYER_NO_VISIT = '__SEM_VISITA__';
     let buyerVisitOptions = { visits: [], missing: {} };
     function refreshBuyerVisits() {
-      const select = $('buyerVisit'), previous = select.value, setor = $('buyerSector').value;
+      const select = $('buyerVisit'), previous = selectedVisits('buyerVisit'), setor = $('buyerSector').value;
       const sectors = scopeTeams[setor]?.sectors || (setor ? [setor] : Object.keys(buyerVisitOptions.missing));
       const count = [...new Set(sectors)].reduce((sum, key) => sum + (buyerVisitOptions.missing[key] || 0), 0);
       select.replaceChildren(new Option('Todas as visitas', ''));
       for (const visit of buyerVisitOptions.visits) select.add(new Option(visit, visit));
       if (count > 0) select.add(new Option(`Sem visita (${count.toLocaleString('pt-BR')})`, BUYER_NO_VISIT));
-      select.value = [...select.options].some(o => o.value === previous) ? previous : '';
+      setVisits('buyerVisit',previous);
     }
     function buyerQuery(base) {
       let query = base;
       query = scopeQuery(query,buyerFilters.setor);
-      if (buyerFilters.visita === BUYER_NO_VISIT) {
-        // Complemento dos valores não vazios retornados pela RPC, sob a mesma RLS.
-        const visits = buyerVisitOptions.visits;
-        if (visits.length) {
-          const values = visits.map(v => '"' + v.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"').join(',');
-          query = query.or(`visita.is.null,visita.not.in.(${values})`);
+      const selected=buyerFilters.visita, regular=selected.filter(v=>v!==BUYER_NO_VISIT);
+      if(selected.includes(BUYER_NO_VISIT)){
+        const excluded=buyerVisitOptions.visits.filter(v=>!regular.includes(v));
+        if(excluded.length){
+          const values=excluded.map(v=>JSON.stringify(v)).join(',');
+          query=query.or(`visita.is.null,visita.not.in.(${values})`);
         }
-      } else if (buyerFilters.visita) query = query.eq('visita', buyerFilters.visita);
+      }else if(regular.length)query=query.in('visita',regular);
       if (buyerFilters.ncomp) query = query.or('ambev_total.is.null,ambev_total.not.ilike.OK');
       if (buyerFilters.q) {
         const q = buyerFilters.q.replace(/[%,()]/g, '').trim();
@@ -1747,9 +1763,9 @@ body.notes-open #notesShade,body.notes-open #notesPanel{visibility:visible;opaci
         for (const setor of sectors) {
           $('buyerSector').add(new Option(`Setor ${setor}`, setor));
         }
-        $('buyerVisit').value = '';
+        setVisits('buyerVisit',[]);
         refreshBuyerVisits();
-        buyerFilters = { setor: canViewAllSectors ? '' : sectors[0], q: '', visita: '', ncomp: false };
+        buyerFilters = { setor: canViewAllSectors ? '' : sectors[0], q: '', visita: [], ncomp: false };
         $('buyerSearch').value = '';
         $('buyerNComp').checked = false;
         buyerPage = 1;
@@ -1818,11 +1834,11 @@ body.notes-open #notesShade,body.notes-open #notesPanel{visibility:visible;opaci
       // V17: a RPC calcula o resumo no banco quando os filtros são compatíveis.
       // Pesquisa textual e "Não compradores" continuam usando o cálculo original,
       // pois a RPC atual não recebe esses filtros.
-      if (!buyerFilters.q && !buyerFilters.ncomp && !scopeTeams[buyerFilters.setor]) {
+      if (!buyerFilters.q && !buyerFilters.ncomp && !scopeTeams[buyerFilters.setor] && buyerFilters.visita.length <= 1) {
         try {
           const { data, error } = await supabase.rpc('portal_resumo_compradores', {
             p_setor: buyerFilters.setor || null,
-            p_visita: buyerFilters.visita || null
+            p_visita: buyerFilters.visita[0] || null
           });
           if (version !== buyerRequestVersion) return null;
           if (error) throw error;
@@ -1842,7 +1858,7 @@ body.notes-open #notesShade,body.notes-open #notesPanel{visibility:visible;opaci
       for (let offset = 0; offset < 15000; offset += 1000) {
         const { data, error } = await buyerQuery(
           supabase.from('portal_pdvs').select('ambev_total,inad')
-        ).range(offset, offset + 999);
+        ).order('id').range(offset, offset + 999);
         if (error) throw error;
         if (version !== buyerRequestVersion) return null;
         for (const row of data || []) {
@@ -1856,14 +1872,14 @@ body.notes-open #notesShade,body.notes-open #notesPanel{visibility:visible;opaci
     }
 
     async function fetchBuyerPage(version) {
-      if (buyerFilters.visita) {
+      if (buyerFilters.visita.length) {
         // Mantém a ordenação numérica original quando há filtro de visita.
         // O resultado completo é reutilizado entre páginas por até 3 minutos.
         const allRows = [];
         for (let offset = 0; offset < 15000; offset += 1000) {
           const { data, error } = await buyerQuery(
             supabase.from('portal_pdvs').select(BUYER_COLUMNS)
-          ).range(offset, offset + 999);
+          ).order('id').range(offset, offset + 999);
           if (error) throw error;
           if (version !== buyerRequestVersion) return null;
           allRows.push(...(data || []));
@@ -1894,9 +1910,9 @@ body.notes-open #notesShade,body.notes-open #notesPanel{visibility:visible;opaci
       const filterKey = buyerFilterKey();
       const pageKey = JSON.stringify([filterKey, buyerPage]);
       const cachedSummary = buyerCacheRead(buyerCache.summaries, filterKey);
-      const cachedRows = buyerCacheRead(buyerCache.pages, buyerFilters.visita ? filterKey : pageKey);
+      const cachedRows = buyerCacheRead(buyerCache.pages, buyerFilters.visita.length ? filterKey : pageKey);
       if (cachedRows) {
-        const rows = buyerFilters.visita
+        const rows = buyerFilters.visita.length
           ? cachedRows.slice((buyerPage - 1) * BUYER_PAGE_SIZE, buyerPage * BUYER_PAGE_SIZE)
           : cachedRows;
         renderBuyerRows(rows);
@@ -1923,8 +1939,8 @@ body.notes-open #notesShade,body.notes-open #notesPanel{visibility:visible;opaci
         const pageTask = pagePromise.then(rows => {
           if (version !== buyerRequestVersion || rows === null) return;
           if (!cachedRows) buyerCacheWrite(buyerCache.pages,
-            buyerFilters.visita ? filterKey : pageKey, rows);
-          renderBuyerRows(buyerFilters.visita
+            buyerFilters.visita.length ? filterKey : pageKey, rows);
+          renderBuyerRows(buyerFilters.visita.length
             ? rows.slice((buyerPage - 1) * BUYER_PAGE_SIZE, buyerPage * BUYER_PAGE_SIZE)
             : rows);
         });
@@ -1955,7 +1971,7 @@ body.notes-open #notesShade,body.notes-open #notesPanel{visibility:visible;opaci
           ? ($('buyerSector').value || $('buyerSector').options[0]?.value || '')
           : $('buyerSector').value,
         q: $('buyerSearch').value.trim(),
-        visita: $('buyerVisit').value,
+        visita: selectedVisits('buyerVisit'),
         ncomp: $('buyerNComp').checked
       };
       buyerPage = 1;
@@ -1969,7 +1985,7 @@ body.notes-open #notesShade,body.notes-open #notesPanel{visibility:visible;opaci
         : (sector.options[0]?.value || '');
       $('buyerSearch').value = '';
       refreshBuyerVisits();
-      $('buyerVisit').value = '';
+      setVisits('buyerVisit',[]);
       $('buyerNComp').checked = false;
       $('buyerFilterForm').requestSubmit();
     };
@@ -2512,12 +2528,12 @@ body.notes-open #notesShade,body.notes-open #notesPanel{visibility:visible;opaci
     function giroCacheSet(map,key,value){if(map.size>=60)map.delete(map.keys().next().value);map.set(key,{at:Date.now(),value});}
     function clearGiroCache(){giroCache.visits=null;giroCache.summary.clear();giroCache.pages.clear();giroVersion++;}
     function giroEnsureOwner(){const owner=currentUser?.id||null;if(giroCache.owner!==owner){clearGiroCache();giroCache.owner=owner;}}
-    function giroFilterKey(){return JSON.stringify([$('giroSetor').value,$('giroVisita').value,$('giroBusca').value.trim(),$('giroSopi').value,$('giroVisa').value]);}
+    function giroFilterKey(){return JSON.stringify([$('giroSetor').value,selectedVisits('giroVisita'),$('giroBusca').value.trim(),$('giroSopi').value,$('giroVisa').value]);}
     function giroWhere(query,includeStatus=true){
-      const sector=$('giroSetor').value,visit=$('giroVisita').value;
+      const sector=$('giroSetor').value,visit=selectedVisits('giroVisita');
       const q=$('giroBusca').value.trim().replace(/[%,()]/g,'');
       query=scopeQuery(query,sector);
-      if(visit)query=query.eq('visita',visit);
+      if(visit.length)query=query.in('visita',visit);
       if(q)query=query.or(`pdv.ilike.%${q}%,fantasia.ilike.%${q}%`);
       if(includeStatus){
         const sopi=$('giroSopi').value, visa=$('giroVisa').value;
@@ -2614,11 +2630,11 @@ body.notes-open #notesShade,body.notes-open #notesPanel{visibility:visible;opaci
         const visitaOrdem=v=>{const m=String(v).toUpperCase().match(/D\s*(\d+)/);if(m)return Number(m[1]);const k=String(v).toUpperCase().slice(0,3);return dias[k]||99;};
         const visitaRotulo=v=>{const k=String(v).trim().toUpperCase().slice(0,3);const mapa={SEG:'D2',TER:'D3',QUA:'D4',QUI:'D5',SEX:'D6',SAB:'D7',DOM:'D1'};return mapa[k]||String(v).trim();};
         for(const v of [...visits].sort((a,b)=>visitaOrdem(a)-visitaOrdem(b)||String(a).localeCompare(String(b),'pt-BR')))visitaSelect.add(new Option(visitaRotulo(v),v));
-        $('giroBusca').value='';$('giroSopi').value='';$('giroVisa').value='';giroPage=1;await loadGiro();
+        setVisits('giroVisita',[]);$('giroBusca').value='';$('giroSopi').value='';$('giroVisa').value='';giroPage=1;await loadGiro();
       }catch(err){message('giroError',err.message||'Falha ao iniciar painel.');}
     }
     $('giroForm').onsubmit=e=>{e.preventDefault();giroPage=1;loadGiro();};
-    $('giroLimpar').onclick=()=>{const sector=$('giroSetor');sector.value=['gv','gc','admin'].includes(currentUser?.perfil)?'':(sector.options[0]?.value||'');for(const id of ['giroBusca','giroVisita','giroSopi','giroVisa'])$(id).value='';giroPage=1;loadGiro();};
+    $('giroLimpar').onclick=()=>{const sector=$('giroSetor');sector.value=['gv','gc','admin'].includes(currentUser?.perfil)?'':(sector.options[0]?.value||'');for(const id of ['giroBusca','giroSopi','giroVisa'])$(id).value='';setVisits('giroVisita',[]);giroPage=1;loadGiro();};
     $('giroAnterior').onclick=()=>{if(giroPage>1){giroPage--;loadGiro();}};
     $('giroProximo').onclick=()=>{if(giroPage<giroPages){giroPage++;loadGiro();}};
 
