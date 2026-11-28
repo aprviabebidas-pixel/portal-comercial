@@ -1629,6 +1629,17 @@ body.notes-open #notesShade,body.notes-open #notesPanel{visibility:visible;opaci
       for(const [key,t] of Object.entries(scopeTeams))if(t.sectors.some(s=>sectors.map(String).includes(s)))select.add(new Option(t.label+' — Equipe completa',key));
     }
     function scopeQuery(query,value){return scopeTeams[value]?query.in('setor',scopeTeams[value].sectors):value?query.eq('setor',value):query;}
+    // Ordem semanal: D2 (segunda) até D7 (sábado), D1 (domingo).
+    function visitRank(value){
+      const v=String(value??'').trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase();
+      if(!v||v==='__SEM_VISITA__')return 100;
+      const m=v.match(/^D\s*([1-7])$/);
+      if(m)return Number(m[1])===1?7:Number(m[1])-1;
+      return ({SEG:1,TER:2,QUA:3,QUI:4,SEX:5,SAB:6,DOM:7})[v.slice(0,3)]||99;
+    }
+    function compareVisitRows(a,b){
+      return visitRank(a.visita)-visitRank(b.visita)||String(a.pdv??'').localeCompare(String(b.pdv??''),'pt-BR',{numeric:true})||String(a.setor??'').localeCompare(String(b.setor??''),'pt-BR',{numeric:true});
+    }
     function selectedVisits(id){return Array.from($(id).selectedOptions,o=>o.value).filter(Boolean).sort();}
     function setVisits(id,values){for(const o of $(id).options)o.selected=values.includes(o.value);renderVisitPicker(id);}
     function renderVisitPicker(id){
@@ -1886,6 +1897,7 @@ body.notes-open #notesShade,body.notes-open #notesPanel{visibility:visible;opaci
           if (!data || data.length < 1000) break;
         }
         allRows.sort((a, b) => {
+          if (buyerFilters.visita.length > 1) return compareVisitRows(a,b);
           const aNum = BigInt(/^\d+$/.test(String(a.pdv)) ? String(a.pdv) : '0');
           const bNum = BigInt(/^\d+$/.test(String(b.pdv)) ? String(b.pdv) : '0');
           return aNum < bNum ? -1 : aNum > bNum ? 1 : String(a.pdv).localeCompare(String(b.pdv), 'pt-BR');
@@ -2589,23 +2601,36 @@ body.notes-open #notesShade,body.notes-open #notesPanel{visibility:visible;opaci
       }
       body.replaceChildren(fragment);
     }
+    async function fetchGiroMultiVisits(version){
+      const rows=[];
+      for(let offset=0;;offset+=500){
+        if(version!==giroVersion)return {data:[],error:null};
+        const {data,error}=await giroWhere(supabase.from('portal_giro_equipamentos').select(GIRO_COLS)).order('id').range(offset,offset+499);
+        if(error)throw error;
+        if(version!==giroVersion)return {data:[],error:null};
+        rows.push(...(data||[]));
+        if(!data||data.length<500)break;
+      }
+      return {data:rows.sort(compareVisitRows),error:null};
+    }
     async function loadGiro(){
       giroEnsureOwner();const version=++giroVersion;message('giroError','');
-      const filterKey=giroFilterKey(),pageKey=JSON.stringify([filterKey,giroPage]);
+      const filterKey=giroFilterKey(),multi=selectedVisits('giroVisita').length>1,pageKey=JSON.stringify([filterKey,multi?'all-sorted':giroPage]);
+      const visibleRows=rows=>multi?rows.slice((giroPage-1)*GIRO_PAGE_SIZE,giroPage*GIRO_PAGE_SIZE):rows;
       const cachedSummary=giroCacheGet(giroCache.summary,filterKey);
       const cachedPage=giroCacheGet(giroCache.pages,pageKey);
-      if(cachedSummary&&cachedPage){renderGiroResult(cachedPage,cachedSummary);return;}
+      if(cachedSummary&&cachedPage){renderGiroResult(visibleRows(cachedPage),cachedSummary);return;}
       $('giroBody').innerHTML='<tr><td colspan="15" class="empty">Carregando...</td></tr>';
       try{
         // Página e contagens executadas em paralelo; contagens são reutilizadas ao paginar.
-        const pagePromise=cachedPage?Promise.resolve({data:cachedPage,count:cachedSummary?.total??null,error:null}):giroWhere(supabase.from('portal_giro_equipamentos').select(GIRO_COLS,{count:'exact'})).order('setor').order('pdv').range((giroPage-1)*GIRO_PAGE_SIZE,giroPage*GIRO_PAGE_SIZE-1);
+        const pagePromise=cachedPage?Promise.resolve({data:cachedPage,count:cachedSummary?.total??null,error:null}):multi?fetchGiroMultiVisits(version):giroWhere(supabase.from('portal_giro_equipamentos').select(GIRO_COLS,{count:'exact'})).order('setor').order('pdv').range((giroPage-1)*GIRO_PAGE_SIZE,giroPage*GIRO_PAGE_SIZE-1);
         const countsPromise=cachedSummary?Promise.resolve(cachedSummary):giroEquipmentSummary(version);
         const [pageResult,summary]=await Promise.all([pagePromise,countsPromise]);
         if(pageResult.error)throw pageResult.error;
         if(version!==giroVersion||!summary)return;
         if(!cachedSummary)giroCacheSet(giroCache.summary,filterKey,summary);
         if(!cachedPage)giroCacheSet(giroCache.pages,pageKey,pageResult.data||[]);
-        renderGiroResult(pageResult.data||[],summary);
+        renderGiroResult(visibleRows(pageResult.data||[]),summary);
       }catch(err){if(version===giroVersion){message('giroError',err.message||'Falha ao consultar Giro');$('giroBody').innerHTML='<tr><td colspan="15" class="empty">Erro ao carregar.</td></tr>';}}
     }
     async function openGiro(){
